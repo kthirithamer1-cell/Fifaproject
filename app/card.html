@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA Card</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #111;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            position: relative;
+            width: 430px;
+            height: 640px;
+        }
+
+        .frame {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .player {
+            position: absolute;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 78%;
+            height: auto;
+            z-index: 2;
+        }
+
+        .rating {
+            position: absolute;
+            top: 42px;
+            left: 35px;
+            font-size: 58px;
+            font-weight: bold;
+            color: #fff;
+            z-index: 10;
+            text-shadow: 0 0 8px black;
+        }
+
+        .position {
+            position: absolute;
+            top: 108px;
+            left: 48px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            z-index: 10;
+        }
+
+        .name {
+            position: absolute;
+            bottom: 140px;
+            width: 100%;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            z-index: 10;
+            letter-spacing: 2px;
+        }
+
+        .stats {
+            position: absolute;
+            bottom: 35px;
+            left: 55px;
+            right: 55px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 35px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            z-index: 10;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="card">
+
+        <img class="player" src="player.png">
+
+        <img class="frame" src="https://drive.google.com/file/d/1ZBhbp3URXz3aP56-is12rPFV3m41Hlh_/view?usp=sharing">
+
+        <div class="rating" id="rating"></div>
+
+        <div class="position" id="position"></div>
+
+        <div class="name" id="name"></div>
+
+        <div class="stats" id="stats"></div>
+
+    </div>
+
+    <script>
+
+        const player = {
+
+            rating: 99,
+
+            position: "ST",
+
+            name: "THAMER",
+
+            image: "player.png",
+
+            stats: {
+                PAC: 99,
+                SHO: 98,
+                PAS: 95,
+                DRI: 99,
+                DEF: 55,
+                PHY: 92
+            }
+
+        };
+
+        document.querySelector(".player").src = player.image;
+
+        document.getElementById("rating").innerHTML = player.rating;
+
+        document.getElementById("position").innerHTML = player.position;
+
+        document.getElementById("name").innerHTML = player.name;
+
+        const stats = document.getElementById("stats");
+
+        for (let key in player.stats) {
+
+            stats.innerHTML += `
+<div class="stat">
+<span>${key}</span>
+<span>${player.stats[key]}</span>
+</div>
+`;
+
+        }
+
+    </script>
+
+</body>
+
+</html>

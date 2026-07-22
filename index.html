@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FIFA MEME TN | حول صحابك إلى أساطير FIFA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Rubik:wght@500;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0906;
+      --bg-soft: #121009;
+      --panel: #17140d;
+      --panel-border: #2c2415;
+      --gold: #f4c430;
+      --gold-bright: #ffd85e;
+      --gold-dim: #a8842a;
+      --text: #f5f1e6;
+      --text-dim: #b8b3a4;
+      --text-faint: #7d7869;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Tajawal', 'Rubik', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .en {
+      font-family: 'Rubik', 'Tajawal', sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* background texture */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 900px 500px at 85% 5%, rgba(244, 196, 48, 0.10), transparent 60%),
+        radial-gradient(ellipse 700px 500px at 10% 30%, rgba(244, 196, 48, 0.06), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 9, 6, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+    }
+
+    .logo {
+      font-family: 'Rubik', sans-serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo .meme {
+      color: var(--gold);
+    }
+
+    .logo .tn {
+      background: var(--gold);
+      color: #0a0906;
+      font-size: 0.65rem;
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-weight: 800;
+      margin-inline-start: 4px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 34px;
+      align-items: center;
+      font-weight: 500;
+      color: var(--text-dim);
+    }
+
+    .nav-links a {
+      transition: color .2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .btn-gold {
+      background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+      color: #1a1305;
+      font-weight: 800;
+      padding: 11px 26px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-shadow: 0 8px 20px -6px rgba(244, 196, 48, 0.5);
+      transition: transform .15s, box-shadow .15s;
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px -6px rgba(244, 196, 48, 0.65);
+    }
+
+    .btn-outline {
+      border: 1.5px solid var(--panel-border);
+      background: transparent;
+      color: var(--text);
+      padding: 11px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color .2s, background .2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold-dim);
+      background: rgba(244, 196, 48, 0.06);
+    }
+
+    .burger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      position: relative;
+      padding: 80px 0 60px;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(244, 196, 48, 0.1);
+      border: 1px solid rgba(244, 196, 48, 0.35);
+      color: var(--gold);
+      padding: 7px 16px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 3.1rem;
+      line-height: 1.25;
+      font-weight: 900;
+      margin: 0 0 20px;
+    }
+
+    .hero h1 .accent {
+      color: var(--gold);
+      display: block;
+      font-size: 1.05em;
+    }
+
+    .hero p.lede {
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      line-height: 1.9;
+      max-width: 520px;
+      margin-bottom: 32px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 26px;
+      flex-wrap: wrap;
+    }
+
+    .mini-tags {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+      color: var(--text-faint);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .mini-tags span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* FIFA card */
+    .card-stage {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 520px;
+    }
+
+    .fifa-card {
+      position: relative;
+      width: 330px;
+      padding: 26px 22px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(244, 196, 48, 0.22), transparent 55%),
+        linear-gradient(160deg, #1b1710 0%, #0c0a06 70%);
+      border: 2px solid var(--gold);
+      border-radius: 26px 26px 46px 46px;
+      box-shadow: 0 0 0 1px rgba(244, 196, 48, 0.15), 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 60px -10px rgba(244, 196, 48, 0.25);
+      animation: float 5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(-1deg);
+      }
+
+      50% {
+        transform: translateY(-14px) rotate(1deg);
+      }
+    }
+
+    .fifa-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .fifa-rating {
+      font-family: 'Rubik', sans-serif;
+    }
+
+    .fifa-rating .num {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .fifa-rating .lbl {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      color: var(--gold-dim);
+      font-weight: 700;
+    }
+
+    .fifa-flag {
+      margin-top: 8px;
+      width: 34px;
+      height: 24px;
+      background: #e70013;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    .fifa-stars {
+      text-align: end;
+      font-size: 0.7rem;
+      color: var(--gold-dim);
+      line-height: 1.6;
+    }
+
+    .fifa-stars b {
+      color: var(--text);
+    }
+
+    .fifa-photo {
+      margin: 14px auto 6px;
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      background: linear-gradient(160deg, #2a2416, #0c0a06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rubik', sans-serif;
+      font-weight: 900;
+      font-size: 4.2rem;
+      color: var(--gold);
+      border: 2px solid rgba(244, 196, 48, 0.4);
+    }
+
+    .fifa-name {
+      text-align: center;
+      font-family: 'Rubik', sans-serif;
+      font-weight: 900;
+      font-size: 1.7rem;
+      letter-spacing: 1px;
+      color: var(--text);
+      margin: 6px 0 16px;
+    }
+
+    .fifa-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 18px;
+      border-top: 1px solid rgba(244, 196, 48, 0.25);
+      padding-top: 16px;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    .fifa-stats div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .fifa-stats span.code {
+      color: var(--gold-dim);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .callout {
+      position: absolute;
+      left: -40px;
+      bottom: 40px;
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-weight: 700;
+      text-align: center;
+      display: none;
+    }
+
+    .ball-deco {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #3a3218, #0a0906 70%);
+      border: 1px solid rgba(244, 196, 48, 0.2);
+      opacity: 0.5;
+    }
+
+    .b1 {
+      width: 140px;
+      height: 140px;
+      top: -40px;
+      right: -60px;
+    }
+
+    .b2 {
+      width: 100px;
+      height: 100px;
+      bottom: -30px;
+      left: -40px;
+    }
+
+    /* ---------- FEATURES BAR ---------- */
+    .features {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--panel-border);
+      border-bottom: 1px solid var(--panel-border);
+      background: var(--bg-soft);
+      padding: 38px 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    .feature-item {
+      text-align: center;
+    }
+
+    .feature-item .ico {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .feature-item .title {
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .feature-item .sub {
+      color: var(--text-faint);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    /* ---------- SECTION HEADERS ---------- */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 0;
+    }
+
+    .sec-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 44px;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .sec-title {
+      font-size: 1.9rem;
+      font-weight: 900;
+      position: relative;
+      padding-bottom: 14px;
+    }
+
+    .sec-title::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 56px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 3px;
+    }
+
+    .sec-link {
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ---------- GALLERY ---------- */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .g-card {
+      background: linear-gradient(165deg, #181410, #0c0a06);
+      border: 1.5px solid var(--card-color, var(--gold));
+      border-radius: 16px 16px 28px 28px;
+      padding: 14px 12px;
+      text-align: center;
+      transition: transform .2s;
+    }
+
+    .g-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .g-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: start;
+    }
+
+    .g-rating {
+      font-family: 'Rubik', sans-serif;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--card-color, var(--gold));
+    }
+
+    .g-rating small {
+      display: block;
+      font-size: 0.55rem;
+      color: var(--text-faint);
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .g-flag {
+      width: 18px;
+      height: 13px;
+      background: #e70013;
+      border-radius: 2px;
+    }
+
+    .g-photo {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      margin: 10px auto 8px;
+      background: linear-gradient(160deg, #2a2416, #0c0a06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rubik', sans-serif;
+      font-weight: 900;
+      font-size: 1.7rem;
+      color: var(--card-color, var(--gold));
+      border: 1.5px solid var(--card-color, var(--gold));
+    }
+
+    .g-name {
+      font-family: 'Rubik', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .g-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px 8px;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      font-weight: 700;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 8px;
+    }
+
+    /* ---------- HOW IT WORKS ---------- */
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step {
+      text-align: center;
+      flex: 1;
+    }
+
+    .step-circle {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: var(--panel);
+      border: 1.5px solid var(--panel-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+      margin: 0 auto 14px;
+    }
+
+    .step-num {
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .step-label {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .step-arrow {
+      color: var(--gold-dim);
+      font-size: 1.4rem;
+      flex: 0 0 auto;
+    }
+
+    /* ---------- FUNNY STATS ---------- */
+    .stat-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      padding: 14px 22px;
+      border-radius: 14px;
+      font-weight: 700;
+    }
+
+    .chip .chip-en {
+      color: var(--text-faint);
+      font-size: 0.75rem;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    .chip.more {
+      border-color: var(--gold-dim);
+      color: var(--gold);
+    }
+
+    /* ---------- PACKAGES ---------- */
+    .pkg-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .pkg {
+      background: var(--panel);
+      border: 1.5px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 32px 28px;
+      position: relative;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .pkg:hover {
+      transform: translateY(-6px);
+    }
+
+    .pkg.popular {
+      border-color: var(--gold);
+      background: linear-gradient(165deg, #1e1a0f, #141108);
+    }
+
+    .pkg-badge {
+      position: absolute;
+      top: -14px;
+      right: 28px;
+      background: var(--gold);
+      color: #1a1305;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    .pkg-name {
+      font-weight: 800;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .pkg-price {
+      font-family: 'Rubik', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--gold);
+      margin: 12px 0 20px;
+    }
+
+    .pkg-price sup {
+      font-size: 1rem;
+      color: var(--text-dim);
+      font-weight: 700;
+    }
+
+    .pkg ul {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pkg li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-dim);
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+
+    .pkg li b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ---------- TESTIMONIALS ---------- */
+    .test-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .test-card {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 22px;
+    }
+
+    .test-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(160deg, var(--gold-bright), var(--gold-dim));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: #1a1305;
+      font-family: 'Rubik', sans-serif;
+    }
+
+    .test-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .stars {
+      color: var(--gold);
+      font-size: 0.8rem;
+    }
+
+    .test-quote {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* ---------- FAQ ---------- */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .faq-item {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 22px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      gap: 12px;
+    }
+
+    .faq-q .plus {
+      color: var(--gold);
+      font-size: 1.2rem;
+      transition: transform .25s;
+      flex: 0 0 auto;
+    }
+
+    .faq-item.open .plus {
+      transform: rotate(45deg);
+    }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease, padding .3s ease;
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      padding: 0 22px;
+    }
+
+    .faq-item.open .faq-a {
+      max-height: 200px;
+      padding: 0 22px 20px;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      border-top: 1px solid var(--panel-border);
+      padding: 36px 0;
+      background: var(--bg-soft);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .socials {
+      display: flex;
+      gap: 14px;
+    }
+
+    .social-ico {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--panel-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: border-color .2s, color .2s;
+      color: var(--text-dim);
+    }
+
+    .social-ico:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .footer-meta {
+      color: var(--text-faint);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width:980px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-stage {
+        order: -1;
+        min-height: auto;
+        margin-bottom: 20px;
+      }
+
+      .hero h1 {
+        font-size: 2.3rem;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .pkg-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .test-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        flex-wrap: wrap;
+      }
+
+      .step-arrow {
+        display: none;
+      }
+
+      .step {
+        flex: 0 0 45%;
+      }
+    }
+
+    @media (max-width:640px) {
+      .nav-links {
+        display: none;
+      }
+
+      .burger {
+        display: block;
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .test-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 44px 0 40px;
+      }
+
+      .hero h1 {
+        font-size: 1.9rem;
+      }
+
+      .fifa-card {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .step {
+        flex: 0 0 100%;
+      }
+
+      .footer-row {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container nav">
+      <div class="logo"><img src="images/logo.png" alt="logo"></div>
+      <nav class="nav-links">
+        <a href="#top">الرئيسية</a>
+        <a href="#gallery">أمثلة</a>
+        <a href="#how">كيف يعمل</a>
+        <a href="#testimonials">آراء</a>
+        <a href="#faq">الأسئلة الشائعة</a>
+      </nav>
+      <button class="btn-gold" onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">صمّم
+        كارطتي</button>
+      <button class="burger" id="burgerBtn">☰</button>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="container hero-grid">
+      <div>
+        <div class="badge">🔥 <span>#1 FIFA MEME CARDS IN TUNISIA</span></div>
+        <h1>حوّل صحابك إلى<br><span class="accent">أساطير FIFA 😂</span></h1>
+        <p class="lede">كارطة FIFA تونسية مضحكة، مصنوعة باسمك، بصورتك، وستاتيكات تقنّس بالضحك.</p>
+        <div class="hero-ctas">
+          <button class="btn-gold">+ صمّم كارطتي</button>
+          <button class="btn-outline">شوف أمثلة →</button>
+        </div>
+        <div class="mini-tags">
+          <span>🚚 توصيل لكل تونس</span>
+          <span>⭐ جودة عالية</span>
+          <span>💳 PVC PREMIUM</span>
+        </div>
+      </div>
+
+      <div class="card-stage">
+        <div class="ball-deco b1"></div>
+        <div class="ball-deco b2"></div>
+        <div class="fifa-card">
+          <div class="fifa-top">
+            <div class="fifa-rating">
+              <div class="num">99</div>
+              <div class="lbl en">LEGEND</div>
+              <div class="fifa-flag">🇹🇳</div>
+            </div>
+            <div class="fifa-stars">
+              ★★★★★<br>
+              <span class="en">WEAK FOOT</span><br><b>★★★★</b><br>
+              <span class="en">WORK RATE</span><br><b class="en">LOW / LOW</b>
+            </div>
+          </div>
+          <div class="fifa-photo">🕶️</div>
+          <div class="fifa-name en">7MAR</div>
+          <div class="fifa-stats en">
+            <div><span class="code">DHK</span> 99</div>
+            <div><span class="code">TKK</span> 14</div>
+            <div><span class="code">RKD</span> 98</div>
+            <div><span class="code">HRB</span> 91</div>
+            <div><span class="code">9HW</span> 95</div>
+            <div><span class="code">S7B</span> 96</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="features">
+    <div class="container features-grid">
+      <div class="feature-item">
+        <div class="ico">😂</div>
+        <div class="title">100%</div>
+        <div class="sub">TUNISIANS JOKES</div>
+      </div>
+      <div class="feature-item">
+        <div class="ico">⚽</div>
+        <div class="title">PREMIUM</div>
+        <div class="sub">FIFA DESIGN</div>
+      </div>
+      <div class="feature-item">
+        <div class="ico">🎁</div>
+        <div class="title">PERFECT</div>
+        <div class="sub">GIFT</div>
+      </div>
+      <div class="feature-item">
+        <div class="ico">🚚</div>
+        <div class="title">DELIVERY</div>
+        <div class="sub">EVERYWHERE IN TUNISIA</div>
+      </div>
+      <div class="feature-item">
+        <div class="ico">⭐</div>
+        <div class="title">HIGH QUALITY</div>
+        <div class="sub">PVC PRINT</div>
+      </div>
+    </div>
+  </div>
+
+  <section id="gallery">
+    <div class="container">
+      <div class="sec-head">
+        <div class="sec-title">GALLERY</div>
+        <a href="#" class="sec-link">Voir plus d'exemples →</a>
+      </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </section>
+
+  <section id="how"
+    style="background:var(--bg-soft); border-top:1px solid var(--panel-border); border-bottom:1px solid var(--panel-border);">
+    <div class="container">
+      <div class="sec-title" style="margin-bottom:44px;">HOW IT WORKS</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-circle">📷</div>
+          <div class="step-num en">STEP 1</div>
+          <div class="step-label en">UPLOAD PHOTO</div>
+        </div>
+        <div class="step-arrow">←</div>
+        <div class="step">
+          <div class="step-circle">😂</div>
+          <div class="step-num en">STEP 2</div>
+          <div class="step-label en">CHOOSE FUNNY STATS</div>
+        </div>
+        <div class="step-arrow">←</div>
+        <div class="step">
+          <div class="step-circle">🎨</div>
+          <div class="step-num en">STEP 3</div>
+          <div class="step-label en">WE DESIGN IT</div>
+        </div>
+        <div class="step-arrow">←</div>
+        <div class="step">
+          <div class="step-circle">📦</div>
+          <div class="step-num en">STEP 4</div>
+          <div class="step-label en">RECEIVE YOUR CARD</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="sec-title" style="margin-bottom:32px;">FUNNY TUNISIAN STATS</div>
+      <div class="stat-chips">
+        <div class="chip">😅 ضحكة <span class="chip-en">DHK</span></div>
+        <div class="chip">💬 كلام <span class="chip-en">KLM</span></div>
+        <div class="chip">🍟 فلوس <span class="chip-en">TKK</span></div>
+        <div class="chip">😳 رقاد <span class="chip-en">RKD</span></div>
+        <div class="chip">🏃 هروب <span class="chip-en">HRB</span></div>
+        <div class="chip">👀 فرجة <span class="chip-en">FRJ</span></div>
+        <div class="chip">🔥 قزارة <span class="chip-en">GZR</span></div>
+        <div class="chip">😏 تبرير <span class="chip-en">TBR</span></div>
+        <div class="chip more">+50 <span class="chip-en">POSSIBLE STATS</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="order"
+    style="background:var(--bg-soft); border-top:1px solid var(--panel-border); border-bottom:1px solid var(--panel-border);">
+    <div class="container">
+      <div class="sec-title" style="margin-bottom:44px;">CHOOSE YOUR PACKAGE</div>
+      <div class="pkg-grid">
+        <div class="pkg">
+          <div class="pkg-name">STARTER</div>
+          <div class="pkg-price">39 <sup>DT</sup></div>
+          <ul>
+            <li>📱 <b>PVC CARD</b></li>
+          </ul>
+        </div>
+        <div class="pkg popular">
+          <div class="pkg-badge en">MOST POPULAR</div>
+          <div class="pkg-name">PREMIUM</div>
+          <div class="pkg-price">59 <sup>DT</sup></div>
+          <ul>
+            <li>📱 <b>PVC CARD</b></li>
+            <li>🎁 <b>GIFT BOX</b></li>
+            <li>✨ <b>PREMIUM FINISH</b></li>
+          </ul>
+        </div>
+        <div class="pkg">
+          <div class="pkg-name">ULTIMATE</div>
+          <div class="pkg-price">79 <sup>DT</sup></div>
+          <ul>
+            <li>🖼️ <b>LARGE PVC CARD</b></li>
+            <li>🎁 <b>GIFT BOX</b></li>
+            <li>🏅 <b>GOLD FINISH</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="container">
+      <div class="sec-title" style="margin-bottom:44px;">WHAT OUR CLIENTS SAY</div>
+      <div class="test-grid" id="testGrid"></div>
+    </div>
+  </section>
+
+  <section id="faq" style="background:var(--bg-soft); border-top:1px solid var(--panel-border);">
+    <div class="container">
+      <div class="sec-title" style="margin-bottom:44px;">FAQ</div>
+      <div class="faq-grid" id="faqGrid"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-row">
+      <div class="logo"><img src="images/logo.png" alt="logo"></div>
+      <div class="socials">
+        <a class="social-ico" href="#" title="Instagram">📷</a>
+        <a class="social-ico" href="#" title="TikTok">🎵</a>
+        <a class="social-ico" href="#" title="Facebook">📘</a>
+        <a class="social-ico" href="#" title="WhatsApp">💬</a>
+      </div>
+      <div class="footer-meta">© 2025 FIFA Meme TN. All rights reserved.<br>Made with ❤️ in Tunisia 🇹🇳</div>
+    </div>
+  </footer>
+
+  <script>
+    // ---- Gallery data ----
+    const gallery = [
+      { rating: 97, name: "YASSINE", color: "#c9c2a8", stats: { DHK: 98, TKK: 12, RKD: 95, HRB: 93, "9HW": 90, S7B: 94 } },
+      { rating: 96, name: "BOUYA", color: "#2e8b57", stats: { DHK: 97, TKK: 15, RKD: 94, HRB: 92, "9HW": 89, S7B: 90 } },
+      { rating: 98, name: "FARES", color: "#c99a3e", stats: { DHK: 99, TKK: 18, RKD: 96, HRB: 95, "9HW": 93, S7B: 93 } },
+      { rating: 99, name: "WAEL", color: "#f4c430", stats: { DHK: 99, TKK: 10, RKD: 98, HRB: 94, "9HW": 95, S7B: 97 } },
+      { rating: 95, name: "AMINE", color: "#9b59b6", stats: { DHK: 96, TKK: 13, RKD: 93, HRB: 90, "9HW": 89, S7B: 89 } },
+      { rating: 94, name: "NOUR", color: "#3aa0c9", stats: { DHK: 95, TKK: 11, RKD: 92, HRB: 89, "9HW": 88, S7B: 91 } },
+    ];
+
+    const galleryGrid = document.getElementById('galleryGrid');
+    gallery.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'g-card';
+      el.style.setProperty('--card-color', p.color);
+      el.innerHTML = `
+      <div class="g-top">
+        <div class="g-rating en">${p.rating}<small>LEGEND</small></div>
+        <div class="g-flag"></div>
+      </div>
+      <div class="g-photo">${p.name.charAt(0)}</div>
+      <div class="g-name">${p.name}</div>
+      <div class="g-stats en">
+        <div>DHK ${p.stats.DHK}</div><div>TKK ${p.stats.TKK}</div>
+        <div>RKD ${p.stats.RKD}</div><div>HRB ${p.stats.HRB}</div>
+        <div>9HW ${p.stats["9HW"]}</div><div>S7B ${p.stats.S7B}</div>
+      </div>`;
+      galleryGrid.appendChild(el);
+    });
+
+    // ---- Testimonials ----
+    const testimonials = [
+      { name: "Mohamed Ali", initials: "MA", quote: "نكيت بالضحك 😂" },
+      { name: "Achref Ben", initials: "AB", quote: "أحسن كادو عملتو لصاحبي" },
+      { name: "Yassine Charfi", initials: "YC", quote: "جودة ممتازة 🔥" },
+      { name: "Marwen Saidi", initials: "MS", quote: "وصلت في نهارين 🚀" },
+    ];
+    const testGrid = document.getElementById('testGrid');
+    testimonials.forEach(t => {
+      const el = document.createElement('div');
+      el.className = 'test-card';
+      el.innerHTML = `
+      <div class="test-head">
+        <div class="avatar">${t.initials}</div>
+        <div>
+          <div class="test-name">${t.name}</div>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+      <div class="test-quote">"${t.quote}"</div>`;
+      testGrid.appendChild(el);
+    });
+
+    // ---- FAQ ----
+    const faqs = [
+      { q: "⏱️ How long does it take?", a: "عادة نحضرو الكارطة و نرسلوها في ظرف 24 إلى 48 ساعة من طلبك." },
+      { q: "🚚 Do you deliver everywhere?", a: "إيه، نوصلو لكل الولايات التونسية عبر شركات التوصيل المعتمدة." },
+      { q: "🎭 Can I choose the stats?", a: "طبعا! تنجم تختار من أكثر من 50 ستات مضحك تونسي أو تقترح ستات خاص بيك." },
+      { q: "💳 What about payment?", a: "الخلاص يكون عند التسليم (Cash on Delivery) أو أونلاين حسب اختيارك." },
+      { q: "📸 Can I upload any photo?", a: "إيه، ارفع أي صورة واضحة و نحنا نتصرفو في التصميم و الجودة." },
+      { q: "✏️ Can I request changes?", a: "طبعا، عندك حق في تعديل واحد مجاني قبل الطباعة النهائية." },
+    ];
+    const faqGrid = document.getElementById('faqGrid');
+    faqs.forEach(f => {
+      const el = document.createElement('div');
+      el.className = 'faq-item';
+      el.innerHTML = `
+      <div class="faq-q"><span>${f.q}</span><span class="plus">+</span></div>
+      <div class="faq-a">${f.a}</div>`;
+      el.querySelector('.faq-q').addEventListener('click', () => {
+        el.classList.toggle('open');
+      });
+      faqGrid.appendChild(el);
+    });
+  </script>
+</body>
+
+</html>

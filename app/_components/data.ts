@@ -1,0 +1,275 @@
+export const navItems = [
+  { href: "#top", label: "Accueil" },
+  { href: "#gallery", label: "Exemples" },
+  { href: "#how", label: "Comment ça marche" },
+  { href: "#testimonials", label: "Avis" },
+  { href: "#faq", label: "FAQ" },
+];
+
+export const features = [
+  {
+    icon: "😂",
+    stat: 100,
+    label: "JKS",
+    title: "TUNISIANS JOKES",
+    subtitle: "100%",
+  },
+  {
+    icon: "⚽",
+    stat: 99,
+    label: "DSG",
+    title: "PREMIUM",
+    subtitle: "PREMIUM DESIGN",
+  },
+  {
+    icon: "🎁",
+    stat: 99,
+    label: "GFT",
+    title: "PERFECT",
+    subtitle: "GIFT",
+  },
+  {
+    icon: "🚚",
+    stat: 99,
+    label: "DEL",
+    title: "DELIVERY",
+    subtitle: "EVERYWHERE IN TUNISIA",
+  },
+  {
+    icon: "⭐",
+    stat: 99,
+    label: "QLT",
+    title: "HIGH QUALITY",
+    subtitle: "PVC PRINT",
+  },
+];
+
+export const gallery = [
+  {
+    rating: 97,
+    name: "ALUI",
+    type: "LEGEND",
+    color: "#c9c2a8",
+    image: "/images/alui.png",
+    stats: { DHK: 98, TKK: 12, RKD: 95, HRB: 93, "9HW": 90, S7B: 94 },
+  },
+  {
+    rating: 96,
+    name: "DELLAI",
+    type: "LEGEND",
+    color: "#2e8b57",
+    image: "/images/delai.png",
+    stats: { DHK: 97, TKK: 15, RKD: 94, HRB: 92, "9HW": 89, S7B: 90 },
+  },
+  {
+    rating: 98,
+    name: "MAHER",
+    type: "LEGEND",
+    color: "#c99a3e",
+    image: "/images/maher.png",
+    stats: { DHK: 99, TKK: 18, RKD: 96, HRB: 95, "9HW": 93, S7B: 93 },
+  },
+  {
+    rating: 99,
+    name: "ISSAM",
+    type: "LEGEND",
+    color: "#f4c430",
+    image: "/images/Issam.png",
+    stats: { DHK: 99, TKK: 10, RKD: 98, HRB: 94, "9HW": 95, S7B: 97 },
+  },
+  {
+    rating: 95,
+    name: "Amine",
+    type: "LEGEND",
+    color: "#9b59b6",
+    image: "/images/aluii.png",
+    stats: { DHK: 96, TKK: 13, RKD: 93, HRB: 90, "9HW": 89, S7B: 89 },
+  },
+  {
+    rating: 94,
+    name: "Nour",
+    type: "LEGEND",
+    color: "#3aa0c9",
+    image: "/images/sankooh.png",
+    stats: { DHK: 95, TKK: 11, RKD: 92, HRB: 89, "9HW": 88, S7B: 91 },
+  },
+];
+
+export const steps = [
+  { icon: "📷", number: "STEP 1", label: "UPLOAD PHOTO" },
+  { icon: "😂", number: "STEP 2", label: "CHOOSE FUNNY STATS" },
+  { icon: "🎨", number: "STEP 3", label: "WE DESIGN IT" },
+  { icon: "📦", number: "STEP 4", label: "RECEIVE YOUR CARD" },
+];
+
+export const funnyStats = [
+  { icon: "😅", label: "ضحكة", code: "DHK" },
+  { icon: "💬", label: "كلام", code: "KLM" },
+  { icon: "🍟", label: "فلوس", code: "TKK" },
+  { icon: "😳", label: "رقاد", code: "RKD" },
+  { icon: "🏃", label: "هروب", code: "HRB" },
+  { icon: "👀", label: "فرجة", code: "FRJ" },
+  { icon: "🔥", label: "قزارة", code: "GZR" },
+  { icon: "😏", label: "تبرير", code: "TBR" },
+];
+
+export const packages = [
+  {
+    name: "STARTER",
+    price: "39",
+    items: [{ icon: "📱", text: "PVC CARD" }],
+  },
+  {
+    name: "PREMIUM",
+    price: "59",
+    badge: "MOST POPULAR",
+    items: [
+      { icon: "📱", text: "PVC CARD" },
+      { icon: "🎁", text: "GIFT BOX" },
+      { icon: "✨", text: "PREMIUM FINISH" },
+    ],
+  },
+  {
+    name: "ULTIMATE",
+    price: "79",
+    items: [
+      { icon: "🖼️", text: "LARGE PVC CARD" },
+      { icon: "🎁", text: "GIFT BOX" },
+      { icon: "🏅", text: "GOLD FINISH" },
+    ],
+  },
+];
+
+export const testimonials = [
+  {
+    name: "Mohamed Ali",
+    initials: "MA",
+    avatar: "👤",
+    quote: "نكيت بالضحك 😂",
+  },
+  {
+    name: "Achref Ben",
+    initials: "AB",
+    avatar: "👤",
+    quote: "أحسن كادو عملتو لصاحبي",
+  },
+  {
+    name: "Yassine Charfi",
+    initials: "YC",
+    avatar: "🔥",
+    quote: "جودة ممتازة 🔥",
+  },
+  {
+    name: "Marwen Saidi",
+    initials: "MS",
+    avatar: "🚀",
+    quote: "وصلت في نهارين خدمة 5 نجوم",
+  },
+];
+
+export const faqs = [
+  {
+    icon: "⏱️",
+    question: "How long does it take?",
+    answer: "عادة نحضرو الكارطة و نرسلوها في ظرف 24 إلى 48 ساعة من طلبك.",
+  },
+  {
+    icon: "🚚",
+    question: "Do you deliver everywhere?",
+    answer: "إيه، نوصلو لكل الولايات التونسية عبر شركات التوصيل المعتمدة.",
+  },
+  {
+    icon: "🎭",
+    question: "Can I choose the stats?",
+    answer:
+      "طبعا! تنجم تختار من أكثر من 50 ستات مضحك تونسي أو تقترح ستات خاص بيك.",
+  },
+  {
+    icon: "💳",
+    question: "What about payment?",
+    answer:
+      "الخلاص يكون عند التسليم (Cash on Delivery) أو أونلاين حسب اختيارك.",
+  },
+  {
+    icon: "📸",
+    question: "Can I upload any photo?",
+    answer: "إيه، ارفع أي صورة واضحة و نحنا نتصرفو في التصميم و الجودة.",
+  },
+  {
+    icon: "✏️",
+    question: "Can I request changes?",
+    answer: "طبعا، عندك حق في تعديل واحد مجاني قبل الطباعة النهائية.",
+  },
+];
+
+export const allTunisianStats = [
+  { code: "DHK", label: "Dhahka", meaning: "Humor", icon: "😂" },
+  { code: "NKT", label: "Nokta", meaning: "Joke quality", icon: "🎭" },
+  { code: "KLM", label: "Klem", meaning: "Talking ability", icon: "🗣️" },
+  { code: "HDR", label: "Hadhra", meaning: "Storytelling", icon: "🎤" },
+  { code: "JAW", label: "Jaw", meaning: "Good vibes", icon: "😎" },
+  { code: "DRM", label: "Drama", meaning: "Drama creation", icon: "🎭" },
+  { code: "HRB", label: "Hroub", meaning: "Escaping responsibilities", icon: "🏃" },
+  { code: "KHD", label: "Khidma", meaning: "Work ethic", icon: "💼" },
+  { code: "MKH", label: "Mekh", meaning: "Intelligence", icon: "🧠" },
+  { code: "DBR", label: "Debber Rassek", meaning: "Problem solving", icon: "🛠️" },
+  { code: "SBR", label: "Sabr", meaning: "Patience", icon: "😇" },
+  { code: "ZHR", label: "zhar", meaning: "Luck", icon: "🍀" },
+  { code: "7IL", label: "Hila", meaning: "Tricks & cleverness", icon: "🎩" },
+  { code: "FRS", label: "Frassa", meaning: "Detective skills", icon: "🕵️" },
+  { code: "CHK", label: "Chkoun?", meaning: "Curiosity / Gossip", icon: "👂" },
+  { code: "3YN", label: "3in", meaning: "Observation", icon: "👀" },
+  { code: "WST", label: "Wasta", meaning: "Connections", icon: "🤝" },
+  { code: "TKK", label: "TEKTEK", meaning: "Money-making", icon: "💰" },
+  { code: "CRZ", label: "Corza", meaning: "Financial management", icon: "💳" },
+  { code: "BKL", label: "Bokhl", meaning: "Stinginess", icon: "💵" },
+  { code: "SRF", label: "Sarf", meaning: "Spending money", icon: "💸" },
+  { code: "MRG", label: "Mriguel", meaning: "Style", icon: "😎" },
+  { code: "LBG", label: "Labga", meaning: "Elegance", icon: "👔" },
+  { code: "GZR", label: "Gzara", meaning: "Boldness", icon: "🔥" },
+  { code: "TMS", label: "Tmassik", meaning: "Stubbornness", icon: "😤" },
+  { code: "3SB", label: "A3sab", meaning: "Anger", icon: "😡" },
+  { code: "HCH", label: "Hachma Resistance", meaning: "Shamelessness", icon: "😂" },
+  { code: "FDH", label: "Fdhou7", meaning: "Embarrassing moments", icon: "🤦" },
+  { code: "MCH", label: "Mchawech", meaning: "Chaos", icon: "🌪️" },
+  { code: "L3B", label: "La3b", meaning: "Mischief", icon: "😈" },
+  { code: "TBR", label: "Tbarbir", meaning: "Complaining", icon: "😤" },
+  { code: "SDA", label: "Sda3", meaning: "Noise level", icon: "🔊" },
+  { code: "FRJ", label: "Ferja", meaning: "Watching others", icon: "👀" },
+  { code: "RKD", label: "Rekd", meaning: "Sleeping", icon: "😴" },
+  { code: "9HW", label: "9ahwa", meaning: "Coffee addiction", icon: "☕" },
+  { code: "CHY", label: "Chay", meaning: "Tea addiction", icon: "🍵" },
+  { code: "TLF", label: "Talaf", meaning: "Getting lost", icon: "🗺️" },
+  { code: "SMS", label: "Semsara", meaning: "Negotiation", icon: "🤝" },
+  { code: "BRG", label: "Bargouga", meaning: "Bargaining", icon: "🤑" },
+  { code: "W9T", label: "Wakt", meaning: "Punctuality", icon: "⏰" },
+  { code: "TLF", label: "Talfiz", meaning: "Forgetfulness", icon: "🤯" },
+  { code: "JRY", label: "Jary", meaning: "Running errands", icon: "🚗" },
+  { code: "S7B", label: "S7ab", meaning: "Friendship", icon: "🤜🤛" },
+  { code: "HOB", label: "Hob", meaning: "Romance", icon: "❤️" },
+  { code: "KDB", label: "Kedhb", meaning: "Lying skill", icon: "😅" },
+  { code: "MSL", label: "Mas2ouliya", meaning: "Responsibility", icon: "📋" },
+  { code: "TKL", label: "Twakkel", meaning: "Reliance on luck", icon: "🙏" },
+  { code: "CHJ", label: "Maywakherhech", meaning: "Courage", icon: "🦁" },
+  { code: "BRD", label: "Broud", meaning: "Calmness", icon: "🧊" },
+  { code: "NFS", label: "Nefs", meaning: "Competitiveness", icon: "⚔️" },
+  { code: "MAM", label: "Weld omo", meaning: "Still calls mom for everything", icon: "😂" },
+  { code: "STP", label: "Stopet", meaning: "Can find a louage instantly", icon: "🚐" },
+  { code: "RCH", label: "Richness Appearance", meaning: "Looks rich, isn't", icon: "💸" },
+  { code: "FRD", label: "Fridha", meaning: "Ability to disappear from work", icon: "🏃" },
+  { code: "TLF", label: "Telephone Addiction", meaning: "Always on the phone", icon: "📱" },
+  { code: "NSS", label: "Nasnes", meaning: "Watches everyone", icon: "👀" },
+  { code: "T7C", label: "T7in", meaning: "Flattery level", icon: "🤝" },
+  { code: "KRK", label: "Karhba", meaning: "Driving style", icon: "🚗" },
+  { code: "ZDM", label: "Zdem", meaning: "Crowding and pushing through", icon: "🚶" },
+  { code: "MTL", label: "Metloui", meaning: "Flexibility in excuses", icon: "😅" },
+  { code: "GLB", label: "Ghalba", meaning: "Surviving difficult situations", icon: "💪" },
+  { code: "BRM", label: "Barmil", meaning: "Eats everything", icon: "🍔" },
+  { code: "S7R", label: "S7our", meaning: "Late-night energy", icon: "🌙" },
+  { code: "QRM", label: "GHASRET EL KLEB", meaning: "Last-minute studying", icon: "📚" },
+  { code: "BKR", label: "Bekri", meaning: "Waking up early", icon: "⏰" },
+  { code: "TKR", label: "Tkarkir", meaning: "Complaining continuously", icon: "😤" },
+  { code: "DWR", label: "Dawran", meaning: "Wandering around for no reason", icon: "🚶" },
+  { code: "KHB", label: "Khabtha", meaning: "Creating trouble", icon: "💥" },
+  { code: "MTR", label: "Mtarfis", meaning: "FAT", icon: "🤦" },
+];

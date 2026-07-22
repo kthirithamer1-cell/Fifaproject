@@ -1,0 +1,44 @@
+Create a premium football-inspired collectible player card using the uploaded photo as the face reference.
+
+IMPORTANT:
+The output MUST be ONLY the card with a transparent background (PNG). No table, no wall, no hands, no mockup, no scenery outside the card.
+
+CARD SHAPE (HIGHEST PRIORITY):
+- EXACT football Ultimate Team card silhouette(FIFA FUT).
+
+LAYOUT:
+- Large overall rating {OVR} in the top-left.
+- Player name "{NAME}" near the bottom.
+- Subtitle "{TITLE}" below the name.
+- Six stat boxes at the bottom:
+  DHK {DHK}
+  RKD {RKD}
+  9HW {QHW}
+  S7B {S7B}
+  HRB {HRB}
+  TKK {TKK}
+
+PORTRAIT:
+- Use the uploaded face exactly.
+-optimise the quality of image if he has a low quality
+
+STYLE:
+- Premium luxury  collectible.
+- Deep black, gold, crimson and navy palette.
+- Gold foil details.
+- Metallic reflections.
+- Soft glow.
+- Premium typography.
+- Small gold stars around the rating.
+- no logo need to put
+
+MOOD:
+{MOOD}
+
+PERSONALITY:
+{PERSONALITY}
+
+QUALITY:
+Ultra-detailed, realistic, premium product render, 4K, print-ready, transparent PNG.
+
+The card silhouette MUST be the highest priority. If any decorative elements conflict with the football card shape, preserve the football card shape exactly.

@@ -1,0 +1,43 @@
+Generate a premium football-inspired collectible card background using the uploaded photo as the face reference.
+
+CRITICAL RULES:
+- DO NOT include ANY text, numbers, labels, names, ratings, stat boxes, or typography on the card.
+- DO NOT write any words or numbers anywhere on the card surface.
+- The card should have ONLY visual elements: background art + player portrait.
+- Any decorative elements must NOT contain text.
+
+CARD SHAPE (HIGHEST PRIORITY):
+- EXACT football Ultimate Team card silhouette (FIFA FUT).
+- The output MUST be ONLY the card with a transparent background (PNG).
+- No table, no wall, no hands, no mockup, no scenery outside the card.
+
+LAYOUT ZONES (leave these areas EMPTY / dark gradient for HTML text overlay):
+- Top-left corner (15% width × 20% height): EMPTY dark area — reserved for rating number overlay.
+- Top center strip (full width × 12% height from top): EMPTY — reserved for player name overlay.
+- Bottom 28% of the card: EMPTY dark gradient area — reserved for stats, quotes, and description overlay.
+
+PORTRAIT:
+- Use the uploaded face exactly.
+- Waist-up heroic pose.
+- Looking slightly to the side.
+- Portrait should be centered horizontally, occupying roughly 40-60% of the card height.
+- Portrait blends naturally into the card background.
+
+BACKGROUND:
+{BACKGROUND_STYLE}
+
+STYLE:
+- Premium luxury gaming collectible.
+- Deep black, gold, crimson and navy palette.
+- Gold foil details.
+- Metallic reflections.
+- Soft glow.
+- High-end sports collectible aesthetic.
+
+MOOD:
+{MOOD}
+
+QUALITY:
+Ultra-detailed, realistic, premium product render, 4K, print-ready, transparent PNG.
+
+The card silhouette MUST be the highest priority. If any decorative elements conflict with the football card shape, preserve the football card shape exactly.
