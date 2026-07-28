@@ -1,66 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { OpenAI } from "openai";
+import { TUNISIA_STATS } from "@/app/constant";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
-
-// Full Tunisia stats dataset for AI context
-const TUNISIA_STATS = [
-    { code: "DHK", stat: "Dhahka", meaning: "Humor 😂" },
-    { code: "NKT", stat: "Nokta", meaning: "Joke quality 🎭" },
-    { code: "KLM", stat: "Klem", meaning: "Talking ability 🗣️" },
-    { code: "HDR", stat: "Hadhra", meaning: "Storytelling 🎤" },
-    { code: "JAW", stat: "Jaw", meaning: "Good vibes 😎" },
-    { code: "DRM", stat: "Drama", meaning: "Drama creation 🎭" },
-    { code: "HRB", stat: "Hroub", meaning: "Escaping responsibilities 🏃" },
-    { code: "KHD", stat: "Khidma", meaning: "Work ethic 💼" },
-    { code: "MKH", stat: "Mekh", meaning: "Intelligence 🧠" },
-    { code: "DBR", stat: "Debber Rassek", meaning: "Problem solving 🛠️" },
-    { code: "SBR", stat: "Sabr", meaning: "Patience 😇" },
-    { code: "ZHR", stat: "zhar", meaning: "Luck 🍀" },
-    { code: "7IL", stat: "Hila", meaning: "Tricks & cleverness 🎩" },
-    { code: "FRS", stat: "Frassa", meaning: "Detective skills 🕵️" },
-    { code: "CHK", stat: "Chkoun?", meaning: "Curiosity / Gossip 👂" },
-    { code: "3YN", stat: "3in", meaning: "Observation 👀" },
-    { code: "WST", stat: "Wasta", meaning: "Connections 🤝" },
-    { code: "TKK", stat: "TEKTEK", meaning: "Money-making 💰" },
-    { code: "CRZ", stat: "Corza", meaning: "Financial management 💳" },
-    { code: "BKL", stat: "Bokhl", meaning: "Stinginess 💵" },
-    { code: "SRF", stat: "Sarf", meaning: "Spending money 💸" },
-    { code: "MRG", stat: "Mriguel", meaning: "Style 😎" },
-    { code: "LBG", stat: "Labga", meaning: "Elegance 👔" },
-    { code: "GZR", stat: "Gzara", meaning: "Boldness 🔥" },
-    { code: "TMS", stat: "Tmassik", meaning: "Stubbornness 😤" },
-    { code: "3SB", stat: "A3sab", meaning: "Anger 😡" },
-    { code: "HCH", stat: "Hachma Resistance", meaning: "Shamelessness 😂" },
-    { code: "FDH", stat: "Fdhou7", meaning: "Embarrassing moments 🤦" },
-    { code: "MCH", stat: "Mchawech", meaning: "Chaos 🌪️" },
-    { code: "L3B", stat: "La3b", meaning: "Mischief 😈" },
-    { code: "TBR", stat: "Tbarbir", meaning: "Complaining 😤" },
-    { code: "SDA", stat: "Sda3", meaning: "Noise level 🔊" },
-    { code: "FRJ", stat: "Ferja", meaning: "Watching others 👀" },
-    { code: "RKD", stat: "Rekd", meaning: "Sleeping 😴" },
-    { code: "9HW", stat: "9ahwa", meaning: "Coffee addiction ☕" },
-    { code: "CHY", stat: "Chay", meaning: "Tea addiction 🍵" },
-    { code: "W9T", stat: "Wakt", meaning: "Punctuality ⏰" },
-    { code: "SMS", stat: "Semsara", meaning: "Negotiation 🤝" },
-    { code: "S7B", stat: "S7ab", meaning: "Friendship 🤜🤛" },
-    { code: "HOB", stat: "Hob", meaning: "Romance ❤️" },
-    { code: "KDB", stat: "Kedhb", meaning: "Lying skill 😅" },
-    { code: "MSL", stat: "Mas2ouliya", meaning: "Responsibility 📋" },
-    { code: "CHJ", stat: "Maywakherhech", meaning: "Courage 🦁" },
-    { code: "BRD", stat: "Broud", meaning: "Calmness 🧊" },
-    { code: "NFS", stat: "Nefs", meaning: "Competitiveness ⚔️" },
-    { code: "MAM", stat: "Weld omo", meaning: "Still calls mom for everything 😂" },
-    { code: "STP", stat: "Stopet", meaning: "Can find a louage instantly 🚐" },
-    { code: "GLB", stat: "Ghalba", meaning: "Surviving difficult situations 💪" },
-    { code: "BRM", stat: "Barmil", meaning: "Eats everything 🍔" },
-    { code: "S7R", stat: "S7our", meaning: "Late-night energy 🌙" },
-    { code: "DWR", stat: "Dawran", meaning: "Wandering around for no reason 🚶" },
-    { code: "KHB", stat: "Khabtha", meaning: "Creating trouble 💥" },
-];
 
 export async function POST(req: NextRequest) {
     try {

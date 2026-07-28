@@ -20,7 +20,7 @@ import {
   Award
 } from "lucide-react";
 
-const TOTAL_SLIDES = 7;
+const TOTAL_SLIDES = 4;
 const AUTOPLAY_INTERVAL = 6000;
 const SCROLL_THRESHOLD = 40;
 
@@ -48,7 +48,7 @@ export function Hero() {
   }, []);
 
   useEffect(() => {
-    setIsAnimating(currentSlide === 1);
+    setIsAnimating(currentSlide === 3);
   }, [currentSlide]);
 
   const resetAutoplay = useCallback(() => {
@@ -154,7 +154,7 @@ export function Hero() {
     <section
       ref={heroRef}
       id="top"
-      className="relative h-screen overflow-hidden bg-[#FAFAFA] text-gray-900"
+      className="relative h-screen w-full overflow-hidden bg-black text-white"
       onMouseEnter={pauseAutoplay}
       onMouseLeave={resumeAutoplay}
       onTouchStart={handleTouchStart}
@@ -172,24 +172,21 @@ export function Hero() {
         <div className="hero-orb right-1/3 top-1/3 h-32 w-32" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full">
+      <div className="relative w-full h-full">
         <div className="relative h-full">
           {renderSlide(0, <Slide1 goNext={nextSlide} />)}
+          {renderSlide(1, <SlideBanner4 goNext={nextSlide} />)}
           {renderSlide(
-            1,
+            2,
             <Slide2
-              isActive={currentSlide === 1}
+              isActive={currentSlide === 2}
               isAnimating={isAnimating}
               goPrev={prevSlide}
               goNext={nextSlide}
             />
           )}
-          {renderSlide(2, <Slide3 goPrev={prevSlide} goNext={nextSlide} />)}
-          {renderSlide(3, <Slide4 goPrev={prevSlide} goNext={nextSlide} />)}
-          {renderSlide(4, <Slide5 goPrev={prevSlide} goNext={nextSlide} />)}
-          {renderSlide(5, <Slide6 goPrev={prevSlide} goNext={nextSlide} />)}
           {renderSlide(
-            6,
+            3,
             <Slide7 goPrev={prevSlide} goToStart={() => goToSlide(0)} />
           )}
         </div>
@@ -217,7 +214,7 @@ export function Hero() {
 
         {/* Scroll indicator */}
         {currentSlide === 0 && (
-          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 text-[#E5A500]/40 text-xs tracking-[0.3em] uppercase animate-bounce pointer-events-none">
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 text-[#D4AF37]/40 text-xs tracking-[0.3em] uppercase animate-bounce pointer-events-none">
             ↓ Scroll
           </div>
         )}
@@ -234,7 +231,7 @@ export function Hero() {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 2rem 1.5rem;
+          padding: 0;
         }
         .hero-slide.active {
           opacity: 1;
@@ -242,43 +239,44 @@ export function Hero() {
           transform: scale(1) translateY(0);
         }
         .hero-dot {
-          width: 10px;
-          height: 10px;
+          width: 8px;
+          height: 8px;
           border-radius: 50%;
-          background: rgba(0, 0, 0, 0.10);
+          background: rgba(255, 255, 255, 0.25);
           border: none;
           cursor: pointer;
           transition: all 0.3s;
           padding: 0;
         }
         .hero-dot.active {
-          background: #E5A500;
+          background: #D4AF37;
           width: 28px;
           border-radius: 12px;
-          box-shadow: 0 0 24px rgba(229, 165, 0, 0.3);
+          box-shadow: 0 0 24px rgba(212, 175, 55, 0.6);
         }
         .hero-dot:hover {
-          background: rgba(229, 165, 0, 0.4);
+          background: rgba(212, 175, 55, 0.5);
         }
         .hero-arrow {
-          background: rgba(0, 0, 0, 0.04);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(0, 0, 0, 0.08);
+          background: rgba(0, 0, 0, 0.6);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 999px;
           width: 44px;
           height: 44px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #333;
+          color: #fff;
           cursor: pointer;
           transition: all 0.3s;
           font-size: 1.2rem;
           font-weight: 300;
         }
         .hero-arrow:hover {
-          background: rgba(229, 165, 0, 0.1);
-          border-color: rgba(229, 165, 0, 0.3);
+          background: rgba(212, 175, 55, 0.2);
+          border-color: rgba(212, 175, 55, 0.6);
+          color: #F6D365;
           transform: scale(1.08);
         }
         .hero-orb {
@@ -329,7 +327,7 @@ export function Hero() {
           text-transform: uppercase;
         }
         .hero-btn {
-          background: #E5A500;
+          background: #D4AF37;
           color: #fff;
           font-weight: 800;
           padding: 0.85rem 2.2rem;
@@ -465,67 +463,128 @@ export function Hero() {
   );
 }
 
-// ==================== SLIDE COMPONENTS ====================ffslide
+// ==================== SLIDE COMPONENTS ====================
 
 function Slide1({ goNext }: { goNext: () => void }) {
   const router = useRouter();
   return (
-    <div className="w-full max-w-5xl mx-auto">
-      <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-        {/* Left content */}
-        <div className="flex-1 text-center lg:text-right order-2 lg:order-1">
-          <div className="hero-badge mb-6 inline-flex gap-1.5 items-center">
-            <Sparkles className="h-3.5 w-3.5 text-[#E5A500]" />
-            <span>#1 CUSTOM MEME CARDS IN TUNISIA</span>
-          </div>
+    <div className="relative w-full h-full flex items-center justify-end overflow-hidden bg-black">
+      {/* Background Image & Overlays - Full Banner Fit */}
+      <div className="absolute inset-0 z-0 bg-black">
+        <img
+          src="/images/image.png"
+          alt="Slide 1 Background"
+          className="w-full h-full object-cover object-center transform scale-100 filter brightness-100"
+        />
+        {/* Soft, low-intensity shadow gradient behind text on the right */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-l from-black/60 via-black/25 via-40% to-transparent pointer-events-none" />
+      </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] text-gray-900" dir="rtl">
-            حوّل صحابك إلى
-            <br />
-            <span className="text-gold-grad">أساطير الكارطة</span>
-          </h1>
-
-          <p className="mt-5 text-sm sm:text-base text-gray-500 leading-relaxed max-w-lg mx-auto lg:mr-0 lg:ml-auto" dir="rtl">
-            كارطة تونسية مضحكة، مصنوعة
-            <br className="hidden sm:block" />
-            باسمك، صورتك، w ستاتيكات تقطس بالضحك.
-          </p>
-
-          <div className="mt-8 flex flex-wrap justify-center lg:justify-end gap-3" dir="rtl">
-            <button onClick={() => router.push("/generator")} className="hero-btn">
-              <span>+</span> صمّم كارطتي
-            </button>
-            <a href="#gallery" className="hero-btn-outline">
-              شوف أمثلة <span>◉</span>
-            </a>
-          </div>
-
-          {/* Trust badges */}
-          <div className="mt-6 flex flex-wrap justify-center lg:justify-end gap-4" dir="rtl">
-            <div className="hero-trust">
-              <Truck className="h-4 w-4 text-[#E5A500]" />
-              <span>توصيل لكل تونس</span>
-            </div>
-            <div className="hero-trust">
-              <Star className="h-4 w-4 text-[#E5A500]" />
-              <span>جودة عالية</span>
-            </div>
-            <div className="hero-trust">
-              <CreditCard className="h-4 w-4 text-[#E5A500]" />
-              <span>PVC PREMIUM</span>
-            </div>
-          </div>
+      {/* Slide 1 Content - Right Aligned */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-24 pb-10 text-right" dir="rtl">
+        <div className="hero-badge mb-6 inline-flex gap-1.5 items-center bg-black/75 border-[#D4AF37]/50 text-[#F6D365] backdrop-blur-md px-4 py-1.5 rounded-full shadow-lg">
+          <Sparkles className="h-4 w-4 text-[#F6D365]" />
+          <span className="font-bold text-xs sm:text-sm tracking-wider">#1 CUSTOM MEME CARDS IN TUNISIA</span>
         </div>
 
-        {/* Right: card image */}
-        <div className="flex-shrink-0 order-1 lg:order-2">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-3xl bg-amber-300/10 blur-[60px]" />
-            <img
-              src="/images/alui.png"
-              alt="Custom Meme Card"
-              className="relative w-56 sm:w-64 md:w-72 lg:w-80 drop-shadow-[0_0_40px_rgba(229,165,0,.15)]"
-            />
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.15] text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+          حوّل صحابك إلى
+          <br />
+          <span className="text-gold-grad">أساطير الكارطة</span>
+        </h1>
+
+        <p className="mt-5 text-sm sm:text-lg text-gray-200 font-medium leading-relaxed max-w-xl mr-0 ml-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+          كارطة تونسية مضحكة، مصنوعة باسمك، صورتك،
+          <br className="hidden sm:block" />
+          و ستاتيكس تقطس بالضحك.
+        </p>
+
+        <div className="mt-8 flex flex-wrap justify-start gap-4">
+          <button onClick={() => router.push("/generator")} className="hero-btn shadow-lg shadow-amber-500/30">
+            <span>+</span> صمّم كارطتي
+          </button>
+          <a href="#gallery" className="hero-btn-outline text-white border-white/20 hover:bg-white/10 backdrop-blur-md">
+            شوف أمثلة <span>◉</span>
+          </a>
+        </div>
+
+        {/* Trust badges */}
+        <div className="mt-8 flex flex-wrap justify-start gap-6">
+          <div className="hero-trust text-gray-200">
+            <Truck className="h-4.5 w-4.5 text-[#F6D365]" />
+            <span>توصيل لكل تونس</span>
+          </div>
+          <div className="hero-trust text-gray-200">
+            <Star className="h-4.5 w-4.5 text-[#F6D365]" />
+            <span>جودة عالية</span>
+          </div>
+          <div className="hero-trust text-gray-200">
+            <CreditCard className="h-4.5 w-4.5 text-[#F6D365]" />
+            <span>PVC PREMIUM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+function SlideBanner4({ goNext }: { goNext: () => void }) {
+  const router = useRouter();
+  return (
+    <div className="relative w-full h-full flex items-center justify-end overflow-hidden bg-black">
+      {/* Background Image & Overlays - Full Banner Visible */}
+      <div className="absolute inset-0 z-0 bg-black">
+        <img
+          src="/images/image4.png"
+          alt="Mariem Tunisian Pride Banner"
+          className="w-full h-full object-cover object-center transform scale-100 filter brightness-100"
+        />
+        {/* Soft, low-intensity shadow gradient behind text on the right */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-l from-black/60 via-black/25 via-40% to-transparent pointer-events-none" />
+      </div>
+
+      {/* Slide Content - Right Aligned */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-8 sm:px-12 lg:px-16 pt-24 pb-10 text-right" dir="rtl">
+        <div className="hero-badge mb-6 inline-flex gap-1.5 items-center bg-black/60 border-[#D4AF37]/40 text-[#F6D365] backdrop-blur-md px-4 py-1.5 rounded-full">
+          <Sparkles className="h-4 w-4 text-[#F6D365]" />
+          <span className="font-bold text-xs sm:text-sm tracking-wider">PREMIUM TUNISIAN COLLECTION</span>
+        </div>
+
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.15] text-white drop-shadow-md">
+          الزين و الفخامة
+          <br />
+          <span className="text-gold-grad">Made in Tunisia</span>
+        </h1>
+
+        <p className="mt-5 text-sm sm:text-lg text-gray-200 font-medium leading-relaxed max-w-xl mr-0 ml-auto drop-shadow-sm">
+          كروت شخصية فاخرة بالهوية التونسية، تفاصيل ذهبية وجودة طباعة عالية جداً.
+        </p>
+
+        <div className="mt-8 flex flex-wrap justify-start gap-4">
+          <button onClick={() => router.push("/generator")} className="hero-btn shadow-lg shadow-amber-500/30">
+            <span>+</span> صمّم الآن
+          </button>
+          <a href="#packages" className="hero-btn-outline text-white border-white/20 hover:bg-white/10 backdrop-blur-md">
+            اكتشف العروض <span>◉</span>
+          </a>
+        </div>
+
+        <div className="mt-8 flex flex-wrap justify-start gap-6">
+          <div className="hero-trust text-gray-200">
+            <Truck className="h-4.5 w-4.5 text-[#F6D365]" />
+            <span>توصيل سريع</span>
+          </div>
+          <div className="hero-trust text-gray-200">
+            <Star className="h-4.5 w-4.5 text-[#F6D365]" />
+            <span>تقييم 5 نجوم</span>
+          </div>
+          <div className="hero-trust text-gray-200">
+            <CreditCard className="h-4.5 w-4.5 text-[#F6D365]" />
+            <span>طباعة فاخرة</span>
           </div>
         </div>
       </div>
@@ -545,312 +604,71 @@ function Slide2({
   goNext: () => void;
 }) {
   const stats = [
-    { icon: Laugh, label: "DHK", value: 99 },
-    { icon: Coffee, label: "9HW", value: 96 },
-    { icon: Coins, label: "TKK", value: 94 },
-    { icon: Users, label: "S7B", value: 92 },
-    { icon: LogOut, label: "HRB", value: 90 },
-    { icon: Flame, label: "GZR", value: 98 },
+    { icon: Laugh, label: "DHK", value: 99, name: "Dhahka" },
+    { icon: Coffee, label: "9HW", value: 96, name: "9ahwa" },
+    { icon: Coins, label: "TKK", value: 94, name: "Tektek" },
+    { icon: Users, label: "S7B", value: 92, name: "S7ab" },
+    { icon: LogOut, label: "HRB", value: 90, name: "Hroub" },
+    { icon: Flame, label: "GZR", value: 98, name: "Gzara" },
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto text-center">
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-gray-900">
-        Machi kan lo3aba el koora 3andhom stats...
-        <br />
-        <span className="text-gold-grad">7atta a7na.</span>
-      </h2>
+    <div className="w-full max-w-4xl mx-auto text-center px-4 py-8">
+      {/* Dark Glass Card Container */}
+      <div className="relative rounded-3xl border border-white/10 bg-black/90 p-8 sm:p-12 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-[#D4AF37]/[0.06] blur-[140px] pointer-events-none" />
 
-      <div className="mt-10 flex flex-wrap justify-center gap-3 max-w-2xl mx-auto">
-        {stats.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <div
-              key={i}
-              className={`hero-stat flex items-center gap-1.5 ${
-                isActive && isAnimating ? "hero-fly" : ""
-              }`}
-              style={{
-                animationDelay:
-                  isActive && isAnimating ? `${i * 0.08 + 0.1}s` : "0s",
-              }}
-            >
-              <Icon className="h-4 w-4 text-[#E5A500]" />
-              <span className="sv">{item.value}</span>{" "}
-              <span className="sl">{item.label}</span>
-            </div>
-          );
-        })}
-      </div>
-
-      <p className="mt-8 text-sm text-gray-500">
-        Kol wa7ed 3andou stats mte3ou el khass
-      </p>
-
-      <div className="mt-8 flex justify-center gap-3">
-        <button onClick={goPrev} className="hero-btn-outline text-sm">
-          ← Back
-        </button>
-        <button onClick={goNext} className="hero-btn text-sm">
-          Next →
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function Slide3({
-  goPrev,
-  goNext,
-}: {
-  goPrev: () => void;
-  goNext: () => void;
-}) {
-  const cards = [
-    {
-      image: "/images/alui.png",
-      title: "The Sleeper",
-      rating: 89,
-      stats: [
-        ["RKD", "99"],
-        ["HRB", "18"],
-        ["DHK", "90"],
-      ],
-    },
-    {
-      image: "/images/aluii.png",
-      title: "Coffee Addict",
-      rating: 92,
-      stats: [
-        ["9HW", "99"],
-        ["KLM", "95"],
-        ["TKK", "10"],
-      ],
-    },
-    {
-      image: "/images/sankooh.png",
-      title: "The Bro",
-      rating: 94,
-      stats: [
-        ["S7B", "99"],
-        ["DHK", "98"],
-        ["FRJ", "94"],
-      ],
-    },
-  ];
-  return (
-    <div className="w-full max-w-5xl mx-auto">
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-center leading-tight text-gray-900">
-        Kol wa7ed fina 3andou
-        <br />
-        <span className="text-gold-grad">personality tosta7e9 card.</span>
-      </h2>
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 max-w-3xl mx-auto">
-        {cards.map((c, i) => (
-          <div key={i} className="hero-mini-card flex flex-col items-center">
-            <div className="relative w-16 h-20 mb-2">
-              <img
-                src={c.image}
-                alt={c.title}
-                className="w-full h-full object-contain drop-shadow-[0_4px_8px_rgba(229,165,0,0.12)]"
-              />
-            </div>
-            <div className="mc-rating">{c.rating}</div>
-            <div className="mc-label mb-2">{c.title}</div>
-            <div className="w-full">
-              {c.stats.map(([label, val]) => (
-                <div key={label} className="mc-row">
-                  <span>{label}</span> <span className="mc-v">{val}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-      <p className="mt-6 text-center text-gray-500 text-base font-medium">
-        &quot;Hedha sa7bi.&quot;
-      </p>
-      <div className="mt-6 flex justify-center gap-3">
-        <button onClick={goPrev} className="hero-btn-outline text-sm">
-          ← Back
-        </button>
-        <button onClick={goNext} className="hero-btn text-sm">
-          Next →
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function Slide4({
-  goPrev,
-  goNext,
-}: {
-  goPrev: () => void;
-  goNext: () => void;
-}) {
-  return (
-    <div className="w-full max-w-4xl mx-auto text-center">
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-gray-900">
-        7atta el 3youb{" "}
-        <span className="text-gold-grad">ywalliw legendary.</span>
-      </h2>
-      <div className="mt-8 flex flex-wrap justify-center gap-3">
-        <div className="hero-stat text-base flex items-center gap-1.5">
-          <Clock className="h-4 w-4 text-[#E5A500]" />
-          <span className="sv">99</span> <span className="sl">RKD</span>
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-6">
+          <Sparkles className="h-3.5 w-3.5 text-[#F6D365] animate-pulse" />
+          <span>TUNISIAN MEME STATS ENGINE</span>
         </div>
-        <div className="hero-stat text-base flex items-center gap-1.5">
-          <MessageSquare className="h-4 w-4 text-[#E5A500]" />
-          <span className="sv">99</span> <span className="sl">KLM</span>
-        </div>
-        <div className="hero-stat text-base flex items-center gap-1.5">
-          <Coins className="h-4 w-4 text-[#E5A500]" />
-          <span className="sv">5</span> <span className="sl">TKK</span>
-        </div>
-      </div>
-      <div className="mt-8 max-w-xl mx-auto bg-white/80 backdrop-blur-xl border border-[#E5A500]/15 rounded-2xl p-6 sm:p-8 shadow-sm">
-        <p className="text-lg sm:text-xl font-bold text-[#B07D00] leading-relaxed">
-          &quot;Fi Kartetna... 7atta akhar stat fik
+
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-white drop-shadow-md">
+          مش كان لاعبي الكورة عندهم ستاتيكس...
           <br />
-          ywalli sbeb bech nas ted7ek.&quot;
+          <span className="text-gold-grad">حتّى أحنا عندنا.</span>
+        </h2>
+
+        {/* Animated Flying Stat Chips */}
+        <div className="mt-10 flex flex-wrap justify-center gap-3.5 max-w-2xl mx-auto">
+          {stats.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={i}
+                className={`group flex items-center gap-2.5 rounded-2xl border border-[#D4AF37]/30 bg-gradient-to-br from-[#D4AF37]/15 to-transparent px-4 py-2.5 text-white backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-[#D4AF37] hover:shadow-[0_0_25px_rgba(212,175,55,0.3)] cursor-default ${
+                  isActive && isAnimating ? "hero-fly" : ""
+                }`}
+                style={{
+                  animationDelay:
+                    isActive && isAnimating ? `${i * 0.08 + 0.1}s` : "0s",
+                }}
+              >
+                <Icon className="h-4.5 w-4.5 text-[#F6D365] transition-transform group-hover:rotate-12" />
+                <span className="font-black text-lg text-[#F6D365]">{item.value}</span>{" "}
+                <span className="font-bold text-xs tracking-wider text-gray-200 uppercase">{item.label}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="mt-8 text-sm sm:text-base text-gray-300 font-medium" dir="rtl">
+          كل واحد عنده ستاتيكس خاصة بيه تضحّك وتخلّد ذكرياته.
         </p>
-      </div>
-      <div className="mt-8 flex justify-center gap-3">
-        <button onClick={goPrev} className="hero-btn-outline text-sm">
-          ← Back
-        </button>
-        <button onClick={goNext} className="hero-btn text-sm">
-          Next →
-        </button>
-      </div>
-    </div>
-  );
-}
 
-function Slide5({
-  goPrev,
-  goNext,
-}: {
-  goPrev: () => void;
-  goNext: () => void;
-}) {
-  return (
-    <div className="w-full max-w-5xl mx-auto">
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
-        <div className="flex-1 text-center lg:text-left">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-gray-900">
-            A5tar playstyle w wsaflna stats
-          </h2>
-          <p className="mt-4 text-sm sm:text-base text-gray-500 leading-relaxed max-w-lg mx-auto lg:ml-0" dir="rtl">
-            Sami playstyle mta3 sa7bek: custom rating, skills, weak foot stars, w work rate match l personality mte3ou (kima LOW/LOW lel fachal).
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center lg:justify-start gap-3">
-            <button onClick={goPrev} className="hero-btn-outline text-sm">
-              ← Back
-            </button>
-            <button onClick={goNext} className="hero-btn text-sm">
-              Next →
-            </button>
-          </div>
-        </div>
-
-        <div className="flex-shrink-0">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-3xl bg-amber-300/8 blur-[50px]" />
-            <img
-              src="/images/sankooh.png"
-              alt="Custom player card"
-              className="relative w-60 sm:w-72 md:w-80 drop-shadow-[0_0_30px_rgba(229,165,0,.12)]"
-            />
-          </div>
+        {/* Navigation Buttons */}
+        <div className="mt-8 flex justify-center gap-4">
+          <button onClick={goNext} className="hero-btn text-sm shadow-lg shadow-amber-500/30">
+            التالي →
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
-function Slide6({
-  goPrev,
-  goNext,
-}: {
-  goPrev: () => void;
-  goNext: () => void;
-}) {
-  return (
-    <div className="w-full max-w-4xl mx-auto text-center">
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-gray-900">
-        7awel ay sa7eb l
-        <br />
-        <span className="text-gold-grad">legend tounsi.</span>
-      </h2>
-      <div className="mt-5 flex flex-wrap justify-center gap-3 text-gray-500">
-        <span className="bg-black/[0.03] px-4 py-1.5 rounded-full border border-black/[0.05] text-sm">
-          Esmou
-        </span>
-        <span className="bg-black/[0.03] px-4 py-1.5 rounded-full border border-black/[0.05] text-sm">
-          Sourtou
-        </span>
-        <span className="bg-black/[0.03] px-4 py-1.5 rounded-full border border-black/[0.05] text-sm">
-          Stats mte3ou
-        </span>
-      </div>
-      <div className="mt-6 flex justify-center gap-6 items-center">
-        {/* Actual card image */}
-        <div className="relative w-36 hidden sm:block">
-          <div className="absolute inset-0 rounded-3xl bg-amber-300/5 blur-[30px]" />
-          <img
-            src="/images/aluii.png"
-            alt="Custom Card Example"
-            className="w-full drop-shadow-[0_0_20px_rgba(229,165,0,0.12)]"
-          />
-        </div>
 
-        {/* Dynamic Card preview details */}
-        <div
-          className="bg-white rounded-2xl border border-[#E5A500]/15 p-5 sm:p-6 shadow-lg hero-glow flex flex-col items-center"
-          style={{ maxWidth: "260px" }}
-        >
-          <Award className="h-8 w-8 text-[#E5A500] mb-2" />
-          <div className="text-xs text-gray-400 uppercase tracking-widest">
-            KARTETNA TN
-          </div>
-          <div className="text-xl font-black text-[#B07D00] mt-1">
-            Sa7bek
-          </div>
-          <div className="flex justify-center gap-4 mt-3 text-sm">
-            <div>
-              <span className="text-[#C98600]">99</span>{" "}
-              <span className="text-gray-400">RKD</span>
-            </div>
-            <div>
-              <span className="text-[#C98600]">97</span>{" "}
-              <span className="text-gray-400">KLM</span>
-            </div>
-            <div>
-              <span className="text-[#C98600]">95</span>{" "}
-              <span className="text-gray-400">9HW</span>
-            </div>
-          </div>
-          <div className="mt-2 text-[10px] text-gray-400 border-t border-gray-100 pt-2">
-            PVC Premium • Made in TN
-          </div>
-        </div>
-      </div>
-      <p className="mt-5 text-gray-500 text-sm">
-        Metb3a 3al PVC b jouda Premium
-      </p>
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <button onClick={goPrev} className="hero-btn-outline text-sm">
-          ← Back
-        </button>
-        <a href="#order" className="hero-btn text-sm">
-          Design your card
-        </a>
-      </div>
-    </div>
-  );
-}
 
 function Slide7({
   goPrev,
@@ -861,58 +679,51 @@ function Slide7({
 }) {
   const router = useRouter();
   return (
-    <div className="w-full max-w-4xl mx-auto text-center">
-      <div className="hero-badge mb-5 inline-flex gap-1.5 items-center">
-        <Trophy className="h-3.5 w-3.5 text-[#E5A500]" />
-        <span>The Final Legend</span>
-      </div>
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-gray-900">
-        Kol wa7ed 3andou stats mte3ou...
-        <br />
-        <span className="text-gold-grad">Shnowa stats mte3ek inti?</span>
-      </h2>
-      <div className="mt-6 flex justify-center">
-        <div
-          className="bg-white rounded-2xl border border-[#E5A500]/20 p-6 sm:p-8 shadow-lg hero-glow flex flex-col items-center"
-          style={{ maxWidth: "320px" }}
-        >
-          <Award className="h-8 w-8 text-[#E5A500] mb-2" />
-          <div className="text-3xl font-black text-[#C98600]">? ? ?</div>
-          <div className="text-sm text-gray-400 mt-1">Your Stats</div>
-          <div className="flex justify-center gap-4 mt-4 text-sm flex-wrap">
-            <div>
-              <span className="text-[#C98600]">??</span>{" "}
-              <span className="text-gray-400">DHK</span>
-            </div>
-            <div>
-              <span className="text-[#C98600]">??</span>{" "}
-              <span className="text-gray-400">9HW</span>
-            </div>
-            <div>
-              <span className="text-[#C98600]">??</span>{" "}
-              <span className="text-gray-400">S7B</span>
+    <div className="w-full max-w-4xl mx-auto text-center px-4 py-8">
+      <div className="relative rounded-3xl border border-white/10 bg-black/90 p-8 sm:p-12 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-6">
+          <Trophy className="h-4 w-4 text-[#F6D365]" />
+          <span>THE FINAL LEGEND</span>
+        </div>
+
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-white drop-shadow-md">
+          كل واحد عنده ستاتيكس خاصة بيه...
+          <br />
+          <span className="text-gold-grad">شنوّة الستاتيكس متاعك إنتي؟</span>
+        </h2>
+
+        <div className="mt-8 flex justify-center">
+          <div className="bg-black/90 rounded-2xl border border-[#D4AF37]/40 p-6 sm:p-8 shadow-2xl flex flex-col items-center max-w-[320px] group hover:scale-105 transition-transform duration-300">
+            <Award className="h-10 w-10 text-[#F6D365] mb-2 animate-bounce" />
+            <div className="text-4xl font-black text-[#F6D365]">? ? ?</div>
+            <div className="text-xs text-gray-400 font-bold mt-1 uppercase tracking-widest">Your Stats OVR</div>
+            <div className="flex justify-center gap-4 mt-4 text-xs font-bold">
+              <div>
+                <span className="text-[#F6D365]">??</span>{" "}
+                <span className="text-gray-400">DHK</span>
+              </div>
+              <div>
+                <span className="text-[#F6D365]">??</span>{" "}
+                <span className="text-gray-400">9HW</span>
+              </div>
+              <div>
+                <span className="text-[#F6D365]">??</span>{" "}
+                <span className="text-gray-400">S7B</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="mt-7 flex flex-wrap justify-center gap-3">
-        <button onClick={() => router.push("/generator")} className="hero-btn">
-          Design it
-        </button>
-        <a href="#gallery" className="hero-btn-outline">
-          See examples
-        </a>
-      </div>
-      <div className="mt-5 flex justify-center gap-3">
-        <button onClick={goPrev} className="hero-btn-outline text-sm">
-          ← Back
-        </button>
-        <button
-          onClick={goToStart}
-          className="text-sm text-gray-400 hover:text-gray-900 transition"
-        >
-          ⟳ Start over
-        </button>
+
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <button onClick={() => router.push("/generator")} className="hero-btn shadow-lg shadow-amber-500/30">
+            + صمّمها الآن
+          </button>
+          <a href="#gallery" className="hero-btn-outline text-white border-white/20 hover:bg-white/10 backdrop-blur-md">
+            شوف أمثلة <span>◉</span>
+          </a>
+        </div>
+
+
       </div>
     </div>
   );

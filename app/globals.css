@@ -1,21 +1,40 @@
 @import "tailwindcss";
 
 :root {
+  --gold-highlight: #FFF6B0;
+  --gold-light: #F6D365;
+  --gold-classic: #D4AF37;
+  --gold-rich: #C89B3C;
+  --gold-dark: #B8860B;
+  --gold-shadow: #8C6A00;
+  --bg-dark: #0B0B0B;
+
+  --primary: #D4AF37;
+  --primary-dim: #C89B3C;
   --background: #FAFAFA;
   --foreground: #1A1A1A;
-  --gold: #E5A500;
-  --gold-dim: #C9920A;
+  --gold: #D4AF37;
+  --gold-dim: #C89B3C;
   --surface: #FFFFFF;
   --surface-light: #F5F5F5;
   --border: rgba(0, 0, 0, 0.08);
-  --border-gold: rgba(229, 165, 0, 0.15);
+  --border-gold: rgba(212, 175, 55, 0.2);
 }
 
 @theme inline {
+  --color-primary: var(--primary);
+  --color-gold: var(--gold);
+  --color-gold-highlight: var(--gold-highlight);
+  --color-gold-light: var(--gold-light);
+  --color-gold-classic: var(--gold-classic);
+  --color-gold-rich: var(--gold-rich);
+  --color-gold-dark: var(--gold-dark);
+  --color-gold-shadow: var(--gold-shadow);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
+  --font-poppins: var(--font-poppins), system-ui, sans-serif;
+  --font-space: var(--font-poppins), system-ui, sans-serif;
 }
 
 * {
@@ -27,9 +46,9 @@ html {
 }
 
 body {
-  background: var(--background);
+  background: #000000;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* ===== LOGO ===== */
@@ -46,11 +65,11 @@ body {
   color: #1A1A1A;
 }
 .logo .meme {
-  color: #E5A500;
+  color: #D4AF37;
   margin-left: 0.3rem;
 }
 .logo .tn {
-  background: #E5A500;
+  background: #D4AF37;
   color: #fff;
   font-size: 0.65rem;
   font-weight: 900;
@@ -77,13 +96,13 @@ body {
   width: 3rem;
   height: 3px;
   border-radius: 4px;
-  background: #E5A500;
+  background: linear-gradient(90deg, #F6D365, #D4AF37);
   flex-shrink: 0;
 }
 
 /* ===== GOLD TEXT GRADIENT ===== */
 .text-gold-grad {
-  background: linear-gradient(135deg, #E5A500, #C98600);
+  background: linear-gradient(135deg, #F6D365, #D4AF37, #C89B3C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

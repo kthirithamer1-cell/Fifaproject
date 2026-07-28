@@ -2,15 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-
-// ─── Types ────────────────────────────────────────────────────────────────
-
-interface BackgroundOption {
-    id: string;
-    label: string;
-    url: string;
-    thumbnail: string;
-}
+import { STATIC_BACKGROUNDS } from "@/app/constant";
 
 interface BackgroundPickerProps {
     selectedBgUrl: string | null;
@@ -18,25 +10,6 @@ interface BackgroundPickerProps {
     onGenerateAI: () => void;
     isGeneratingBg: boolean;
 }
-
-// ─── Static Backgrounds ──────────────────────────────────────────────────
-
-const STATIC_BACKGROUNDS: BackgroundOption[] = [
-    {
-        id: "default",
-        label: "Classic Gold",
-        url: "/prompting/image.png",
-        thumbnail: "/prompting/image.png",
-    },
-    {
-        id: "dark",
-        label: "Dark Elite",
-        url: "/prompting/image2.png",
-        thumbnail: "/prompting/image2.png",
-    },
-];
-
-// ─── Component ──────────────────────────────────────────────────────────
 
 export default function BackgroundPicker({
     selectedBgUrl,
@@ -60,7 +33,7 @@ export default function BackgroundPicker({
                             onClick={() => onSelect(bg.url)}
                             className={`relative group aspect-[2/3] rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer ${
                                 isSelected
-                                    ? "border-[#E5A500] shadow-[0_4px_20px_rgba(229,165,0,0.2)] scale-[1.02]"
+                                    ? "border-[#D4AF37] shadow-[0_4px_20px_rgba(229,165,0,0.2)] scale-[1.02]"
                                     : "border-gray-200 hover:border-gray-400"
                             }`}
                         >
@@ -83,7 +56,7 @@ export default function BackgroundPicker({
 
                             {/* Selected indicator */}
                             {isSelected && (
-                                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#E5A500] flex items-center justify-center">
+                                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-[#D4AF37] flex items-center justify-center">
                                     <svg
                                         width={12}
                                         height={12}
@@ -114,15 +87,15 @@ export default function BackgroundPicker({
                 disabled={isGeneratingBg}
                 className={`w-full group relative py-3.5 px-6 rounded-xl border-2 border-dashed transition-all duration-300 cursor-pointer ${
                     isGeneratingBg
-                        ? "border-[#E5A500]/50 bg-[#E5A500]/5 opacity-70 pointer-events-none"
-                        : "border-[#E5A500]/30 bg-[#E5A500]/5 hover:border-[#E5A500] hover:bg-[#E5A500]/10"
+                        ? "border-[#D4AF37]/50 bg-[#D4AF37]/5 opacity-70 pointer-events-none"
+                        : "border-[#D4AF37]/30 bg-[#D4AF37]/5 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10"
                 }`}
             >
                 <div className="flex items-center justify-center gap-3">
                     {isGeneratingBg ? (
                         <>
                             <svg
-                                className="w-5 h-5 text-[#E5A500] animate-spin"
+                                className="w-5 h-5 text-[#D4AF37] animate-spin"
                                 viewBox="0 0 24 24"
                                 fill="none"
                             >
@@ -137,7 +110,7 @@ export default function BackgroundPicker({
                                     strokeDashoffset="10"
                                 />
                             </svg>
-                            <span className="text-[#C98600] font-space text-sm font-semibold">
+                            <span className="text-[#C89B3C] font-space text-sm font-semibold">
                                 Generating with AI...
                             </span>
                         </>
@@ -148,7 +121,7 @@ export default function BackgroundPicker({
                                 height={20}
                                 viewBox="0 0 24 24"
                                 fill="none"
-                                className="text-[#E5A500]"
+                                className="text-[#D4AF37]"
                             >
                                 <path
                                     d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
@@ -159,7 +132,7 @@ export default function BackgroundPicker({
                                     fillOpacity="0.15"
                                 />
                             </svg>
-                            <span className="text-[#C98600] font-space text-sm font-semibold">
+                            <span className="text-[#C89B3C] font-space text-sm font-semibold">
                                 Generate AI Background
                             </span>
                         </>

@@ -1,44 +1,43 @@
-Create a premium football-inspired collectible player card using the uploaded photo as the face reference.
+# ROLE
+FUT master card concept artist, 3D illustrator.
 
-IMPORTANT:
-The output MUST be ONLY the card with a transparent background (PNG). No table, no wall, no hands, no mockup, no scenery outside the card.
+# GOAL
+Create a premium 3D FUT collectible card matching the uploaded reference photo style. AAA sports game special edition quality.
 
-CARD SHAPE (HIGHEST PRIORITY):
-- EXACT football Ultimate Team card silhouette(FIFA FUT).
+# VISUAL & ART DIRECTION
 
-LAYOUT:
-- Large overall rating {OVR} in the top-left.
-- Player name "{NAME}" near the bottom.
-- Subtitle "{TITLE}" below the name.
-- Six stat boxes at the bottom:
-  DHK {DHK}
-  RKD {RKD}
-  9HW {QHW}
-  S7B {S7B}
-  HRB {HRB}
-  TKK {TKK}
+1. CARD FRAME:
+   - Full vertical card, no cropped borders, safety padding all sides.
+   - Curved arched header, center crest with 3 gold stars and circular emblem.
+   - 3D brushed gold border frame, polished chamfers, metallic highlights, golden wing accents at bottom.
 
-PORTRAIT:
-- Use the uploaded face exactly.
--optimise the quality of image if he has a low quality
+2. LIGHTING & ATMOSPHERE:
+   - Cinematic golden rim light on hair, shoulders, jawline.
+   - Gold dust particles floating around card.
+   - Left half: White Carrara marble with gold veining.
+   - Right half: 3D golden crystal shards with volumetric light rays.
 
-STYLE:
-- Premium luxury  collectible.
-- Deep black, gold, crimson and navy palette.
-- Gold foil details.
-- Metallic reflections.
-- Soft glow.
-- Premium typography.
-- Small gold stars around the rating.
-- no logo need to put
+3. PORTRAIT:
+   - Heroic digital sports illustration of the uploaded face photo, sharp focus, athletic expression.
+   - White jersey with gold collar trim, marble pattern matching background.
+   - Preserve face identity exactly.
 
-MOOD:
-{MOOD}
+4. BADGES & TEXT:
+   - Top-left: OVR rating + position.
+   - Below OVR: Tunisia flag (🇹🇳) in glossy 3D badge.
+   - Next to flag: Shield badge "FOOTBALL CLUB 2024" with golden soccer ball.
+   - Top-right: 3 attribute chips (SKILL 4★ | WEAK 4★ | WORK H/M).
 
-PERSONALITY:
-{PERSONALITY}
+5. BOTTOM:
+   - Player name centered under portrait, bold uppercase.
+   - 6 stat columns in a row: code above value (DHK 98 | JAW 95 | etc).
+   - Golden shoe icon at bottom center.
 
-QUALITY:
-Ultra-detailed, realistic, premium product render, 4K, print-ready, transparent PNG.
+# PLAYER DATA
+{PLAYER_DATA_JSON}
 
-The card silhouette MUST be the highest priority. If any decorative elements conflict with the football card shape, preserve the football card shape exactly.
+# OUTPUT REQUIREMENTS
+- 300+ DPI, 50×70 cm print-ready, 3D render.
+- FUT card shield silhouette, razor-sharp border contours.
+- 100% transparent background outside card frame. No bleed, no spillover.
+- Full card visible, uncropped.

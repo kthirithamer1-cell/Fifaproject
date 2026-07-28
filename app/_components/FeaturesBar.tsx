@@ -1,70 +1,111 @@
+"use client";
+
 import { features } from "./data";
-import { Laugh, Shield, Gift, Truck, Star } from "lucide-react";
+import { SectionTitle } from "./SectionTitle";
+import { Laugh, Shield, Gift, Truck, Star, Sparkles, Award } from "lucide-react";
 
 const FEATURE_ICONS = [Laugh, Shield, Gift, Truck, Star];
 
+const FEATURE_BADGES = [
+  "100% TUNISIAN MEMES",
+  "PREMIUM PVC & UV PRINT",
+  "THE UNFORGETTABLE GIFT",
+  "FAST NATIONWIDE SHIPPING",
+  "5-STAR CUSTOMER RATING",
+];
+
 export function FeaturesBar() {
   return (
-    <section className="relative bg-[#F5F5F5] py-14 border-t border-b border-[#E5A500]/10">
-      {/* Subtle gold glow */}
-      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-amber-300/[.06] to-transparent pointer-events-none" />
+    <section className="relative bg-[#070707] py-20 sm:py-24 overflow-hidden text-white border-y border-white/10">
+      {/* Top Gold Border Accent */}
+      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
+      {/* Glow Orbs */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full bg-[#D4AF37]/[0.05] blur-[160px]" />
+        <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full bg-[#F6D365]/[0.04] blur-[160px]" />
+      </div>
 
-      <div className="relative mx-auto max-w-7xl px-6">
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center flex flex-col items-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-4 backdrop-blur-md">
+            <Sparkles className="h-4 w-4 text-[#F6D365] animate-pulse" />
+            <span>WHY FLAWLESS CUSTOM CARDS</span>
+          </div>
+          <SectionTitle className="text-white text-3xl sm:text-4xl font-black tracking-wider">
+            FEATURE HIGHLIGHTS
+          </SectionTitle>
+          <p className="mt-3 text-sm sm:text-base text-gray-400 max-w-lg mx-auto font-medium" dir="rtl">
+            مميزات خرافية تجعل من كارطة Flawless الهديّة الأفضل والأكثر تميّزاً في تونس.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
           {features.map((feature, index) => {
             const IconComponent = FEATURE_ICONS[index] || Star;
+            const badgeText = FEATURE_BADGES[index] || "PREMIUM QUALITY";
+
             return (
               <div
                 key={feature.title}
-                className="group flex flex-col items-center"
+                className="group relative flex flex-col items-center text-center p-6 rounded-3xl bg-neutral-900/60 border border-white/10 hover:border-[#D4AF37]/60 backdrop-blur-xl transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_16px_40px_rgba(212,175,55,0.18)]"
               >
-                {/* FIFA Card */}
-                <div className="relative w-[160px] sm:w-[170px] transition-all duration-500 group-hover:-translate-y-3 group-hover:scale-105">
-                  {/* Card glow on hover */}
-                  <div className="absolute inset-0 rounded-xl bg-amber-300/15 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                {/* FIFA Style Card Image Box */}
+                <div className="relative w-[150px] sm:w-[160px] mb-6 transition-all duration-500 group-hover:scale-105">
+                  {/* Glowing Backlight */}
+                  <div className="absolute inset-0 rounded-2xl bg-[#D4AF37]/25 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                   <img
                     src="/images/save.png"
                     alt={feature.title}
-                    className="relative w-full select-none drop-shadow-[0_12px_24px_rgba(229,165,0,.15)]"
+                    className="relative w-full select-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
                   />
 
-                  {/* Overlay content */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    {/* Icon */}
-                    <IconComponent className="h-7 w-7 text-[#E5A500] mb-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)] stroke-[1.75]" />
+                  {/* Card Content Overlay */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-2">
+                    <IconComponent className="h-7 w-7 text-[#4A3500] mb-1 stroke-[2] transition-transform duration-300 group-hover:scale-110" />
 
-                    {/* Stat */}
-                    <span className="text-4xl font-black text-[#C98600] drop-shadow-lg">
+                    <span className="text-3xl font-black text-[#2A1D00] drop-shadow-sm">
                       {feature.stat}
                     </span>
 
-                    {/* Code */}
-                    <span className="mt-0.5 text-xs font-bold tracking-[0.3em] text-[#B07D00]/80">
+                    <span className="mt-0.5 text-[10px] font-black tracking-[0.25em] text-[#5C4300]">
                       {feature.label}
                     </span>
 
-                    {/* Title */}
-                    <span className="mt-3 text-[11px] font-extrabold uppercase text-gray-800 tracking-wide text-center leading-tight px-2">
+                    <span className="mt-2 text-[10px] font-black uppercase text-[#111111] tracking-wide text-center leading-tight">
                       {feature.title}
                     </span>
-
-                    {/* Subtitle */}
-                    {feature.subtitle && (
-                      <span className="text-[9px] font-semibold uppercase text-gray-500 tracking-wider text-center">
-                        {feature.subtitle}
-                      </span>
-                    )}
                   </div>
 
-                  {/* Shine sweep on hover */}
-                  <div className="absolute inset-0 overflow-hidden rounded-xl">
-                    <div className="absolute -left-32 top-0 h-full w-16 rotate-12 bg-white/30 blur-xl transition-all duration-700 group-hover:left-[160%]" />
+                  {/* Shine Sweep Highlight */}
+                  <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+                    <div className="absolute -left-32 top-0 h-full w-16 rotate-12 bg-white/20 blur-lg transition-all duration-700 group-hover:left-[160%]" />
                   </div>
                 </div>
+
+                {/* Badge Tag */}
+                <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#F6D365] bg-[#D4AF37]/10 border border-[#D4AF37]/25 px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                  <Award className="h-3 w-3 text-[#F6D365]" />
+                  <span>{feature.label} POWER</span>
+                </div>
+
+                {/* Subtitle */}
+                <p className="text-xs text-gray-400 font-medium leading-relaxed">
+                  {badgeText}
+                </p>
               </div>
             );
           })}
+        </div>
+
+        {/* CTA Button */}
+        <div className="mt-14 text-center">
+          <a
+            href="/generator"
+            className="hero-btn shadow-lg shadow-amber-500/20 inline-flex items-center gap-2"
+          >
+            <Sparkles className="h-4 w-4" /> صمّم كارتك الآن
+          </a>
         </div>
       </div>
     </section>

@@ -40,7 +40,7 @@ const Section = ({
     children: React.ReactNode;
 }) => (
     <div className="space-y-3">
-        <h3 className="text-xs font-bold text-gray-500 font-space uppercase tracking-wider">
+        <h3 className="text-xs font-bold text-[#F6D365] font-space uppercase tracking-wider">
             {title}
         </h3>
         {children}
@@ -63,7 +63,7 @@ const Field = ({
     maxLength?: number;
 }) => (
     <div className="space-y-1.5">
-        <label className="text-xs text-gray-500 font-space font-medium">
+        <label className="text-xs text-gray-300 font-space font-bold">
             {label}
         </label>
         <input
@@ -72,7 +72,7 @@ const Field = ({
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             maxLength={maxLength}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 font-space focus:outline-none focus:border-[#E5A500] focus:ring-2 focus:ring-[#E5A500]/10 transition-all duration-200 placeholder:text-gray-400"
+            className="w-full px-4 py-3 rounded-xl border border-white/15 bg-black/70 text-sm text-white font-space focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-200 placeholder:text-gray-400"
         />
     </div>
 );
@@ -93,7 +93,7 @@ const SliderField = ({
     max?: number;
 }) => (
     <div className="flex items-center gap-3">
-        <span className="text-xs text-gray-600 font-space font-medium w-28 truncate">
+        <span className="text-xs text-gray-300 font-space font-bold w-28 truncate">
             {label}
         </span>
         <input
@@ -104,12 +104,12 @@ const SliderField = ({
             onChange={(e) => onChange(Number(e.target.value))}
             className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer"
             style={{
-                background: `linear-gradient(to right, #E5A500 0%, #E5A500 ${
+                background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${
                     ((value - min) / (max - min)) * 100
-                }%, #e5e7eb ${((value - min) / (max - min)) * 100}%, #e5e7eb 100%)`,
+                }%, rgba(255,255,255,0.15) ${((value - min) / (max - min)) * 100}%, rgba(255,255,255,0.15) 100%)`,
             }}
         />
-        <span className="text-sm text-gray-900 font-space font-black w-8 text-right tabular-nums">
+        <span className="text-sm text-[#F6D365] font-space font-black w-8 text-right tabular-nums">
             {value}
         </span>
     </div>
@@ -166,7 +166,7 @@ export default function CardEditor({
                     height={18}
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#E5A500"
+                    stroke="#D4AF37"
                     strokeWidth="2"
                 >
                     <path d="M12 20h9" />
@@ -182,17 +182,25 @@ export default function CardEditor({
 
             {/* Accent Color */}
             <Section title="Accent Color">
-                <div className="flex gap-2">
-                    {["#E5A500", "#d12559", "#2563EB", "#059669", "#7C3AED", "#DC2626"].map((color) => (
+                <div className="flex flex-wrap gap-2">
+                    {[
+                        { hex: "#D4AF37", name: "Classic Gold" },
+                        { hex: "#FFF6B0", name: "Highlight Gold" },
+                        { hex: "#F6D365", name: "Light Gold" },
+                        { hex: "#C89B3C", name: "Rich Gold" },
+                        { hex: "#B8860B", name: "Dark Gold" },
+                        { hex: "#8C6A00", name: "Shadow Gold" },
+                    ].map(({ hex, name }) => (
                         <button
-                            key={color}
-                            onClick={() => onAccentColorChange(color)}
+                            key={hex}
+                            title={name}
+                            onClick={() => onAccentColorChange(hex)}
                             className={`w-8 h-8 rounded-full border-2 transition-all duration-200 cursor-pointer ${
-                                accentColor === color
+                                accentColor === hex
                                     ? "border-gray-900 scale-110 shadow-md"
                                     : "border-gray-200 hover:border-gray-400"
                             }`}
-                            style={{ backgroundColor: color }}
+                            style={{ backgroundColor: hex }}
                         />
                     ))}
                 </div>

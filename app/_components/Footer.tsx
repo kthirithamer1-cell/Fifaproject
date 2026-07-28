@@ -1,67 +1,140 @@
+"use client";
+
 import { Logo } from "./Logo";
-import { MessageCircle, Heart } from "lucide-react";
+import { MessageCircle, Heart, Sparkles, ShieldCheck, Truck, ArrowUpRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function Footer() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <footer className="relative border-t border-white/10 bg-[#060606] pt-20 pb-10 text-neutral-400 overflow-hidden" suppressHydrationWarning>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning />
+      </footer>
+    );
+  }
+
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="border-t border-white/[.06] bg-[#080808] pt-16 pb-8 text-neutral-400">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4 sm:grid-cols-2 pb-12 border-b border-white/[.06]">
+    <footer className="relative border-t border-white/10 bg-[#060606] pt-20 pb-10 text-neutral-400 overflow-hidden" suppressHydrationWarning>
+      {/* Top Gold Border Glow Line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent pointer-events-none" />
+
+      {/* Ambient Lighting Orbs */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute left-1/4 bottom-0 w-96 h-96 rounded-full bg-[#D4AF37]/[0.03] blur-[150px]" />
+        <div className="absolute right-1/4 top-0 w-96 h-96 rounded-full bg-[#F6D365]/[0.03] blur-[150px]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning>
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-4 sm:grid-cols-2 pb-14 border-b border-white/10" suppressHydrationWarning>
           {/* Brand Column */}
-          <div className="flex flex-col items-start gap-4">
+          <div className="flex flex-col items-start gap-4" suppressHydrationWarning>
             <Logo />
-            <p className="text-xs text-neutral-500 leading-relaxed font-medium">
-              Redesign your friends into football legends with funny Tunisian stats and custom printed PVC cards. The perfect gift for football enthusiasts.
+            <p className="text-xs text-neutral-400 leading-relaxed font-medium">
+              Redesign your friends into football legends with funny Tunisian stats and custom printed PVC cards. The #1 custom meme card in Tunisia.
             </p>
-            <p className="text-xs text-[#E5A500]/90 font-semibold uppercase tracking-wider mt-1" dir="rtl">
-              كارطة مضحكة. ذكريات خالدة
-            </p>
+
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold" dir="rtl">
+              <Sparkles className="h-3.5 w-3.5 text-[#F6D365]" />
+              <span>كارطة مضحكة. ذكريات خالدة</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-[11px] font-semibold text-gray-300 mt-2">
+              <Truck className="h-4 w-4 text-[#F6D365]" />
+              <span>توصيل لكامل تراب الجمهورية (PVC Premium)</span>
+            </div>
           </div>
 
-          {/* Navigation Links */}
-          <div className="flex flex-col gap-3.5">
-            <span className="text-xs font-bold text-white uppercase tracking-widest">Navigation</span>
-            <ul className="flex flex-col gap-2.5 text-xs font-medium">
+          {/* Quick Links */}
+          <div className="flex flex-col gap-4" suppressHydrationWarning>
+            <h3 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
+              Navigation
+            </h3>
+            <ul className="flex flex-col gap-3 text-xs font-medium">
               <li>
-                <a href="#top" className="hover:text-[#E5A500] transition-colors">Accueil</a>
+                <a href="#top" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Accueil</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </a>
               </li>
               <li>
-                <a href="#gallery" className="hover:text-[#E5A500] transition-colors">Exemples</a>
+                <a href="#gallery" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Exemples & Galerie</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </a>
               </li>
               <li>
-                <a href="#how" className="hover:text-[#E5A500] transition-colors">Comment ça marche</a>
+                <a href="#how" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Comment ça marche</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </a>
               </li>
               <li>
-                <a href="#faq" className="hover:text-[#E5A500] transition-colors">FAQ</a>
+                <a href="#glossary" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Stats Dictionary</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </a>
+              </li>
+              <li>
+                <a href="#testimonials" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Avis Clients</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Legal / Info Links */}
-          <div className="flex flex-col gap-3.5">
-            <span className="text-xs font-bold text-white uppercase tracking-widest">Informations</span>
-            <ul className="flex flex-col gap-2.5 text-xs font-medium">
+          {/* Legal / Orders */}
+          <div className="flex flex-col gap-4" suppressHydrationWarning>
+            <h3 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
+              Commander & Info
+            </h3>
+            <ul className="flex flex-col gap-3 text-xs font-medium">
               <li>
-                <a href="#order" className="hover:text-[#E5A500] transition-colors">Commander</a>
+                <a href="/generator" className="group inline-flex items-center gap-1.5 text-[#F6D365] font-bold hover:text-white transition-colors">
+                  <span>+ Créer ma carte</span>
+                  <Sparkles className="h-3.5 w-3.5" />
+                </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#E5A500] transition-colors">Mentions Légales</a>
+                <a href="#packages" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Packs & Tarifs</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#E5A500] transition-colors">Politique de Confidentialité</a>
+                <a href="#faq" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Foire Aux Questions</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#E5A500] transition-colors">Livraison & Retours</a>
+                <a href="#" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Politique de Confidentialité</span>
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Social Links & Support */}
-          <div className="flex flex-col gap-4">
-            <span className="text-xs font-bold text-white uppercase tracking-widest">Suivez-nous</span>
-            <div className="flex gap-4">
+          {/* Contact & Social */}
+          <div className="flex flex-col gap-4" suppressHydrationWarning>
+            <h3 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
+              Contact & Réseaux
+            </h3>
+            <div className="flex gap-3" suppressHydrationWarning>
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-neutral-400 hover:text-[#E5A500] hover:border-[#E5A500] hover:shadow-[0_0_16px_rgba(229,165,0,.15)] transition duration-300"
+                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-neutral-300 hover:text-[#F6D365] hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 hover:scale-110 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-300"
                 aria-label="Instagram"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -72,7 +145,7 @@ export function Footer() {
               </a>
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-neutral-400 hover:text-[#E5A500] hover:border-[#E5A500] hover:shadow-[0_0_16px_rgba(229,165,0,.15)] transition duration-300"
+                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-neutral-300 hover:text-[#F6D365] hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 hover:scale-110 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-300"
                 aria-label="Facebook"
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -80,28 +153,36 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-neutral-400 hover:text-[#E5A500] hover:border-[#E5A500] hover:shadow-[0_0_16px_rgba(229,165,0,.15)] transition duration-300"
+                href="https://wa.me/21600000000"
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 hover:scale-110 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all duration-300"
                 aria-label="WhatsApp"
               >
                 <MessageCircle className="h-5 w-5" />
               </a>
             </div>
-            <div className="mt-2 text-xs text-neutral-500">
-              Pour toute assistance: <br />
-              <span className="text-neutral-300 font-semibold">support@kartetna.tn</span>
+
+            <div className="mt-2 text-xs text-neutral-400 bg-white/5 border border-white/10 rounded-2xl p-3.5" suppressHydrationWarning>
+              <div className="font-bold text-white mb-1 flex items-center gap-1.5" suppressHydrationWarning>
+                <ShieldCheck className="h-4 w-4 text-[#F6D365]" />
+                <span>Service Client & Support</span>
+              </div>
+              <span className="text-neutral-300 font-semibold" suppressHydrationWarning>support@flawless.tn</span>
+              <div className="text-[10px] text-gray-500 mt-1" suppressHydrationWarning>Paiement à la livraison 🚚</div>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 text-[11px] text-neutral-500">
-          <div>
-            © {new Date().getFullYear()} Kartetna. All rights reserved.
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 text-[11px] text-neutral-400" suppressHydrationWarning>
+          <div suppressHydrationWarning>
+            © {currentYear} <strong className="text-white">Flawless TN</strong>. All rights reserved.
           </div>
-          <div className="flex items-center gap-1.5 font-medium">
-            <span>Designed & crafted in Tunisia</span>
-            <Heart className="h-3 w-3 text-red-500 fill-red-500 animate-pulse" />
+          <div className="flex items-center gap-1.5 font-semibold text-gray-300" suppressHydrationWarning>
+            <span>Designed & crafted with</span>
+            <Heart className="h-3.5 w-3.5 text-red-500 fill-red-500 animate-pulse" />
+            <span>in Tunisia 🇹🇳</span>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-"use client";
+import { AboutFlawless } from "./_components/AboutFlawless";
 import { Faq } from "./_components/Faq";
 import { FeaturesBar } from "./_components/FeaturesBar";
 import { Footer } from "./_components/Footer";
@@ -9,8 +9,6 @@ import { HowItWorks } from "./_components/HowItWorks";
 import { Packages } from "./_components/Packages";
 import { StatsChips } from "./_components/StatsChips";
 import { Testimonials } from "./_components/Testimonials";
-import { Route } from "next";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
   return (
@@ -18,6 +16,7 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <AboutFlawless />
         <FeaturesBar />
         <Gallery />
         <HowItWorks />

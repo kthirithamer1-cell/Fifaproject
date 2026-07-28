@@ -79,38 +79,43 @@ export function Gallery() {
   };
 
   return (
-    <section id="gallery" className="relative py-20 bg-[#FAFAFA]">
-      {/* Gold glow */}
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-amber-300/[.04] to-transparent blur-3xl pointer-events-none" />
+    <section id="gallery" className="relative py-24 bg-[#0A0A0A] text-white overflow-hidden">
+      {/* Top Gold Border Accent */}
+      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
 
-      <div className="relative mx-auto max-w-7xl px-5">
+      {/* Gold Ambient Glows */}
+      <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full bg-[#D4AF37]/[0.03] blur-[160px] pointer-events-none" />
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         {/* Header */}
-        <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="mb-3 h-1 w-14 rounded-full bg-[#E5A500]" />
-            <h2 className="text-3xl font-black uppercase tracking-tight text-gray-900 md:text-4xl">
-              GALLERY
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-3">
+              <span>GALLERY OF MEME LEGENDS</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
+              أمثلة الكروت <span className="text-gold-grad">التونسية</span>
             </h2>
           </div>
 
           <a
-            href="#order"
-            className="group flex items-center gap-2 text-sm font-medium text-[#E5A500] transition hover:text-[#C98600]"
+            href="/generator"
+            className="group flex items-center gap-2 text-sm font-bold text-[#F6D365] transition hover:text-[#D4AF37]"
           >
-            Voir plus d&apos;exemples
+            صمّم كارتك واكتشف التشكيلة
             <span className="transition-transform duration-300 group-hover:translate-x-1">
-              →
+              ←
             </span>
           </a>
         </div>
 
         {/* Gallery Carousel Container */}
-        <div className="relative group/carousel rounded-2xl border border-black/[0.05] bg-white p-5 overflow-hidden shadow-sm">
+        <div className="relative group/carousel rounded-3xl border border-white/10 bg-black/70 p-6 sm:p-8 backdrop-blur-2xl shadow-2xl overflow-hidden">
           {/* Left Arrow Button */}
           <button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
-            className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/90 text-gray-800 shadow-md backdrop-blur-md transition-all duration-300 hover:bg-[#E5A500] hover:text-white hover:border-[#E5A500] active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer ${
+            className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white shadow-xl backdrop-blur-md transition-all duration-300 hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer ${
               canScrollLeft ? "opacity-100" : "opacity-0"
             }`}
             aria-label="Previous image"
@@ -122,7 +127,7 @@ export function Gallery() {
           <button
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
-            className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/90 text-gray-800 shadow-md backdrop-blur-md transition-all duration-300 hover:bg-[#E5A500] hover:text-white hover:border-[#E5A500] active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer ${
+            className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white shadow-xl backdrop-blur-md transition-all duration-300 hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer ${
               canScrollRight ? "opacity-100" : "opacity-0"
             }`}
             aria-label="Next image"
@@ -131,15 +136,15 @@ export function Gallery() {
           </button>
 
           {/* Left Fade Overlay */}
-          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white to-transparent pointer-events-none z-10 hidden md:block" />
+          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-black/90 to-transparent pointer-events-none z-10 hidden md:block" />
           {/* Right Fade Overlay */}
-          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none z-10 hidden md:block" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-black/90 to-transparent pointer-events-none z-10 hidden md:block" />
 
           {/* Carousel Scroll Area */}
           <div
             ref={carouselRef}
             onScroll={handleScroll}
-            className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-4 px-2"
+            className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-4 px-2"
           >
             {gallery.map((card) => {
               const statEntries = Object.entries(card.stats);
@@ -149,20 +154,20 @@ export function Gallery() {
                   className="w-[240px] sm:w-[260px] md:w-[280px] flex-shrink-0 snap-start transition duration-500 group relative cursor-pointer"
                 >
                   {/* Glow on hover */}
-                  <div className="absolute inset-0 rounded-xl bg-amber-300/10 blur-2xl opacity-0 transition duration-500 group-hover:opacity-100" />
+                  <div className="absolute inset-0 rounded-2xl bg-[#D4AF37]/20 blur-xl opacity-0 transition duration-500 group-hover:opacity-100" />
 
                   {/* Card container */}
-                  <div className="relative transition duration-500 group-hover:-translate-y-2 group-hover:scale-[1.03]">
+                  <div className="relative rounded-2xl border border-white/10 bg-black/90 p-3 backdrop-blur-xl transition duration-500 group-hover:-translate-y-2 group-hover:border-[#D4AF37]/50 group-hover:shadow-[0_10px_30px_rgba(212,175,55,0.2)]">
                     {/* Rating badge */}
-                    <div className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded-md bg-white/90 backdrop-blur-sm border border-black/5 px-2 py-0.5 shadow-sm">
-                      <span className="text-lg font-black text-[#C98600] leading-none">
+                    <div className="absolute top-4 left-4 z-10 flex items-center gap-1 rounded-lg bg-black/80 backdrop-blur-md border border-[#D4AF37]/40 px-2 py-0.5 shadow-md">
+                      <span className="text-lg font-black text-[#F6D365] leading-none">
                         {card.rating}
                       </span>
                     </div>
 
                     {/* Card type badge */}
-                    <div className="absolute top-2 right-2 z-10 rounded-md bg-[#E5A500]/10 backdrop-blur-sm px-1.5 py-0.5">
-                      <span className="text-[8px] font-bold text-[#B07D00] tracking-wider uppercase">
+                    <div className="absolute top-4 right-4 z-10 rounded-lg bg-[#D4AF37]/20 border border-[#D4AF37]/40 backdrop-blur-md px-2 py-0.5">
+                      <span className="text-[9px] font-bold text-[#F6D365] tracking-wider uppercase">
                         {card.type}
                       </span>
                     </div>
@@ -172,7 +177,7 @@ export function Gallery() {
                       <img
                         src={card.image}
                         alt={card.name}
-                        className="w-full rounded-xl select-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.06)]"
+                        className="w-full rounded-xl select-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]"
                       />
                     ) : (
                       <div
@@ -187,29 +192,29 @@ export function Gallery() {
 
                     {/* Shine sweep */}
                     <div className="absolute inset-0 overflow-hidden rounded-xl">
-                      <div className="absolute -left-40 top-0 h-full w-20 rotate-12 bg-white/20 blur-xl transition-all duration-1000 group-hover:left-[140%]" />
+                      <div className="absolute -left-40 top-0 h-full w-20 rotate-12 bg-white/10 blur-xl transition-all duration-1000 group-hover:left-[140%]" />
                     </div>
-                  </div>
 
-                  {/* Stats overlay */}
-                  <div className="mt-2 px-0.5">
-                    <div className="text-xs font-bold text-gray-800 uppercase tracking-wide mb-1">
-                      {card.name}
-                    </div>
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-0">
-                      {statEntries.map(([key, value]) => (
-                        <div
-                          key={key}
-                          className="flex items-center justify-between text-[10px] py-[1px]"
-                        >
-                          <span className="font-bold text-[#C98600]">
-                            {value}
-                          </span>
-                          <span className="font-semibold text-gray-400 uppercase tracking-wider">
-                            {key}
-                          </span>
-                        </div>
-                      ))}
+                    {/* Stats overlay */}
+                    <div className="mt-3 px-1 border-t border-white/10 pt-2.5">
+                      <div className="text-sm font-bold text-white uppercase tracking-wide mb-1.5 text-center">
+                        {card.name}
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                        {statEntries.map(([key, value]) => (
+                          <div
+                            key={key}
+                            className="flex items-center justify-between text-[11px] py-0.5 px-1 rounded bg-white/5"
+                          >
+                            <span className="font-semibold text-gray-400 uppercase tracking-wider">
+                              {key}
+                            </span>
+                            <span className="font-bold text-[#F6D365]">
+                              {value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -218,15 +223,15 @@ export function Gallery() {
           </div>
 
           {/* Dots Indicator */}
-          <div className="mt-4 flex justify-center gap-2">
+          <div className="mt-6 flex justify-center gap-2">
             {gallery.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => scrollToCard(idx)}
                 className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                   activeIndex === idx
-                    ? "w-6 bg-[#E5A500]"
-                    : "w-2 bg-[#E5A500]/20 hover:bg-[#E5A500]/50"
+                    ? "w-6 bg-[#F6D365] shadow-[0_0_12px_rgba(246,211,101,0.6)]"
+                    : "w-2 bg-white/20 hover:bg-[#D4AF37]/50"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />

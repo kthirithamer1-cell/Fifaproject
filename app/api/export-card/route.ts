@@ -6,7 +6,8 @@ import type { CardHTMLData } from "./buildCardHTML";
 export async function POST(req: NextRequest) {
     let browser;
     try {
-        const body: CardHTMLData = await req.json();
+        const body: CardHTMLData & { format?: "png" | "pdf" } = await req.json();
+        const exportFormat = body.format || "png";
 
         // Validate required fields
         if (!body.playerName || !body.baseImageUrl) {
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
         // Build the self-contained HTML document
         const html = buildCardHTML(body);
 
-        console.log("[EXPORT] Launching Puppeteer...");
+        console.log(`[EXPORT] Launching Puppeteer for ${exportFormat.toUpperCase()} export...`);
 
         // Launch headless Chromium
         browser = await puppeteer.launch({
@@ -34,28 +35,53 @@ export async function POST(req: NextRequest) {
 
         const page = await browser.newPage();
 
-        // Set viewport to exact card dimensions
+        // Set viewport to exact card dimensions with 3x scale factor for 300 DPI print quality (2100×3150 pixels)
         await page.setViewport({
             width: 700,
             height: 1050,
-            deviceScaleFactor: 2, // 2x for high-res output (1400×2100 actual pixels)
+            deviceScaleFactor: 3,
         });
 
         // Load the HTML content
         await page.setContent(html, {
-            waitUntil: "load", // Wait until load event fires
+            waitUntil: "load",
             timeout: 30000,
         });
 
-        // Wait a bit more for fonts to render
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Wait a bit more for fonts to render crisply
+        await new Promise((resolve) => setTimeout(resolve, 800));
 
-        console.log("[EXPORT] Taking screenshot...");
+        if (exportFormat === "pdf") {
+            console.log("[EXPORT] Generating high-resolution printable PDF...");
+            const pdfBuffer = await page.pdf({
+                width: "700px",
+                height: "1050px",
+                printBackground: true,
+                margin: { top: "0px", right: "0px", bottom: "0px", left: "0px" },
+                preferCSSPageSize: true,
+            });
 
-        // Take screenshot of the card
+            await browser.close();
+            browser = undefined;
+
+            console.log("[EXPORT] ✅ PDF generated, size:", pdfBuffer.length, "bytes");
+
+            return new NextResponse(pdfBuffer as any, {
+                status: 200,
+                headers: {
+                    "Content-Type": "application/pdf",
+                    "Content-Disposition": `attachment; filename="${body.playerName.replace(/\s+/g, "_")}_card.pdf"`,
+                    "Content-Length": String(pdfBuffer.length),
+                },
+            });
+        }
+
+        console.log("[EXPORT] Capturing 300 DPI transparent PNG screenshot...");
+
+        // Take screenshot of the card with transparent background
         const screenshot = await page.screenshot({
             type: "png",
-            omitBackground: true, // Transparent background
+            omitBackground: true, // 100% transparent background outside card shape
             clip: {
                 x: 0,
                 y: 0,
@@ -67,7 +93,7 @@ export async function POST(req: NextRequest) {
         await browser.close();
         browser = undefined;
 
-        console.log("[EXPORT] ✅ Screenshot captured, size:", screenshot.length, "bytes");
+        console.log("[EXPORT] ✅ Transparent PNG captured, size:", screenshot.length, "bytes");
 
         // Return PNG as binary response
         return new NextResponse(screenshot as any, {

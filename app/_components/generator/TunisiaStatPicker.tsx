@@ -40,7 +40,7 @@ export default function TunisiaStatPicker({
                         className={`text-sm font-bold font-space px-3 py-1.5 rounded-full border transition-all duration-300 ${
                             isFull
                                 ? "bg-emerald-50 border-emerald-200 text-emerald-700"
-                                : "bg-[#E5A500]/5 border-[#E5A500]/20 text-[#C98600]"
+                                : "bg-[#D4AF37]/5 border-[#D4AF37]/20 text-[#C89B3C]"
                         }`}
                     >
                         {selected.length} / {maxSelection} selected
@@ -72,13 +72,13 @@ export default function TunisiaStatPicker({
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search stats... (e.g. DHK, Humor, Coffee)"
-                    className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-gray-200 bg-white text-sm text-gray-900 font-space focus:outline-none focus:border-[#E5A500] focus:ring-2 focus:ring-[#E5A500]/10 transition-all duration-200 placeholder:text-gray-400"
+                    placeholder="ابحث عن ستات... (Search DHK, 9HW, KLM...)"
+                    className="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-white/15 bg-black/70 text-sm text-white font-space focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-200 placeholder:text-gray-400"
                 />
                 {query && (
                     <button
                         onClick={() => setQuery("")}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white cursor-pointer"
                     >
                         <X className="w-4 h-4" />
                     </button>
@@ -104,7 +104,7 @@ export default function TunisiaStatPicker({
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
                                     onClick={() => toggleStat(code)}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#E5A500]/10 border border-[#E5A500]/30 text-[#C98600] text-xs font-space font-semibold hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition-all duration-200 cursor-pointer group"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#C89B3C] text-xs font-space font-semibold hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition-all duration-200 cursor-pointer group"
                                 >
                                     <span>{stat.emoji}</span>
                                     <span>{stat.code}</span>
@@ -128,44 +128,42 @@ export default function TunisiaStatPicker({
                             whileHover={!disabled ? { scale: 1.02, y: -1 } : {}}
                             whileTap={!disabled ? { scale: 0.98 } : {}}
                             onClick={() => !disabled && toggleStat(stat.code)}
-                            className={`relative p-3.5 rounded-2xl border transition-all duration-300 text-left cursor-pointer ${
+                            className={`relative p-4 rounded-2xl border transition-all duration-300 text-right cursor-pointer ${
                                 active
-                                    ? "border-[#E5A500] bg-[#E5A500]/8 shadow-[0_2px_12px_rgba(229,165,0,0.12)]"
+                                    ? "border-[#D4AF37] bg-black/90 shadow-[0_4px_20px_rgba(212,175,55,0.2)]"
                                     : disabled
-                                    ? "border-gray-100 bg-gray-50/50 opacity-40 cursor-not-allowed"
-                                    : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50/50 shadow-sm"
+                                    ? "border-white/5 bg-white/5 opacity-30 cursor-not-allowed"
+                                    : "border-white/10 bg-black/70 hover:border-[#D4AF37]/50 hover:bg-black/90 shadow-md"
                             }`}
                         >
                             {/* Emoji + Code */}
-                            <div className="flex items-center gap-2 mb-1.5">
-                                <span className="text-lg">{stat.emoji}</span>
-                                <span
-                                    className={`font-space font-bold text-xs tracking-wider ${
-                                        active ? "text-[#C98600]" : "text-gray-900"
-                                    }`}
-                                >
+                            <div className="flex items-center gap-2 mb-1.5 justify-end">
+                                <span className={`font-space font-bold text-xs tracking-wider ${
+                                    active ? "text-[#F6D365]" : "text-white"
+                                }`}>
                                     {stat.code}
                                 </span>
+                                <span className="text-lg">{stat.emoji}</span>
                             </div>
 
                             {/* Stat name */}
                             <div
-                                className={`font-space text-xs leading-tight ${
-                                    active ? "text-[#C98600]/80" : "text-gray-500"
+                                className={`font-space text-xs font-semibold leading-tight ${
+                                    active ? "text-[#F6D365]" : "text-gray-300"
                                 }`}
                             >
                                 {stat.meaning}
                             </div>
 
                             {/* Tunisian name (small) */}
-                            <div className="text-[10px] text-gray-400 font-space mt-0.5 truncate">
+                            <div className="text-[10px] text-gray-400 font-space mt-1 truncate">
                                 {stat.stat}
                             </div>
 
                             {/* Selected indicator */}
                             {active && (
-                                <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#E5A500] flex items-center justify-center">
-                                    <Check className="w-3 h-3 text-white stroke-[3]" />
+                                <div className="absolute top-3 left-3 w-5 h-5 rounded-full bg-[#D4AF37] flex items-center justify-center shadow-md">
+                                    <Check className="w-3 h-3 text-black stroke-[3]" />
                                 </div>
                             )}
                         </motion.button>

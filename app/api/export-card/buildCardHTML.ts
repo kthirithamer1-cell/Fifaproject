@@ -56,7 +56,7 @@ export function buildCardHTML(data: CardHTMLData): string {
         quoteAr,
         hashtags,
         description,
-        accentColor = "#E5A500",
+        accentColor = "#D4AF37",
     } = data;
 
     const hashtagStr = hashtags.map((h) => `#${h.replace(/^#/, "")}`).join(" ");
@@ -101,11 +101,11 @@ export function buildCardHTML(data: CardHTMLData): string {
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;700;800;900&family=Caveat:wght@400;700&family=Caveat+Brush&family=Dancing+Script:wght@700&family=Satisfy&family=Kaushan+Script&family=Tajawal:wght@700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: transparent; display: flex; justify-content: center; align-items: flex-start; font-family: 'Montserrat', sans-serif; }
+        html, body { width: 700px; height: 1050px; overflow: hidden; background: transparent; font-family: 'Montserrat', sans-serif; }
     </style>
 </head>
 <body>
-    <div style="position:relative;width:700px;height:1050px;background-image:url('${baseImageUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;overflow:hidden;clip-path:polygon(13% 0%, 87% 0%, 100% 13%, 100% 77%, 50% 100%, 0% 77%, 0% 13%)">
+    <div style="position:relative;width:700px;height:1050px;background-image:url('${baseImageUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;overflow:hidden;border-radius:24px">
 
         <!-- CROWN -->
         <div style="position:absolute;top:5.2%;left:50%;transform:translateX(-50%);z-index:10">${crownSVG}</div>

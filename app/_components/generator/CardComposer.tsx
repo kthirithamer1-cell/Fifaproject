@@ -132,7 +132,7 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
             quoteAr,
             hashtags,
             description,
-            accentColor = "#E5A500",
+            accentColor = "#D4AF37",
             className = "",
         },
         ref

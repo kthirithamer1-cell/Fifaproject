@@ -37,7 +37,8 @@ STYLE:
 MOOD:
 {MOOD}
 
-QUALITY:
-Ultra-detailed, realistic, premium product render, 4K, print-ready, transparent PNG.
+QUALITY & PRINTABILITY:
+Ultra-detailed, 300+ DPI print-ready resolution, proportioned and formatted for physical printing at 50 cm x 70 cm (70 cm height x 50 cm width), premium product render, 4K/8K, 100% transparent PNG background.
+The card shield outline MUST be razor-sharp with clean, well-defined border contours, perfect for physical printing as PDF or high-res PNG.
 
 The card silhouette MUST be the highest priority. If any decorative elements conflict with the football card shape, preserve the football card shape exactly.

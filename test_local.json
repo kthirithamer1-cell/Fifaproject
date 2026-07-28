@@ -1,0 +1,30 @@
+{
+  "photo": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+  "overallRating": 99,
+  "profileInfo": {
+    "name": "GAMER ISSAM",
+    "age": "23",
+    "gender": "male",
+    "hobbies": "Competitive Gaming, PC Building, Valorant & FIFA, Live Streaming",
+    "description": "Pro Gamer & Esports Streamer from Tunisia, Clutch God in 1v5 situations"
+  },
+  "cardData": {
+    "mood": "Savage Gamer",
+    "recipient": "Friend",
+    "position": "PRO",
+    "answers": {
+      "social": "The Pro Gamer",
+      "routine": "Gaming till 5 AM, Coffee at 2 PM",
+      "superpower": "1v5 Clutch Master in clutch time",
+      "gameStyle": "Aggressive Headshot King"
+    }
+  },
+  "stats": [
+    { "code": "AIM", "value": 99 },
+    { "code": "CLT", "value": 98 },
+    { "code": "STR", "value": 96 },
+    { "code": "9HW", "value": 95 },
+    { "code": "JAW", "value": 97 },
+    { "code": "NKT", "value": 92 }
+  ]
+}
