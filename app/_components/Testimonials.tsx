@@ -64,7 +64,9 @@ export function Testimonials() {
                       <div className="text-sm font-black text-white group-hover:text-[#F6D365] transition-colors">
                         {testimonial.name}
                       </div>
-                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" title="Verified Customer" />
+                      <span title="Verified Customer" className="inline-flex items-center">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-0.5 mt-0.5 text-[#F6D365]">
