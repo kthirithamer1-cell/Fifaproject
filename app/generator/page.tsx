@@ -392,62 +392,150 @@ export default function FIFAMemeTN() {
         }, 5 * 60 * 1000);
     };
 
+    // ── Share Toast State ──
+    const [shareToast, setShareToast] = useState<{ message: string; visible: boolean }>({ message: "", visible: false });
+    const showShareToast = (message: string) => {
+        setShareToast({ message, visible: true });
+        setTimeout(() => setShareToast({ message: "", visible: false }), 5000);
+    };
+
+    // Copy image to clipboard (works in Chrome/Edge)
+    const copyImageToClipboard = async (imgSrc: string): Promise<boolean> => {
+        try {
+            const res = await fetch(imgSrc);
+            const blob = await res.blob();
+            // Convert to PNG blob if needed (clipboard requires image/png)
+            let pngBlob = blob;
+            if (blob.type !== "image/png") {
+                const bitmap = await createImageBitmap(blob);
+                const canvas = document.createElement("canvas");
+                canvas.width = bitmap.width;
+                canvas.height = bitmap.height;
+                const ctx = canvas.getContext("2d")!;
+                ctx.drawImage(bitmap, 0, 0);
+                pngBlob = await new Promise<Blob>((resolve) =>
+                    canvas.toBlob((b) => resolve(b!), "image/png")
+                );
+            }
+            await navigator.clipboard.write([
+                new ClipboardItem({ "image/png": pngBlob }),
+            ]);
+            return true;
+        } catch (e) {
+            console.warn("Clipboard image copy failed:", e);
+            return false;
+        }
+    };
+
     const handleShareSocial = async (platform: "whatsapp" | "twitter" | "facebook" | "instagram" | "native" | "copy") => {
-        const shareText = "Check out my legendary AI FIFA card! ⚽🔥";
-        const shareUrl = typeof window !== "undefined" ? window.location.href : "https://fifacard.app";
         const cardImg = generatedCardUrl || uploadPreview;
+        if (!cardImg) {
+            alert("No card image to share!");
+            return;
+        }
 
-        // ── Native File Sharing (mobile — best experience) ──
-        if (cardImg && typeof navigator !== "undefined" && navigator.share) {
-            try {
-                const res = await fetch(cardImg);
-                const blob = await res.blob();
-                const file = new File([blob], "my_fifa_card.png", { type: "image/png" });
+        const playerName = profileInfo.name || editorName || "Legend";
 
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    await navigator.share({
-                        title: "My Legendary FIFA Card",
-                        text: shareText,
-                        files: [file],
-                    });
-                    // navigator.share only resolves if user actually shared (rejects on cancel)
-                    await handleUnlockByShare("Social Media");
-                    return;
+        // ── Step 1: Upload card image to get a public shareable URL with OG tags ──
+        let shareUrl = typeof window !== "undefined" ? window.location.origin : "https://flawless.tn";
+        try {
+            const uploadRes = await fetch("/api/upload-card", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ imageData: cardImg }),
+            });
+            const uploadData = await uploadRes.json();
+            if (uploadRes.ok && uploadData.shareUrl) {
+                shareUrl = `${window.location.origin}${uploadData.shareUrl}`;
+            }
+        } catch (e) {
+            console.warn("Card upload for share failed, using fallback URL:", e);
+        }
+
+        const shareText = `شوف كارطة ${playerName} الأسطورية! ⚽🔥 #Flawless #Tunisia`;
+
+        // ── Step 2: Native File Sharing — ONLY on mobile ──
+        const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (platform === "native" || (isMobile && platform !== "copy")) {
+            if (typeof navigator !== "undefined" && navigator.share) {
+                try {
+                    const res = await fetch(cardImg);
+                    const blob = await res.blob();
+                    const file = new File([blob], `${playerName.replace(/\s+/g, "_")}_flawless_card.png`, { type: "image/png" });
+
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            title: `كارطة ${playerName} الأسطورية`,
+                            text: shareText + "\n" + shareUrl,
+                            files: [file],
+                        });
+                        await handleUnlockByShare("Social Media");
+                        return;
+                    }
+                } catch (e: any) {
+                    if (e?.name === "AbortError") {
+                        console.log("User cancelled native share");
+                        return;
+                    }
+                    console.log("Native file share fallback:", e);
                 }
-            } catch (e: any) {
-                // User cancelled the native share — do NOT unlock
-                if (e?.name === "AbortError") {
-                    console.log("User cancelled native share");
-                    return;
-                }
-                console.log("Native file share fallback:", e);
             }
         }
 
-        // ── Desktop / Fallback: open popup and track close ──
-        // Always auto-download the card image so user has it ready to attach
-        downloadCardImage();
-
+        // ── Step 3: Desktop — platform-specific flows ──
         let popup: Window | null = null;
 
-        if (platform === "whatsapp") {
-            popup = window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + " " + shareUrl)}`, "_blank");
-            waitForPopupClose(popup, "WhatsApp");
-        } else if (platform === "twitter") {
-            popup = window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, "_blank");
-            waitForPopupClose(popup, "X / Twitter");
-        } else if (platform === "facebook") {
-            popup = window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank");
+        if (platform === "facebook") {
+            // Copy card image to clipboard, then open Facebook
+            const copied = await copyImageToClipboard(cardImg);
+            if (copied) {
+                showShareToast("✅ الصورة منسوخة! الصق في بوستك على فايسبوك (Ctrl+V)");
+            } else {
+                downloadCardImage();
+                showShareToast("⬇️ الصورة تحملت! ارفعها في بوستك على فايسبوك");
+            }
+            popup = window.open("https://www.facebook.com/", "_blank");
             waitForPopupClose(popup, "Facebook");
+
         } else if (platform === "instagram") {
-            // Instagram has no web share API — download image + open Instagram
+            const copied = await copyImageToClipboard(cardImg);
+            if (copied) {
+                showShareToast("✅ الصورة منسوخة! الصق في ستوري أو بوست على إنستغرام");
+            } else {
+                downloadCardImage();
+                showShareToast("⬇️ الصورة تحملت! ارفعها على إنستغرام");
+            }
             popup = window.open("https://www.instagram.com/", "_blank");
             waitForPopupClose(popup, "Instagram");
-        } else if (platform === "copy") {
-            if (navigator.clipboard) {
-                await navigator.clipboard.writeText(shareUrl);
+
+        } else if (platform === "whatsapp") {
+            // Copy image to clipboard + open WhatsApp Web (user can paste with Ctrl+V)
+            await copyImageToClipboard(cardImg);
+            showShareToast("✅ الصورة منسوخة! اختار شكون تبعثلو و الصق (Ctrl+V)");
+            popup = window.open(`https://web.whatsapp.com/`, "_blank");
+            waitForPopupClose(popup, "WhatsApp");
+
+        } else if (platform === "twitter") {
+            // Copy image + open Twitter compose
+            const copied = await copyImageToClipboard(cardImg);
+            if (copied) {
+                showShareToast("✅ الصورة منسوخة! الصق في تغريدتك (Ctrl+V)");
+            } else {
+                downloadCardImage();
+                showShareToast("⬇️ الصورة تحملت! ارفعها في التغريدة");
             }
-            await handleUnlockByShare("Copy Link");
+            popup = window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, "_blank");
+            waitForPopupClose(popup, "X / Twitter");
+
+        } else if (platform === "copy") {
+            const copied = await copyImageToClipboard(cardImg);
+            if (copied) {
+                showShareToast("✅ الصورة منسوخة! الصقها وين تحب");
+            } else if (navigator.clipboard) {
+                await navigator.clipboard.writeText(shareUrl);
+                showShareToast("🔗 الرابط منسوخ!");
+            }
+            await handleUnlockByShare("Copy");
         }
     };
 
@@ -2616,6 +2704,28 @@ export default function FIFAMemeTN() {
                     </div>
                 </div>
             )}
+
+            {/* Share Toast Notification */}
+            <AnimatePresence>
+                {shareToast.visible && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 60, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 40, scale: 0.95 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] px-6 py-4 bg-black/90 backdrop-blur-xl border border-[#D4AF37]/40 text-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] max-w-sm text-center"
+                        dir="rtl"
+                    >
+                        <p className="text-sm font-bold font-space leading-relaxed">{shareToast.message}</p>
+                        <button
+                            onClick={() => setShareToast({ message: "", visible: false })}
+                            className="mt-2 text-[#F6D365] text-xs font-bold hover:underline cursor-pointer"
+                        >
+                            حسناً ✓
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
