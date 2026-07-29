@@ -56,7 +56,7 @@ export function FeaturesBar() {
                   <div className="absolute inset-0 rounded-2xl bg-[#D4AF37]/25 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                   <Image
-                    src="/images/save.png"
+                    src="/images/save.webp"
                     alt={feature.title}
                     width={160}
                     height={220}

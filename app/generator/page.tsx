@@ -173,7 +173,7 @@ export default function FIFAMemeTN() {
     const [editorQuoteAr, setEditorQuoteAr] = useState("أسطورة من تونس");
     const [editorHashtags, setEditorHashtags] = useState(DEFAULT_EDITOR_HASHTAGS);
     const [editorDescription, setEditorDescription] = useState("Skill • Charisma • Influence • Focus");
-    const [editorBgUrl, setEditorBgUrl] = useState<string>("/prompting/image.png");
+    const [editorBgUrl, setEditorBgUrl] = useState<string>("/prompting/image.webp");
     const [isGeneratingBg, setIsGeneratingBg] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -2349,7 +2349,7 @@ export default function FIFAMemeTN() {
                 {/* Logo & Return Link */}
                 <div className="flex items-center justify-between gap-3 mb-10">
                     <a href="/" className="inline-flex items-center gap-2">
-                        <img src="/images/logo.png" alt="Flawless" className="w-32 h-10 object-contain object-left" />
+                        <img src="/images/logo.webp" alt="Flawless" className="w-32 h-10 object-contain object-left" />
                     </a>
                 </div>
 

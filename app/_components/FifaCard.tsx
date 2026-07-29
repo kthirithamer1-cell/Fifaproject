@@ -4,7 +4,7 @@ export function FifaCard() {
   return (
     <div className="relative w-[360px]">
       <Image
-        src="/images/alui.png"
+        src="/images/alui.webp"
         alt="Snoop Dogg FIFA Card"
         width={360}
         height={540}

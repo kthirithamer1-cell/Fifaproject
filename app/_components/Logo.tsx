@@ -16,7 +16,7 @@ export function Logo({
   return (
     <div className={`logo inline-flex items-center ${className}`} aria-label="Flawless" suppressHydrationWarning>
       <img
-        src="/images/logo.png"
+        src="/images/logo.webp"
         alt="Flawless Logo"
         style={{
           width: width ? (typeof width === 'number' ? `${width}px` : width) : undefined,

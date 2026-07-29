@@ -262,14 +262,14 @@ export const STATIC_BACKGROUNDS: BackgroundOption[] = [
     {
         id: "default",
         label: "Classic Gold",
-        url: "/prompting/image.png",
-        thumbnail: "/prompting/image.png",
+        url: "/prompting/image.webp",
+        thumbnail: "/prompting/image.webp",
     },
     {
         id: "dark",
         label: "Dark Elite",
-        url: "/prompting/image2.png",
-        thumbnail: "/prompting/image2.png",
+        url: "/prompting/image2.webp",
+        thumbnail: "/prompting/image2.webp",
     },
 ];
 
@@ -328,7 +328,7 @@ export const GALLERY_MEMES = [
         name: "ALUI",
         type: "LEGEND",
         color: "#c9c2a8",
-        image: "/images/alui.png",
+        image: "/images/alui.webp",
         stats: { DHK: 98, TKK: 12, RKD: 95, HRB: 93, "9HW": 90, S7B: 94 },
     },
     {
@@ -336,7 +336,7 @@ export const GALLERY_MEMES = [
         name: "DELLAI",
         type: "LEGEND",
         color: "#2e8b57",
-        image: "/images/delai.png",
+        image: "/images/delai.webp",
         stats: { DHK: 97, TKK: 15, RKD: 94, HRB: 92, "9HW": 89, S7B: 90 },
     },
     {
@@ -344,7 +344,7 @@ export const GALLERY_MEMES = [
         name: "MAHER",
         type: "LEGEND",
         color: "#c99a3e",
-        image: "/images/maher.png",
+        image: "/images/maher.webp",
         stats: { DHK: 99, TKK: 18, RKD: 96, HRB: 95, "9HW": 93, S7B: 93 },
     },
     {
@@ -352,7 +352,7 @@ export const GALLERY_MEMES = [
         name: "ISSAM",
         type: "LEGEND",
         color: "#f4c430",
-        image: "/images/Issam.png",
+        image: "/images/Issam.webp",
         stats: { DHK: 99, TKK: 10, RKD: 98, HRB: 94, "9HW": 95, S7B: 97 },
     },
     {
@@ -360,7 +360,7 @@ export const GALLERY_MEMES = [
         name: "Amine",
         type: "LEGEND",
         color: "#9b59b6",
-        image: "/images/aluii.png",
+        image: "/images/aluii.webp",
         stats: { DHK: 96, TKK: 13, RKD: 93, HRB: 90, "9HW": 89, S7B: 89 },
     },
     {
@@ -368,7 +368,7 @@ export const GALLERY_MEMES = [
         name: "Nour",
         type: "LEGEND",
         color: "#3aa0c9",
-        image: "/images/sankooh.png",
+        image: "/images/sankooh.webp",
         stats: { DHK: 95, TKK: 11, RKD: 92, HRB: 89, "9HW": 88, S7B: 91 },
     },
 ];

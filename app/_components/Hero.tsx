@@ -473,7 +473,7 @@ function Slide1({ goNext }: { goNext: () => void }) {
       {/* Background Image & Overlays - Full Banner Fit */}
       <div className="absolute inset-0 z-0 bg-black">
         <Image
-          src="/images/image.png"
+          src="/images/image.webp"
           alt="Slide 1 Background"
           fill
           priority
@@ -542,7 +542,7 @@ function SlideBanner4({ goNext }: { goNext: () => void }) {
       {/* Background Image & Overlays - Full Banner Visible */}
       <div className="absolute inset-0 z-0 bg-black">
         <Image
-          src="/images/image4.png"
+          src="/images/image4.webp"
           alt="Mariem Tunisian Pride Banner"
           fill
           sizes="100vw"
