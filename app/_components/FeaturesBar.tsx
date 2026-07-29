@@ -3,6 +3,7 @@
 import { features } from "./data";
 import { SectionTitle } from "./SectionTitle";
 import { Laugh, Shield, Gift, Truck, Star, Sparkles, Award } from "lucide-react";
+import Image from "next/image";
 
 const FEATURE_ICONS = [Laugh, Shield, Gift, Truck, Star];
 
@@ -54,9 +55,11 @@ export function FeaturesBar() {
                   {/* Glowing Backlight */}
                   <div className="absolute inset-0 rounded-2xl bg-[#D4AF37]/25 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                  <img
+                  <Image
                     src="/images/save.png"
                     alt={feature.title}
+                    width={160}
+                    height={220}
                     className="relative w-full select-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
                   />
 

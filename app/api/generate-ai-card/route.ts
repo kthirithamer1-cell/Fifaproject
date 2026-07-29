@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { OpenAI } from "openai";
 import { TUNISIA_STATS } from "@/app/constant";
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+// Helper to get OpenAI client lazily with fallback for build time
+function getOpenAIClient() {
+    return new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY || "dummy_key_for_build",
+    });
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -65,6 +67,7 @@ Rules:
 - "description" should be 4 trait keywords separated by bullet points (•)
 - Use ONLY stat codes from the provided list`;
 
+        const openai = getOpenAIClient();
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [

@@ -1,25 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { faqs } from "./data";
 import { Clock, Truck, Sliders, CreditCard, Camera, PenTool, HelpCircle } from "lucide-react";
 
 const FAQ_ICONS = [Clock, Truck, Sliders, CreditCard, Camera, PenTool];
 
 export function Faq() {
+  const [mounted, setMounted] = useState(false);
   const [openQuestion, setOpenQuestion] = useState<string | null>(
     faqs[0]?.question ?? null
   );
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <section className="relative py-24 bg-[#080808] text-white overflow-hidden" id="faq" suppressHydrationWarning>
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning />
+      </section>
+    );
+  }
+
   return (
-    <section className="relative py-24 bg-[#080808] text-white overflow-hidden" id="faq">
+    <section className="relative py-24 bg-[#080808] text-white overflow-hidden" id="faq" suppressHydrationWarning>
       {/* Top Gold Border Accent */}
-      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
+      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" suppressHydrationWarning />
 
       {/* Gold Glow */}
-      <div className="absolute top-1/2 right-1/4 w-96 h-96 rounded-full bg-[#D4AF37]/[0.03] blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 w-96 h-96 rounded-full bg-[#D4AF37]/[0.03] blur-[160px] pointer-events-none" suppressHydrationWarning />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning>
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-4">

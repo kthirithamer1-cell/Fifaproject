@@ -4,10 +4,12 @@ import fs from "fs";
 import path from "path";
 import { buildDynamicPrompt } from "../../generator/lib/buildPrompt";
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+// Helper to get OpenAI client lazily with fallback for build time
+function getOpenAIClient() {
+    return new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY || "dummy_key_for_build",
+    });
+}
 
 // Helper to load reference image as base64
 function loadReferenceImageBase64(filename: string): string | null {
@@ -105,6 +107,7 @@ async function generateFullAICard(
 
     // 4. Generate card — pass the user's face photo directly to gpt-image-2
     //    No need for a separate Vision call to describe the face
+    const openai = getOpenAIClient();
     const imageResponse = await openai.images.edit({
         model: "gpt-image-2",
         image: new File([photoBuffer], "photo.png", { type: "image/png" }),

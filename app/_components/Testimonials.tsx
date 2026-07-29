@@ -1,11 +1,26 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { testimonials } from "./data";
 import { Star, Quote, CheckCircle2, HeartHandshake } from "lucide-react";
 
 export function Testimonials() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <section className="relative bg-[#0A0A0A] text-white py-24 overflow-hidden" id="testimonials" suppressHydrationWarning>
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning />
+      </section>
+    );
+  }
+
   return (
-    <section className="relative bg-[#0A0A0A] text-white py-24 overflow-hidden" id="testimonials">
+    <section className="relative bg-[#0A0A0A] text-white py-24 overflow-hidden" id="testimonials" suppressHydrationWarning>
       {/* Top Gold Border Accent */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
 
@@ -14,7 +29,7 @@ export function Testimonials() {
         <div className="absolute right-10 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-[#D4AF37]/[0.04] blur-[150px]" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning>
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>

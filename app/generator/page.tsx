@@ -687,7 +687,7 @@ export default function FIFAMemeTN() {
 
 
 
-    const compressImage = (dataUrl: string, maxW = 512, maxH = 512): Promise<string> => {
+    const compressImage = (dataUrl: string, maxW = 600, maxH = 600): Promise<string> => {
         return new Promise((resolve) => {
             const img = new window.Image();
             img.onload = () => {
@@ -709,8 +709,10 @@ export default function FIFAMemeTN() {
                 canvas.height = height;
                 const ctx = canvas.getContext("2d");
                 if (ctx) {
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, width, height);
                     ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL("image/png", 0.85));
+                    resolve(canvas.toDataURL("image/jpeg", 0.82));
                 } else {
                     resolve(dataUrl);
                 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { 
   Sparkles, 
   Truck, 
@@ -471,10 +472,13 @@ function Slide1({ goNext }: { goNext: () => void }) {
     <div className="relative w-full h-full flex items-center justify-end overflow-hidden bg-black">
       {/* Background Image & Overlays - Full Banner Fit */}
       <div className="absolute inset-0 z-0 bg-black">
-        <img
+        <Image
           src="/images/image.png"
           alt="Slide 1 Background"
-          className="w-full h-full object-cover object-center transform scale-100 filter brightness-100"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center transform scale-100 filter brightness-100"
         />
         {/* Soft, low-intensity shadow gradient behind text on the right */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
@@ -537,10 +541,12 @@ function SlideBanner4({ goNext }: { goNext: () => void }) {
     <div className="relative w-full h-full flex items-center justify-end overflow-hidden bg-black">
       {/* Background Image & Overlays - Full Banner Visible */}
       <div className="absolute inset-0 z-0 bg-black">
-        <img
+        <Image
           src="/images/image4.png"
           alt="Mariem Tunisian Pride Banner"
-          className="w-full h-full object-cover object-center transform scale-100 filter brightness-100"
+          fill
+          sizes="100vw"
+          className="object-cover object-center transform scale-100 filter brightness-100"
         />
         {/* Soft, low-intensity shadow gradient behind text on the right */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
