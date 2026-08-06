@@ -7,6 +7,9 @@ export interface DynamicPromptInput {
     stats: SelectedStat[];
     mood?: string;
     recipient?: string;
+    modelId?: string;
+    backgroundStyle?: string;
+    badges?: any[];
     profileInfo?: {
         name?: string;
         age?: string;

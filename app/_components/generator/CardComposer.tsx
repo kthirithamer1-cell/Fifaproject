@@ -138,23 +138,16 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
         ref
     ) => {
         return (
-            <>
-                {/* Google Fonts for card typography */}
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;700;800;900&family=Caveat:wght@400;700&family=Caveat+Brush&family=Dancing+Script:wght@700&family=Satisfy&family=Kaushan+Script&family=Tajawal:wght@700&display=swap"
-                    rel="stylesheet"
-                />
-
-                <div
-                    ref={ref}
-                    className={className}
-                    style={{
-                        position: "relative",
-                        width: 700,
-                        height: 1050,
-                        filter: "drop-shadow(0 15px 25px rgba(0, 0, 0, 0.35))",
-                    }}
-                >
+            <div
+                ref={ref}
+                className={className}
+                style={{
+                    position: "relative",
+                    width: 700,
+                    height: 1050,
+                    filter: "drop-shadow(0 15px 25px rgba(0, 0, 0, 0.35))",
+                }}
+            >
                     <div
                         style={{
                             width: "100%",
@@ -584,8 +577,8 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                             {quoteAr}
                         </div>
                     </div>
-                </PvcCardFrame>
-            </>
+                </div>
+            </div>
     );
     }
 );
