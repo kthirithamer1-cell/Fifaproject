@@ -208,8 +208,46 @@ export async function POST(req: NextRequest) {
         console.log("=== FULL AI CARD GENERATION ===");
         const rawDataUrl = await generateFullAICard(photo, cardData, overallRating, profileInfo, stats);
 
+<<<<<<< Updated upstream
         // Prepare response with HttpOnly cookie to enforce 24h limit
         const response = NextResponse.json({ imageUrl: rawDataUrl });
+=======
+        // 4. Insert job into Supabase as "pending"
+        const supabase = createServerSupabase();
+        const { error: insertError } = await supabase
+            .from("card_jobs")
+            .insert({
+                id: jobId,
+                status: "pending",
+                input: body,  // full payload: photo, cardData, stats, profileInfo, etc.
+            });
+
+        if (insertError) {
+            console.error("[generate-card] Failed to create job:", insertError);
+            return NextResponse.json(
+                { error: "Failed to queue card generation" },
+                { status: 500 }
+            );
+        }
+
+        // 5. Fire-and-forget: trigger the background worker (dynamically resolves host for Vercel)
+        const host = req.headers.get("host");
+        const protocol = req.headers.get("x-forwarded-proto") || (host?.includes("localhost") ? "http" : "https");
+        const baseUrl = process.env.BASE_URL || (host ? `${protocol}://${host}` : "http://localhost:3000");
+
+        fetch(`${baseUrl}/api/process-card`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jobId }),
+        }).catch((err) => {
+            console.error("[generate-card] Fire-and-forget failed:", err.message);
+        });
+
+        console.log(`[generate-card] ✅ Job ${jobId} queued — returning immediately`);
+
+        // 6. Set cooldown cookie and return jobId instantly
+        const response = NextResponse.json({ jobId });
+>>>>>>> Stashed changes
         response.cookies.set("card_last_gen", Date.now().toString(), {
             httpOnly: true,
             sameSite: "lax",

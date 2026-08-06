@@ -666,8 +666,13 @@ export default function FIFAMemeTN() {
             setEditorRating(aiCardData.overall || calculateOverall(aiCardData.stats || []));
             setOverallRating(aiCardData.overall || calculateOverall(aiCardData.stats || []));
             setEditorName(aiCardData.cardTitle || profileInfo.name || "LEGEND");
+<<<<<<< Updated upstream
             setEditorSubtitle(aiCardData.bio || "Born to be legendary");
             setEditorPosition(aiCardData.position || "GOAT");
+=======
+            const defaultPos = profileInfo.gender === "female" ? "QUEEN" : "BOSS";
+            setEditorPosition(aiCardData.position || defaultPos);
+>>>>>>> Stashed changes
             if (aiCardData.description) setEditorDescription(aiCardData.description);
 
             // Step 2: Generate AI card image
