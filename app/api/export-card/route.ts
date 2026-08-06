@@ -10,12 +10,14 @@ export async function POST(req: NextRequest) {
         const exportFormat = body.format || "png";
 
         // Validate required fields
-        if (!body.playerName || !body.baseImageUrl) {
+        if (!body.baseImageUrl) {
             return NextResponse.json(
-                { error: "playerName and baseImageUrl are required" },
+                { error: "baseImageUrl is required" },
                 { status: 400 }
             );
         }
+
+        const safePlayerName = (body.playerName || "card").replace(/\s+/g, "_");
 
         // Build the self-contained HTML document
         const html = buildCardHTML(body);
@@ -42,35 +44,36 @@ export async function POST(req: NextRequest) {
             deviceScaleFactor: 3,
         });
 
-        // Load the HTML content
+        // Load the self-contained HTML content into Puppeteer
         await page.setContent(html, {
-            waitUntil: "load",
-            timeout: 30000,
+            waitUntil: "domcontentloaded",
+            timeout: 15000,
         });
 
-        // Wait a bit more for fonts to render crisply
-        await new Promise((resolve) => setTimeout(resolve, 800));
+        // Small delay for SVG image rendering
+        await new Promise((resolve) => setTimeout(resolve, 400));
 
         if (exportFormat === "pdf") {
             console.log("[EXPORT] Generating high-resolution printable PDF...");
-            const pdfBuffer = await page.pdf({
+            const rawPdfBuffer = await page.pdf({
                 width: "700px",
                 height: "1050px",
                 printBackground: true,
                 margin: { top: "0px", right: "0px", bottom: "0px", left: "0px" },
-                preferCSSPageSize: true,
+                preferCSSPageSize: false,
             });
 
             await browser.close();
             browser = undefined;
 
+            const pdfBuffer = Buffer.from(rawPdfBuffer);
             console.log("[EXPORT] ✅ PDF generated, size:", pdfBuffer.length, "bytes");
 
-            return new NextResponse(pdfBuffer as any, {
+            return new NextResponse(pdfBuffer, {
                 status: 200,
                 headers: {
                     "Content-Type": "application/pdf",
-                    "Content-Disposition": `attachment; filename="${body.playerName.replace(/\s+/g, "_")}_card.pdf"`,
+                    "Content-Disposition": `attachment; filename="${safePlayerName}_card.pdf"`,
                     "Content-Length": String(pdfBuffer.length),
                 },
             });
@@ -93,15 +96,16 @@ export async function POST(req: NextRequest) {
         await browser.close();
         browser = undefined;
 
-        console.log("[EXPORT] ✅ Transparent PNG captured, size:", screenshot.length, "bytes");
+        const screenshotBuffer = Buffer.from(screenshot);
+        console.log("[EXPORT] ✅ Transparent PNG captured, size:", screenshotBuffer.length, "bytes");
 
         // Return PNG as binary response
-        return new NextResponse(screenshot as any, {
+        return new NextResponse(screenshotBuffer, {
             status: 200,
             headers: {
                 "Content-Type": "image/png",
-                "Content-Disposition": `attachment; filename="${body.playerName.replace(/\s+/g, "_")}_card.png"`,
-                "Content-Length": String(screenshot.length),
+                "Content-Disposition": `attachment; filename="${safePlayerName}_card.png"`,
+                "Content-Length": String(screenshotBuffer.length),
             },
         });
     } catch (error: any) {

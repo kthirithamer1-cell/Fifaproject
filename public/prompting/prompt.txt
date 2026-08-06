@@ -1,43 +1,12 @@
-# ROLE
-FUT master card concept artist, 3D illustrator.
+# ROLE & GOAL
+FUT master card 3D concept artist. Create a AAA sports collectible PVC card matching uploaded face photo.
 
-# GOAL
-Create a premium 3D FUT collectible card matching the uploaded reference photo style. AAA sports game special edition quality.
-
-# VISUAL & ART DIRECTION
-
-1. CARD FRAME:
-   - Full vertical card, no cropped borders, safety padding all sides.
-   - Curved arched header, center crest with 3 gold stars and circular emblem.
-   - 3D brushed gold border frame, polished chamfers, metallic highlights, golden wing accents at bottom.
-
-2. LIGHTING & ATMOSPHERE:
-   - Cinematic golden rim light on hair, shoulders, jawline.
-   - Gold dust particles floating around card.
-   - Left half: White Carrara marble with gold veining.
-   - Right half: 3D golden crystal shards with volumetric light rays.
-
-3. PORTRAIT:
-   - Heroic digital sports illustration of the uploaded face photo, sharp focus, athletic expression.
-   - White jersey with gold collar trim, marble pattern matching background.
-   - Preserve face identity exactly.
-
-4. BADGES & TEXT:
-   - Top-left: OVR rating + position.
-   - Below OVR: Tunisia flag (🇹🇳) in glossy 3D badge.
-   - Next to flag: Shield badge "FOOTBALL CLUB 2024" with golden soccer ball.
-   - Top-right: 3 attribute chips (SKILL 4★ | WEAK 4★ | WORK H/M).
-
-5. BOTTOM:
-   - Player name centered under portrait, bold uppercase.
-   - 6 stat columns in a row: code above value (DHK 98 | JAW 95 | etc).
-   - Golden shoe icon at bottom center.
+# VISUAL DIRECTION
+1. PVC CARD SILHOUETTE (CRITICAL): Vertical FUT shield card shape. Top: arched header with central M-shaped double-crown notch. Sides: clean straight vertical borders. Bottom: pointed shield apex. 3D brushed gold double-line bevel frame. Transparent PNG background outside card frame.
+2. BACKGROUND & ATMOSPHERE: Style: {BACKGROUND_STYLE}. Mood: {MOOD}. Theme: {PERSONALITY_CONTEXT}. The background MUST visually reflect the player's hobbies and personality traits described above.
+3. PORTRAIT: Heroic 3D sports illustration from uploaded face. Preserve exact facial identity. Matching jersey or stylish outfit.
+4. BADGES & OVERLAYS: Top-left: OVR rating + dynamic position/role. Below OVR: Tunisia flag badge (🇹🇳) + shield badge displaying "b FLAWLESS" brand logo with golden crown/diamond motif (NEVER generic football club). Top-right: 3 attribute chips from JSON attributes.
+5. BOTTOM: Bold player name centered under portrait + 6 stat columns in a row.
 
 # PLAYER DATA
 {PLAYER_DATA_JSON}
-
-# OUTPUT REQUIREMENTS
-- 300+ DPI, 50×70 cm print-ready, 3D render.
-- FUT card shield silhouette, razor-sharp border contours.
-- 100% transparent background outside card frame. No bleed, no spillover.
-- Full card visible, uncropped.

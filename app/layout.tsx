@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { ReferralTracker } from "./_components/ReferralTracker";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -44,6 +45,7 @@ export default function RootLayout({
             `,
           }}
         />
+        <ReferralTracker />
         {children}
       </body>
     </html>

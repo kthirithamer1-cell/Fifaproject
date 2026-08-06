@@ -1,4 +1,5 @@
 import React from "react";
+import { CARD_MODELS } from "./generator/lib/cardModels";
 import {
     Wand2,
     Camera,
@@ -253,25 +254,17 @@ export const DEFAULT_EDITOR_BADGES: CardBadge[] = [
 export const DEFAULT_EDITOR_HASHTAGS: string[] = [
     "TUNISIA",
     "LEGEND",
-    "GOAT",
+    "PRO",
     "VIBES",
     "BLEDI",
 ];
 
-export const STATIC_BACKGROUNDS: BackgroundOption[] = [
-    {
-        id: "default",
-        label: "Classic Gold",
-        url: "/prompting/image.webp",
-        thumbnail: "/prompting/image.webp",
-    },
-    {
-        id: "dark",
-        label: "Dark Elite",
-        url: "/prompting/image2.webp",
-        thumbnail: "/prompting/image2.webp",
-    },
-];
+export const STATIC_BACKGROUNDS: BackgroundOption[] = CARD_MODELS.map((model) => ({
+    id: model.id,
+    label: model.label,
+    url: model.svgBg,
+    thumbnail: model.thumbnail,
+}));
 
 // ─── 4. Landing Page Data ─────────────────────────────────────────────────
 
@@ -364,11 +357,11 @@ export const GALLERY_MEMES = [
         stats: { DHK: 96, TKK: 13, RKD: 93, HRB: 90, "9HW": 89, S7B: 89 },
     },
     {
-        rating: 94,
-        name: "Nour",
+        rating: 99,
+        name: "Mariem",
         type: "LEGEND",
         color: "#3aa0c9",
-        image: "/images/sankooh.webp",
+        image: "/images/mariem.webp",
         stats: { DHK: 95, TKK: 11, RKD: 92, HRB: 89, "9HW": 88, S7B: 91 },
     },
 ];

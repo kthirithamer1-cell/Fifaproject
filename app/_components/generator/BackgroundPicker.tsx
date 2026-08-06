@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { STATIC_BACKGROUNDS } from "@/app/constant";
 
 interface BackgroundPickerProps {
@@ -23,33 +22,33 @@ export default function BackgroundPicker({
                 Choose Background
             </div>
 
-            {/* Static backgrounds grid */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* 10 PVC Card Models grid */}
+            <div className="grid grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-1">
                 {STATIC_BACKGROUNDS.map((bg) => {
                     const isSelected = selectedBgUrl === bg.url;
                     return (
                         <button
                             key={bg.id}
+                            type="button"
                             onClick={() => onSelect(bg.url)}
                             className={`relative group aspect-[2/3] rounded-xl overflow-hidden border-2 transition-all duration-300 cursor-pointer ${
                                 isSelected
-                                    ? "border-[#D4AF37] shadow-[0_4px_20px_rgba(229,165,0,0.2)] scale-[1.02]"
-                                    : "border-gray-200 hover:border-gray-400"
+                                    ? "border-[#D4AF37] shadow-[0_4px_20px_rgba(212,175,55,0.35)] scale-[1.02]"
+                                    : "border-gray-200 hover:border-[#D4AF37]/50"
                             }`}
                         >
-                            <Image
+                            <img
                                 src={bg.thumbnail}
                                 alt={bg.label}
-                                fill
-                                className="object-cover"
+                                className="w-full h-full object-cover"
                             />
 
                             {/* Overlay gradient */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
                             {/* Label */}
                             <div className="absolute bottom-2 left-2 right-2 text-left">
-                                <span className="text-white font-space text-xs font-semibold">
+                                <span className="text-white font-space text-xs font-bold drop-shadow-sm block truncate">
                                     {bg.label}
                                 </span>
                             </div>

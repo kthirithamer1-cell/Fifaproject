@@ -46,11 +46,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
         title: "My Legendary Flawless Card ⚽🔥",
         description:
-            "شوف الكارطة متاعي! حوّل صحابك إلى أساطير الكارطة مع Flawless — #1 Custom Meme Cards in Tunisia 🇹🇳",
+            "شوف الكارطة متاعي! أنت وصاحبك الأنتيم... أساطير في كارطة! مع Flawless — #1 Custom Meme Cards in Tunisia 🇹🇳",
         openGraph: {
             title: "My Legendary Flawless Card ⚽🔥",
             description:
-                "شوف الكارطة متاعي! حوّل صحابك إلى أساطير الكارطة مع Flawless 🇹🇳",
+                "شوف الكارطة متاعي! أنت وصاحبك الأنتيم... أساطير في كارطة! مع Flawless 🇹🇳",
             url: sharePageUrl,
             siteName: "Flawless",
             images: [
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             card: "summary_large_image",
             title: "My Legendary Flawless Card ⚽🔥",
             description:
-                "شوف الكارطة متاعي! حوّل صحابك إلى أساطير الكارطة مع Flawless 🇹🇳",
+                "شوف الكارطة متاعي! أنت وصاحبك الأنتيم... أساطير في كارطة! مع Flawless 🇹🇳",
             images: [ogImageUrl],
         },
     };
@@ -112,7 +112,7 @@ export default async function SharePage({ params }: Props) {
                         </span>
                     </h1>
                     <p className="text-gray-400 text-sm">
-                        حوّل صحابك إلى أساطير الكارطة مع Flawless 🇹🇳
+                        أنت وصاحبك الأنتيم... أساطير في كارطة! مع Flawless 🇹🇳
                     </p>
                     <a
                         href="/generator"

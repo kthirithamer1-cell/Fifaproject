@@ -63,7 +63,7 @@ export function AboutFlawless() {
           </h2>
 
           <p className="mt-5 text-base sm:text-lg text-gray-300 font-medium leading-relaxed" dir="rtl">
-            مش كان للضحك فقط... <strong className="text-[#F6D365]">Flawless</strong> اتخلقت باش تصنع لأي شخص <strong className="text-white">Perfect Meme</strong> بكل عيوبه ومواصفاته الخاصة <span className="text-gray-400 font-semibold">(avec ses défauts)</span>، باش كل واحد يرا كارتته يكون <strong className="text-[#F6D365]">فخور بروحه وبشخصيته الفريدة</strong>.
+            مش كان للضحك فقط... <strong className="text-[#F6D365]">Flawless</strong> اتخلقت باش تصنع لأي شخص <strong className="text-white">Perfect Statistics</strong> بكل عيوبه ومواصفاته الخاصة <span className="text-gray-400 font-semibold">(avec ses défauts)</span>، باش كل واحد يرا كارتته يكون <strong className="text-[#F6D365]">فخور بروحه وبشخصيته الفريدة</strong>.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export function AboutFlawless() {
                 <div className="relative rounded-2xl border border-[#D4AF37]/30 bg-black/90 p-6 shadow-2xl flex flex-col items-center max-w-[280px]">
                   <Award className="h-10 w-10 text-[#F6D365] mb-3 animate-bounce" />
                   <div className="text-xs text-gray-400 font-bold uppercase tracking-widest">FLAWLESS CARD</div>
-                  <div className="text-2xl font-black text-white mt-1">صاحبك الأسطورة</div>
+                  <div className="text-2xl font-black text-white mt-1">You / ur Friend</div>
                   <div className="text-3xl font-black text-[#F6D365] mt-1">99 OVR</div>
                   <div className="mt-4 w-full grid grid-cols-3 gap-2 text-center text-xs border-t border-white/10 pt-3">
                     <div>

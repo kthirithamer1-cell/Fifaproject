@@ -6,8 +6,12 @@ CRITICAL RULES:
 - The card should have ONLY visual elements: background art + player portrait.
 - Any decorative elements must NOT contain text.
 
-CARD SHAPE (HIGHEST PRIORITY):
-- EXACT football Ultimate Team card silhouette (FIFA FUT).
+CARD SHAPE (HIGHEST PRIORITY — IDENTICAL ACROSS ALL CARDS):
+- EXACT football Ultimate Team card shield silhouette (FIFA FUT).
+- Top: smooth concave arch curving upward to a central CROWN DOUBLE-NOTCH (M-shaped peak).
+- Sides: mostly STRAIGHT vertical with a VERY SLIGHT concave inward curve. NO protruding wings, NO side ears.
+- Bottom: smooth POINTED SHIELD APEX curving to a single center point.
+- All corners gently ROUNDED. Gold metallic double-line border frame.
 - The output MUST be ONLY the card with a transparent background (PNG).
 - No table, no wall, no hands, no mockup, no scenery outside the card.
 

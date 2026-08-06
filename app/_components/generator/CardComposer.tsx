@@ -1,6 +1,7 @@
 "use client";
 
 import React, { forwardRef } from "react";
+import PvcCardFrame from "./PvcCardFrame";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -145,15 +146,10 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                     rel="stylesheet"
                 />
 
-                <div
+                <PvcCardFrame
                     ref={ref}
+                    strokeColor={accentColor}
                     className={className}
-                    style={{
-                        position: "relative",
-                        width: 700,
-                        height: 1050,
-                        filter: "drop-shadow(0 15px 25px rgba(0, 0, 0, 0.35))",
-                    }}
                 >
                     <div
                         style={{
@@ -164,9 +160,7 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            overflow: "hidden",
-                        borderRadius: "24px",
-                        fontFamily: "'Montserrat', sans-serif",
+                            fontFamily: "'Montserrat', sans-serif",
                         }}
                     >
                     {/* USER PHOTO PORTRAIT OVERLAY */}
@@ -584,9 +578,8 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                             {quoteAr}
                         </div>
                     </div>
-                </div>
-            </div>
-        </>
+                </PvcCardFrame>
+            </>
     );
     }
 );
