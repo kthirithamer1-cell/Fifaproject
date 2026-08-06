@@ -584,15 +584,8 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                             {quoteAr}
                         </div>
                     </div>
-<<<<<<< Updated upstream
-                </div>
-            </div>
-        </>
-=======
-                    </div>
                 </PvcCardFrame>
             </>
->>>>>>> Stashed changes
     );
     }
 );

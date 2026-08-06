@@ -199,19 +199,15 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { photo, cardData, overallRating, mode, backgroundStyle, freeDescription, profileInfo, stats } = body;
+        const { photo } = body;
 
         if (!photo) {
             return NextResponse.json({ error: "Photo is required" }, { status: 400 });
         }
 
-        console.log("=== FULL AI CARD GENERATION ===");
-        const rawDataUrl = await generateFullAICard(photo, cardData, overallRating, profileInfo, stats);
+        // 3. Generate a unique job ID
+        const jobId = crypto.randomUUID();
 
-<<<<<<< Updated upstream
-        // Prepare response with HttpOnly cookie to enforce 24h limit
-        const response = NextResponse.json({ imageUrl: rawDataUrl });
-=======
         // 4. Insert job into Supabase as "pending"
         const supabase = createServerSupabase();
         const { error: insertError } = await supabase
@@ -247,7 +243,6 @@ export async function POST(req: NextRequest) {
 
         // 6. Set cooldown cookie and return jobId instantly
         const response = NextResponse.json({ jobId });
->>>>>>> Stashed changes
         response.cookies.set("card_last_gen", Date.now().toString(), {
             httpOnly: true,
             sameSite: "lax",

@@ -623,6 +623,39 @@ export default function FIFAMemeTN() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    // ── Reusable polling helper for async job-based card generation ──
+    const pollJobStatus = async (jobId: string, startTime: number): Promise<string> => {
+        const INITIAL_DELAY = 8000; // 8s initial wait (OpenAI image edit takes minimum 12-15s)
+        const POLL_INTERVAL = 4000;  // 4s interval for subsequent checks
+        const MAX_POLL_TIME = 5 * 60 * 1000; // 5 minutes max limit
+
+        let isFirstPoll = true;
+
+        while (true) {
+            const waitTime = isFirstPoll ? INITIAL_DELAY : POLL_INTERVAL;
+            await new Promise((resolve) => setTimeout(resolve, waitTime));
+            isFirstPoll = false;
+
+            const elapsed = Date.now() - startTime;
+            if (elapsed > MAX_POLL_TIME) {
+                throw new Error("Generation timed out. Please try again.");
+            }
+
+            const progressPct = Math.min(95, Math.round((elapsed / 45000) * 95));
+            setGenerationProgress(progressPct);
+
+            const statusRes = await fetch(`/api/card-status/${jobId}`);
+            const job = await statusRes.json();
+
+            if (job.status === "done") {
+                return job.imageUrl;
+            }
+            if (job.status === "failed") {
+                throw new Error(job.error || "Card generation failed");
+            }
+        }
+    };
+
     const startAIGeneration = async () => {
         setIsGenerating(true);
         setGenerationProgress(0);
@@ -630,15 +663,6 @@ export default function FIFAMemeTN() {
         setShowConfetti(false);
         setGenerationError(null);
         setGeneratedCardUrl(null);
-
-        // Simulated progress steps during the actual network call
-        let progressVal = 0;
-        const progressInterval = setInterval(() => {
-            if (progressVal < 90) {
-                progressVal += Math.random() * 6 + 2;
-                setGenerationProgress(Math.min(Math.round(progressVal), 95));
-            }
-        }, 800);
 
         try {
             // Step 1: Call AI to analyze interview answers and pick stats
@@ -666,16 +690,14 @@ export default function FIFAMemeTN() {
             setEditorRating(aiCardData.overall || calculateOverall(aiCardData.stats || []));
             setOverallRating(aiCardData.overall || calculateOverall(aiCardData.stats || []));
             setEditorName(aiCardData.cardTitle || profileInfo.name || "LEGEND");
-<<<<<<< Updated upstream
             setEditorSubtitle(aiCardData.bio || "Born to be legendary");
-            setEditorPosition(aiCardData.position || "GOAT");
-=======
             const defaultPos = profileInfo.gender === "female" ? "QUEEN" : "BOSS";
             setEditorPosition(aiCardData.position || defaultPos);
->>>>>>> Stashed changes
             if (aiCardData.description) setEditorDescription(aiCardData.description);
 
-            // Step 2: Generate AI card image
+            setGenerationProgress(15);
+
+            // Step 2: Submit card generation job (instant — returns jobId)
             const bgResponse = await fetch("/api/generate-card", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -684,7 +706,7 @@ export default function FIFAMemeTN() {
                     cardData: {
                         ...cardData,
                         answers: aiInterviewAnswers,
-                        position: aiCardData.position,
+                        position: aiCardData.position || defaultPos,
                     },
                     overallRating: aiCardData.overall || 85,
                     profileInfo: profileInfo,
@@ -694,22 +716,26 @@ export default function FIFAMemeTN() {
             });
 
             const bgData = await bgResponse.json();
-            clearInterval(progressInterval);
 
             if (!bgResponse.ok) {
                 if (bgResponse.status === 429 || bgData.cooldownRemainingSeconds) {
                     setCooldownRemainingSeconds(bgData.cooldownRemainingSeconds || 86400);
                     setIsCooldownActive(true);
                 }
-                throw new Error(bgData.error || "Failed to generate card background");
+                throw new Error(bgData.error || "Failed to queue card generation");
             }
 
-            setGeneratedCardUrl(bgData.imageUrl);
-            setEditorBgUrl(bgData.imageUrl);
-            saveCardToLocalStorage(bgData.imageUrl, {
+            setGenerationProgress(20);
+
+            // Step 3: Poll for completion
+            const imageUrl = await pollJobStatus(bgData.jobId, Date.now());
+
+            setGeneratedCardUrl(imageUrl);
+            setEditorBgUrl(imageUrl);
+            saveCardToLocalStorage(imageUrl, {
                 editorName: aiCardData.cardTitle || profileInfo.name || "LEGEND",
                 editorSubtitle: aiCardData.bio || "Born to be legendary",
-                editorPosition: aiCardData.position || "GOAT",
+                editorPosition: aiCardData.position || defaultPos,
                 editorRating: aiCardData.overall || calculateOverall(aiCardData.stats || []),
                 editorStats: aiStats,
                 editorDescription: aiCardData.description,
@@ -725,7 +751,6 @@ export default function FIFAMemeTN() {
             }, 3000);
 
         } catch (err: any) {
-            clearInterval(progressInterval);
             setIsGenerating(false);
             setGenerationError(err.message || "Failed to generate card using AI.");
         }
@@ -752,7 +777,7 @@ export default function FIFAMemeTN() {
         setEditorDescription(descParts.slice(0, 4).join(" • "));
     };
 
-    // ── Generate AI background for the editor ──
+    // ── Generate AI background for the editor (async polling) ──
     const startHybridBgGeneration = async () => {
         if (!uploadPreview) return;
         setIsGeneratingBg(true);
@@ -768,9 +793,10 @@ export default function FIFAMemeTN() {
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.error || "Failed to generate background");
+            if (!response.ok) throw new Error(data.error || "Failed to queue background generation");
 
-            setEditorBgUrl(data.imageUrl);
+            const imageUrl = await pollJobStatus(data.jobId, Date.now());
+            setEditorBgUrl(imageUrl);
         } catch (err: any) {
             console.error("Background generation failed:", err);
         } finally {
@@ -1587,7 +1613,7 @@ export default function FIFAMemeTN() {
         );
     };
 
-    // ── AI Card Generation for Describe Yourself Mode ──
+    // ── AI Card Generation for Describe Yourself Mode (async polling) ──
     const startDescribeAIGeneration = async () => {
         applyManualStatsToEditor();
         setCurrentStep("ai");
@@ -1597,14 +1623,6 @@ export default function FIFAMemeTN() {
         setShowConfetti(false);
         setGenerationError(null);
         setGeneratedCardUrl(null);
-
-        let progressVal = 0;
-        const progressInterval = setInterval(() => {
-            if (progressVal < 90) {
-                progressVal += Math.random() * 6 + 2;
-                setGenerationProgress(Math.min(Math.round(progressVal), 95));
-            }
-        }, 800);
 
         try {
             const formattedStats = selectedStatCodes.map((code) => ({
@@ -1626,22 +1644,25 @@ export default function FIFAMemeTN() {
             });
 
             const data = await response.json();
-            clearInterval(progressInterval);
 
             if (!response.ok) {
                 if (response.status === 429 || data.cooldownRemainingSeconds) {
                     setCooldownRemainingSeconds(data.cooldownRemainingSeconds || 86400);
                     setIsCooldownActive(true);
                 }
-                throw new Error(data.error || "Failed to generate card");
+                throw new Error(data.error || "Failed to queue card generation");
             }
 
-            setGeneratedCardUrl(data.imageUrl);
-            setEditorBgUrl(data.imageUrl);
-            saveCardToLocalStorage(data.imageUrl, {
+            setGenerationProgress(10);
+
+            const imageUrl = await pollJobStatus(data.jobId, Date.now());
+
+            setGeneratedCardUrl(imageUrl);
+            setEditorBgUrl(imageUrl);
+            saveCardToLocalStorage(imageUrl, {
                 editorName: profileInfo.name || "LEGEND",
                 editorSubtitle: "Born to be legendary",
-                editorPosition: "GOAT",
+                editorPosition: selectedStatCodes[0] || "PRO",
                 editorRating: overall,
                 editorStats: formattedStats,
             });
@@ -1655,7 +1676,6 @@ export default function FIFAMemeTN() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }, 3000);
         } catch (err: any) {
-            clearInterval(progressInterval);
             setIsGenerating(false);
             setGenerationError(err.message || "Failed to generate card using AI.");
         }
