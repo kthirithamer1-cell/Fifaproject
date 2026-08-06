@@ -645,6 +645,11 @@ export default function FIFAMemeTN() {
             setGenerationProgress(progressPct);
 
             const statusRes = await fetch(`/api/card-status/${jobId}`);
+            const contentType = statusRes.headers.get("content-type") || "";
+            if (!contentType.includes("application/json")) {
+                console.error("[pollJobStatus] Response is not JSON:", statusRes.status);
+                throw new Error(`Server route error (${statusRes.status}). Please verify API deployment.`);
+            }
             const job = await statusRes.json();
 
             if (job.status === "done") {
