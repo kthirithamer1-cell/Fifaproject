@@ -324,6 +324,30 @@ export const MARKETING_FEATURES = [
 
 export const GALLERY_MEMES = [
     {
+        rating: 93,
+        name: "YOUSSEF",
+        type: "LEGEND",
+        color: "#e5b839",
+        image: "/images/youssef.webp",
+        stats: { DHK: 98, JAW: 99, S7B: 96, "9HW": 92, DBR: 90, HRB: 88 },
+    },
+    {
+        rating: 97,
+        name: "KADER",
+        type: "BOSS",
+        color: "#d4af37",
+        image: "/images/kader.webp",
+        stats: { GZR: 97, MRG: 95, DHK: 96, TKK: 91, S7B: 95, "9HW": 93 },
+    },
+    {
+        rating: 96,
+        name: "SOUSOU",
+        type: "Qween",
+        color: "#ffbf00",
+        image: "/images/Sousou.webp",
+        stats: { DHK: 99, JAW: 98, S7B: 97, RKD: 94, "9HW": 96, HRB: 91 },
+    },
+    {
         rating: 97,
         name: "ALUI",
         type: "LEGEND",
@@ -415,12 +439,6 @@ export const CARD_PACKAGES = [
 ];
 
 export const TESTIMONIALS_LIST = [
-    {
-        name: "Mohamed Ali",
-        initials: "MA",
-        avatar: "👤",
-        quote: "نكيت بالضحك 😂",
-    },
     {
         name: "Achref Ben",
         initials: "AB",

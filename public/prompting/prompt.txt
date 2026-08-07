@@ -2,42 +2,50 @@
 FUT master card concept artist, 3D illustrator.
 
 # GOAL
-Create a premium 3D FUT collectible card matching the uploaded reference photo style. AAA sports game special edition quality.
+Create a premium 3D FUT collectible card. AAA sports game special edition quality. The card MUST use the EXACT shield shape from the reference frame image provided.
+
+# CARD SHAPE — CRITICAL
+The second attached image is the EXACT card outline frame you MUST follow:
+- Shield-shaped card with a small decorative CROWN NOTCH at top center.
+- Slightly concave/curved sides that taper inward at the bottom.
+- Bottom has a gentle inward curve (NOT a sharp point).
+- Rounded corners at the top sides, smooth contour everywhere.
+- 3D brushed-gold metallic border frame with polished highlights.
+- The generated card silhouette MUST perfectly match this frame — no rectangular cards, no different shapes.
+- 100% TRANSPARENT background OUTSIDE the gold frame border. Nothing outside the shield.
 
 # VISUAL & ART DIRECTION
 
-1. CARD FRAME:
-   - Full vertical card, no cropped borders, safety padding all sides.
-   - Curved arched header, center crest with 3 gold stars and circular emblem.
-   - 3D brushed gold border frame, polished chamfers, metallic highlights, golden wing accents at bottom.
+1. INSIDE THE CARD FRAME:
+   - Background: Deep elegant dark obsidian and white Carrara marble texture with rich dynamic contrast. Do NOT make the entire background golden.
 
 2. LIGHTING & ATMOSPHERE:
-   - Cinematic golden rim light on hair, shoulders, jawline.
-   - Gold dust particles floating around card.
-   - Left half: White Carrara marble with gold veining.
-   - Right half: 3D golden crystal shards with volumetric light rays.
+   - Cinematic rim lighting on hair, shoulders, and background elements.
+   - Clean metallic frame border with polished highlights.
 
 3. PORTRAIT:
    - Heroic digital sports illustration of the uploaded face photo, sharp focus, athletic expression.
-   - White jersey with gold collar trim, marble pattern matching background.
-   - Preserve face identity exactly.
+   - White jersey with collar trim, matching card aesthetic.
+   - Preserve face identity exactly from the uploaded photo.
 
-4. BADGES & TEXT:
-   - Top-left: OVR rating + position.
+4. BADGES & TEXT (STRICT COLOR RULES):
+   - Top-left: OVR rating + position in metallic GOLD text.
    - Below OVR: Tunisia flag (🇹🇳) in glossy 3D badge.
-   - Next to flag: Shield badge "FOOTBALL CLUB 2024" with golden soccer ball.
-   - Top-right: 3 attribute chips (SKILL 4★ | WEAK 4★ | WORK H/M).
+   - Next to flag: Official "FLAWLESS" company brand logo badge (3D crest emblem with "FLAWLESS" logo & crown symbol).
+   - DO NOT generate any SKILL, WEAK FOOT, or WORK RATE text/chips on the card. Keep top-right clean.
 
-5. BOTTOM:
-   - Player name centered under portrait, bold uppercase.
-   - 6 stat columns in a row: code above value (DHK 98 | JAW 95 | etc).
-   - Golden shoe icon at bottom center.
+5. BOTTOM (GOLD TEXT & STATS):
+   - Player name centered under portrait in bold uppercase GOLD metallic lettering.
+   - 6 stat columns in a row in GOLD text & numbers: code above value (DHK 98 | JAW 95 | etc).
+   - GOLD COLOR RULE: Gold metallic finish is reserved strictly for TEXT elements (Player Name, Rating, Position, Stat numbers & codes).
+   - Official "FLAWLESS" brand logo emblem & shoe icon at bottom center.
 
 # PLAYER DATA
 {PLAYER_DATA_JSON}
 
-# OUTPUT REQUIREMENTS
-- 300+ DPI, 50×70 cm print-ready, 3D render.
-- FUT card shield silhouette, razor-sharp border contours.
-- 100% transparent background outside card frame. No bleed, no spillover.
-- Full card visible, uncropped.
+# OUTPUT REQUIREMENTS & UNCROPPED RULE
+- 300+ DPI, print-ready quality, 3D render.
+- Card shape MUST be the EXACT shield silhouette from the reference frame image.
+- Razor-sharp gold border contours matching the reference exactly.
+- 100% transparent background outside card frame. No bleed, no spillover, no rectangular bounding box visible.
+- CRITICAL UNCROPPED REQUIREMENT: The ENTIRE card shield MUST be 100% fully visible inside the image frame with comfortable padding around all edges. Do NOT crop, slice, or cut off the top crown notch, top header, side gold borders, or bottom shield point.

@@ -28,12 +28,13 @@ import {
     ArrowRight,
     Wand2,
     PenTool,
-    Download,
     SlidersHorizontal,
     MessageCircle,
     UserCircle,
     ListChecks,
-    Lock
+    Lock,
+    Truck,
+    CheckCircle2
 } from "lucide-react";
 import CardComposer from "../_components/generator/CardComposer";
 import type { CardStat, CardBadge } from "../_components/generator/CardComposer";
@@ -194,60 +195,32 @@ export default function FIFAMemeTN() {
     // ── AI Interview State ──
     const [aiInterviewIndex, setAiInterviewIndex] = useState(0);
     const [aiInterviewAnswers, setAiInterviewAnswers] = useState<Record<string, string>>({});
-    const [isExportingFormat, setIsExportingFormat] = useState<"png" | "pdf" | null>(null);
 
-    const handleExportCard = async (format: "png" | "pdf") => {
-        if (isExportingFormat) return;
-        setIsExportingFormat(format);
-        try {
-            const name = profileInfo.name || editorName || "MARIEM";
-            const payload = {
-                baseImageUrl: generatedCardUrl || uploadPreview || cardData.staticBgUrl || "/generator/back.png",
-                playerName: name.toUpperCase(),
-                subtitle: editorSubtitle || "Zin w bech n3ich",
-                rating: overallRating || editorRating || 99,
-                position: editorPosition || "VALEUR",
-                stats: editorStats,
-                badges: editorBadges,
-                quoteFr: editorQuoteFr || "Ma voix, mon choix, mon avenir",
-                quoteAr: editorQuoteAr || "صوتي، اختياري، مستقبلي",
-                hashtags: editorHashtags || ["GENZ_TUNISIA", "ZIN_LIFE", "FOCUS", "VIBES", "BLEDI"],
-                description: editorDescription || "Dlel Zin • Charizam • Instagramable • Indépendante",
-                accentColor: editorAccentColor || "#E5A500",
-                format,
-            };
+    // ── Order & Checkout State ──
+    const [selectedSize, setSelectedSize] = useState<"standard" | "mega">("standard");
+    const [orderForm, setOrderForm] = useState({
+        customerName: "",
+        phone: "",
+        governorate: "تونس",
+        city: "",
+        address: "",
+        quantity: 1,
+        notes: "",
+    });
+    const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
+    const [orderError, setOrderError] = useState<string | null>(null);
+    const [orderSuccessModal, setOrderSuccessModal] = useState<{
+        visible: boolean;
+        orderId: string;
+        details: any;
+    } | null>(null);
 
-            const res = await fetch("/api/export-card", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || "Export failed");
-            }
-
-            const blob = await res.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `${name.replace(/\s+/g, "_")}_fifa_card.${format}`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-        } catch (err: any) {
-            console.error("Export error:", err);
-            alert(`Export failed: ${err.message || err}`);
-        } finally {
-            setIsExportingFormat(null);
-        }
-    };
-
-    // ── 24-Hour Cooldown State ──
+    // ── 24-Hour Cooldown & Generation Rate Limit State ──
+    const [remainingGenerations, setRemainingGenerations] = useState<number>(3);
+    const [totalGenerations, setTotalGenerations] = useState<number>(3);
     const [cooldownRemainingSeconds, setCooldownRemainingSeconds] = useState<number>(0);
     const [isCooldownActive, setIsCooldownActive] = useState<boolean>(false);
+    const [showCooldownModal, setShowCooldownModal] = useState<boolean>(false);
 
     const formatCooldownTime = (totalSeconds: number) => {
         const hours = Math.floor(totalSeconds / 3600);
@@ -258,34 +231,51 @@ export default function FIFAMemeTN() {
 
     useEffect(() => {
         setMounted(true);
-        // Check 24h rate limit cooldown status on mount
+        // Check rate limit & remaining attempts on mount
         fetch("/api/generate-card")
             .then((res) => res.json())
             .then((data) => {
-                if (data && !data.canGenerate && data.cooldownRemainingSeconds > 0) {
-                    setCooldownRemainingSeconds(data.cooldownRemainingSeconds);
-                    setIsCooldownActive(true);
+                if (data) {
+                    if (typeof data.remainingGenerations === "number") {
+                        setRemainingGenerations(data.remainingGenerations);
+                    }
+                    if (typeof data.totalGenerations === "number") {
+                        setTotalGenerations(data.totalGenerations);
+                    }
+                    if (!data.canGenerate || data.remainingGenerations <= 0) {
+                        setIsCooldownActive(true);
+                        if (data.cooldownRemainingSeconds) {
+                            setCooldownRemainingSeconds(data.cooldownRemainingSeconds);
+                        }
+                    } else {
+                        setIsCooldownActive(false);
+                        setCooldownRemainingSeconds(0);
+                    }
                 }
             })
-            .catch((err) => console.error("Error checking cooldown:", err));
+            .catch((err) => console.error("Error checking generation rate limit:", err));
     }, []);
 
     useEffect(() => {
         if (cooldownRemainingSeconds <= 0) {
-            setIsCooldownActive(false);
+            if (remainingGenerations <= 0) {
+                setRemainingGenerations(3);
+                setIsCooldownActive(false);
+            }
             return;
         }
         const timer = setInterval(() => {
             setCooldownRemainingSeconds((prev) => {
                 if (prev <= 1) {
                     setIsCooldownActive(false);
+                    setRemainingGenerations(3);
                     return 0;
                 }
                 return prev - 1;
             });
         }, 1000);
         return () => clearInterval(timer);
-    }, [cooldownRemainingSeconds]);
+    }, [cooldownRemainingSeconds, remainingGenerations]);
 
     // ── LocalStorage Helpers ──
     const LOCAL_STORAGE_KEY_CARD_URL = "fifa_generated_card_url";
@@ -295,9 +285,13 @@ export default function FIFAMemeTN() {
         try {
             if (typeof window !== "undefined") {
                 localStorage.setItem(LOCAL_STORAGE_KEY_CARD_URL, imageUrl);
-                if (extraData) {
-                    localStorage.setItem(LOCAL_STORAGE_KEY_CARD_DATA, JSON.stringify(extraData));
-                }
+                const dataToSave = {
+                    ...extraData,
+                    profileName: profileInfo.name || editorName,
+                    selectedSize,
+                    overallRating,
+                };
+                localStorage.setItem(LOCAL_STORAGE_KEY_CARD_DATA, JSON.stringify(dataToSave));
             }
         } catch (e) {
             console.warn("Failed to save card to localStorage:", e);
@@ -321,10 +315,17 @@ export default function FIFAMemeTN() {
         return { savedUrl: null, savedData: null };
     };
 
-    const [showCooldownModal, setShowCooldownModal] = useState<boolean>(false);
-
     useEffect(() => {
         setMounted(true);
+        // Read size query parameter from URL
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const sizeParam = params.get("size");
+            if (sizeParam === "mega" || sizeParam === "standard") {
+                setSelectedSize(sizeParam);
+            }
+        }
+
         // Restore saved card image & details from localStorage if present
         const { savedUrl, savedData } = loadCardFromLocalStorage();
         if (savedUrl) {
@@ -332,6 +333,11 @@ export default function FIFAMemeTN() {
             setEditorBgUrl(savedUrl);
             if (savedData) {
                 if (savedData.editorName) setEditorName(savedData.editorName);
+                if (savedData.profileName) {
+                    setProfileInfo((prev) => ({ ...prev, name: savedData.profileName }));
+                    setOrderForm((prev) => ({ ...prev, customerName: savedData.profileName }));
+                }
+                if (savedData.selectedSize) setSelectedSize(savedData.selectedSize);
                 if (savedData.editorSubtitle) setEditorSubtitle(savedData.editorSubtitle);
                 if (savedData.editorPosition) setEditorPosition(savedData.editorPosition);
                 if (savedData.editorRating) setEditorRating(savedData.editorRating);
@@ -623,44 +629,6 @@ export default function FIFAMemeTN() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // ── Reusable polling helper for async job-based card generation ──
-    const pollJobStatus = async (jobId: string, startTime: number): Promise<string> => {
-        const INITIAL_DELAY = 8000; // 8s initial wait (OpenAI image edit takes minimum 12-15s)
-        const POLL_INTERVAL = 4000;  // 4s interval for subsequent checks
-        const MAX_POLL_TIME = 5 * 60 * 1000; // 5 minutes max limit
-
-        let isFirstPoll = true;
-
-        while (true) {
-            const waitTime = isFirstPoll ? INITIAL_DELAY : POLL_INTERVAL;
-            await new Promise((resolve) => setTimeout(resolve, waitTime));
-            isFirstPoll = false;
-
-            const elapsed = Date.now() - startTime;
-            if (elapsed > MAX_POLL_TIME) {
-                throw new Error("Generation timed out. Please try again.");
-            }
-
-            const progressPct = Math.min(95, Math.round((elapsed / 45000) * 95));
-            setGenerationProgress(progressPct);
-
-            const statusRes = await fetch(`/api/card-status/${jobId}`);
-            const contentType = statusRes.headers.get("content-type") || "";
-            if (!contentType.includes("application/json")) {
-                console.error("[pollJobStatus] Response is not JSON:", statusRes.status);
-                throw new Error(`Server route error (${statusRes.status}). Please verify API deployment.`);
-            }
-            const job = await statusRes.json();
-
-            if (job.status === "done") {
-                return job.imageUrl;
-            }
-            if (job.status === "failed") {
-                throw new Error(job.error || "Card generation failed");
-            }
-        }
-    };
-
     const startAIGeneration = async () => {
         setIsGenerating(true);
         setGenerationProgress(0);
@@ -668,6 +636,14 @@ export default function FIFAMemeTN() {
         setShowConfetti(false);
         setGenerationError(null);
         setGeneratedCardUrl(null);
+
+        let progressVal = 0;
+        const progressInterval = setInterval(() => {
+            if (progressVal < 90) {
+                progressVal += Math.random() * 6 + 2;
+                setGenerationProgress(Math.min(Math.round(progressVal), 95));
+            }
+        }, 800);
 
         try {
             // Step 1: Call AI to analyze interview answers and pick stats
@@ -700,9 +676,7 @@ export default function FIFAMemeTN() {
             setEditorPosition(aiCardData.position || defaultPos);
             if (aiCardData.description) setEditorDescription(aiCardData.description);
 
-            setGenerationProgress(15);
-
-            // Step 2: Submit card generation job (instant — returns jobId)
+            // Step 2: Generate AI card image (Synchronous)
             const bgResponse = await fetch("/api/generate-card", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -721,23 +695,28 @@ export default function FIFAMemeTN() {
             });
 
             const bgData = await bgResponse.json();
+            clearInterval(progressInterval);
 
             if (!bgResponse.ok) {
                 if (bgResponse.status === 429 || bgData.cooldownRemainingSeconds) {
+                    setRemainingGenerations(0);
                     setCooldownRemainingSeconds(bgData.cooldownRemainingSeconds || 86400);
                     setIsCooldownActive(true);
                 }
-                throw new Error(bgData.error || "Failed to queue card generation");
+                throw new Error(bgData.error || "Failed to generate card background");
             }
 
-            setGenerationProgress(20);
+            if (typeof bgData.remainingGenerations === "number") {
+                setRemainingGenerations(bgData.remainingGenerations);
+                if (bgData.remainingGenerations <= 0) {
+                    setIsCooldownActive(true);
+                    setCooldownRemainingSeconds(bgData.cooldownRemainingSeconds || 86400);
+                }
+            }
 
-            // Step 3: Poll for completion
-            const imageUrl = await pollJobStatus(bgData.jobId, Date.now());
-
-            setGeneratedCardUrl(imageUrl);
-            setEditorBgUrl(imageUrl);
-            saveCardToLocalStorage(imageUrl, {
+            setGeneratedCardUrl(bgData.imageUrl);
+            setEditorBgUrl(bgData.imageUrl);
+            saveCardToLocalStorage(bgData.imageUrl, {
                 editorName: aiCardData.cardTitle || profileInfo.name || "LEGEND",
                 editorSubtitle: aiCardData.bio || "Born to be legendary",
                 editorPosition: aiCardData.position || defaultPos,
@@ -756,6 +735,7 @@ export default function FIFAMemeTN() {
             }, 3000);
 
         } catch (err: any) {
+            clearInterval(progressInterval);
             setIsGenerating(false);
             setGenerationError(err.message || "Failed to generate card using AI.");
         }
@@ -782,7 +762,7 @@ export default function FIFAMemeTN() {
         setEditorDescription(descParts.slice(0, 4).join(" • "));
     };
 
-    // ── Generate AI background for the editor (async polling) ──
+    // ── Generate AI background for the editor (Synchronous) ──
     const startHybridBgGeneration = async () => {
         if (!uploadPreview) return;
         setIsGeneratingBg(true);
@@ -798,10 +778,9 @@ export default function FIFAMemeTN() {
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.error || "Failed to queue background generation");
+            if (!response.ok) throw new Error(data.error || "Failed to generate background");
 
-            const imageUrl = await pollJobStatus(data.jobId, Date.now());
-            setEditorBgUrl(imageUrl);
+            setEditorBgUrl(data.imageUrl);
         } catch (err: any) {
             console.error("Background generation failed:", err);
         } finally {
@@ -1618,7 +1597,7 @@ export default function FIFAMemeTN() {
         );
     };
 
-    // ── AI Card Generation for Describe Yourself Mode (async polling) ──
+    // ── AI Card Generation for Describe Yourself Mode (Synchronous) ──
     const startDescribeAIGeneration = async () => {
         applyManualStatsToEditor();
         setCurrentStep("ai");
@@ -1628,6 +1607,14 @@ export default function FIFAMemeTN() {
         setShowConfetti(false);
         setGenerationError(null);
         setGeneratedCardUrl(null);
+
+        let progressVal = 0;
+        const progressInterval = setInterval(() => {
+            if (progressVal < 90) {
+                progressVal += Math.random() * 6 + 2;
+                setGenerationProgress(Math.min(Math.round(progressVal), 95));
+            }
+        }, 800);
 
         try {
             const formattedStats = selectedStatCodes.map((code) => ({
@@ -1649,22 +1636,28 @@ export default function FIFAMemeTN() {
             });
 
             const data = await response.json();
+            clearInterval(progressInterval);
 
             if (!response.ok) {
                 if (response.status === 429 || data.cooldownRemainingSeconds) {
+                    setRemainingGenerations(0);
                     setCooldownRemainingSeconds(data.cooldownRemainingSeconds || 86400);
                     setIsCooldownActive(true);
                 }
-                throw new Error(data.error || "Failed to queue card generation");
+                throw new Error(data.error || "Failed to generate card");
             }
 
-            setGenerationProgress(10);
+            if (typeof data.remainingGenerations === "number") {
+                setRemainingGenerations(data.remainingGenerations);
+                if (data.remainingGenerations <= 0) {
+                    setIsCooldownActive(true);
+                    setCooldownRemainingSeconds(data.cooldownRemainingSeconds || 86400);
+                }
+            }
 
-            const imageUrl = await pollJobStatus(data.jobId, Date.now());
-
-            setGeneratedCardUrl(imageUrl);
-            setEditorBgUrl(imageUrl);
-            saveCardToLocalStorage(imageUrl, {
+            setGeneratedCardUrl(data.imageUrl);
+            setEditorBgUrl(data.imageUrl);
+            saveCardToLocalStorage(data.imageUrl, {
                 editorName: profileInfo.name || "LEGEND",
                 editorSubtitle: "Born to be legendary",
                 editorPosition: selectedStatCodes[0] || "PRO",
@@ -1681,6 +1674,7 @@ export default function FIFAMemeTN() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }, 3000);
         } catch (err: any) {
+            clearInterval(progressInterval);
             setIsGenerating(false);
             setGenerationError(err.message || "Failed to generate card using AI.");
         }
@@ -2033,82 +2027,37 @@ export default function FIFAMemeTN() {
                     </div>
                     <div className="space-y-3 max-w-md">
                         <h2 className="text-2xl font-bold font-sora text-gray-900">
-                            {isCooldownActive ? "24-Hour AI Generation Cooldown" : "Generation Failed"}
+                            {isCooldownActive ? "Daily Limit Reached (3/3 Used)" : "Generation Failed"}
                         </h2>
                         {isCooldownActive && (
                             <div className="inline-flex items-center space-x-2 px-4 py-2 bg-amber-100/70 border border-amber-300 text-amber-900 rounded-xl font-mono text-lg font-bold">
-                                <span>⏳ {formatCooldownTime(cooldownRemainingSeconds)}</span>
+                                <span>⏳ Refreshing in {formatCooldownTime(cooldownRemainingSeconds)}</span>
                             </div>
                         )}
                         <p className="text-gray-600 font-space text-sm">
-                            {generationError || "AI generation is limited to once per 24 hours per user. You can still customize your card freely or share on social media to unlock an instant regeneration!"}
+                            {generationError || "You have used your 3 AI card generations for today. Your 3 generations refresh automatically every 24 hours."}
                         </p>
                     </div>
 
-                    {isCooldownActive && (
-                        <div className="w-full max-w-md p-5 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-300/40 rounded-3xl space-y-4">
-                            <div className="text-center space-y-1">
-                                <h3 className="font-bold text-amber-900 text-base font-sora flex items-center justify-center gap-2">
-                                    🚀 Share to Unlock Regeneration Now!
-                                </h3>
-                                <p className="text-xs text-amber-800/80 font-space">
-                                    Share your card on social media to bypass the 24-hour wait instantly.
-                                </p>
-                            </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                <button
-                                    onClick={() => handleShareSocial("whatsapp")}
-                                    className="px-3 py-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                                >
-                                    💬 WhatsApp
-                                </button>
-                                <button
-                                    onClick={() => handleShareSocial("instagram")}
-                                    className="px-3 py-2.5 bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] hover:opacity-90 text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                                >
-                                    📸 Instagram
-                                </button>
-                                <button
-                                    onClick={() => handleShareSocial("facebook")}
-                                    className="px-3 py-2.5 bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                                >
-                                    📘 Facebook
-                                </button>
-                                <button
-                                    onClick={() => handleShareSocial("twitter")}
-                                    className="px-3 py-2.5 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                                >
-                                    🐦 X / Twitter
-                                </button>
-                                <button
-                                    onClick={() => handleShareSocial("copy")}
-                                    className="px-3 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                                >
-                                    🔗 Copy Link
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <button
-                            onClick={() => {
-                                setCurrentStep("review");
-                                window.scrollTo({ top: 0, behavior: "smooth" });
-                            }}
-                            className="px-6 py-3 bg-[#111827] hover:bg-[#1f2937] text-white font-bold font-space rounded-2xl shadow-sm transition-all cursor-pointer"
-                        >
-                            ✏️ Edit Current Card
-                        </button>
-                        {!isCooldownActive && (
+                    {!isCooldownActive && (
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <button
+                                onClick={() => {
+                                    setCurrentStep("review");
+                                    window.scrollTo({ top: 0, behavior: "smooth" });
+                                }}
+                                className="px-6 py-3 bg-[#111827] hover:bg-[#1f2937] text-white font-bold font-space rounded-2xl shadow-sm transition-all cursor-pointer"
+                            >
+                                ✏️ Edit Current Card
+                            </button>
                             <button
                                 onClick={startAIGeneration}
                                 className="px-6 py-3 bg-[#E5A500] hover:bg-[#C98600] text-white font-bold font-space rounded-2xl shadow-sm transition-all cursor-pointer"
                             >
                                 Try Again
                             </button>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </motion.div>
             );
         }
@@ -2204,9 +2153,9 @@ export default function FIFAMemeTN() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex justify-center">
                     {/* Card Preview */}
-                    <div className="relative aspect-[2/3] rounded-3xl overflow-hidden bg-gradient-to-br from-[#1E180A] via-[#12100A] to-[#0A0905] border-2 border-[#E5A500] shadow-[0_12px_40px_rgba(229,165,0,0.15)] flex flex-col justify-between">
+                    <div className="relative w-full max-w-sm aspect-[2/3] rounded-3xl overflow-hidden bg-gradient-to-br from-[#1E180A] via-[#12100A] to-[#0A0905] border-2 border-[#E5A500] shadow-[0_12px_40px_rgba(229,165,0,0.15)] flex flex-col justify-between">
                         {generatedCardUrl ? (
                             <Image
                                 src={generatedCardUrl}
@@ -2259,170 +2208,432 @@ export default function FIFAMemeTN() {
                             </div>
                         )}
                     </div>
-
-                    {/* Stats */}
-                    <div className="space-y-6 bg-white p-6 rounded-3xl border border-gray-200 shadow-sm">
-                        <h3 className="text-gray-900 font-sora font-bold text-lg flex items-center gap-2">
-                            <Target className="w-5 h-5 text-[#E5A500]" />
-                            Performance Stats
-                        </h3>
-                        <div className="space-y-4">
-                            {Object.entries(stats).map(([key, val]) => (
-                                <div key={key} className="flex items-center gap-3">
-                                    <span className="text-gray-600 font-space text-sm capitalize w-20">
-                                        {key}
-                                    </span>
-                                    <div className="flex-1 h-2.5 rounded-full bg-gray-100 overflow-hidden">
-                                        <motion.div
-                                            className="h-full rounded-full bg-gradient-to-r from-[#E5A500] to-[#C98600]"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${val}%` }}
-                                            transition={{ duration: 0.8, delay: 0.2 }}
-                                        />
-                                    </div>
-                                    <span className="text-gray-900 font-space text-sm font-black w-8 text-right">
-                                        {val}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="pt-4 border-t border-gray-100 space-y-3">
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-500 font-space">Style / Vibe</span>
-                                <span className="text-gray-900 font-space font-semibold capitalize">
-                                    {cardData.mood || "—"}
-                                </span>
-                            </div>
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-500 font-space">Recipient</span>
-                                <span className="text-gray-900 font-space font-semibold capitalize">
-                                    {cardData.recipient || "—"}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 flex-wrap gap-4">
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => {
-                                if (isCooldownActive) {
-                                    setShowCooldownModal(true);
-                                } else {
-                                    setCurrentStep("ai");
-                                    startAIGeneration();
-                                }
-                            }}
-                            className={`transition-colors duration-300 font-space text-sm flex items-center gap-2 cursor-pointer ${
-                                isCooldownActive
-                                    ? "text-amber-700 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 hover:bg-amber-100 font-semibold"
-                                    : "text-gray-500 hover:text-gray-900"
-                            }`}
-                        >
-                            {isCooldownActive ? <Lock className="w-4 h-4 text-amber-600" /> : <Sparkles className="w-4 h-4 text-[#E5A500]" />}
-                            {isCooldownActive ? `Locked (Wait ${formatCooldownTime(cooldownRemainingSeconds)} or Share)` : "Regenerate Card"}
-                        </button>
-                    </div>
+                <div className="flex items-center justify-between pt-6 flex-wrap gap-4" dir="rtl">
+                    <button
+                        onClick={() => {
+                            // Navigate back to upload step so user can review/edit any step with inputs intact
+                            setCurrentStep("upload");
+                            window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="px-5 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white font-bold font-space text-sm transition-all flex items-center gap-2 cursor-pointer"
+                    >
+                        <Sparkles className="w-4 h-4 text-[#E5A500]" />
+                        تعديل المعطيات / Regenerate
+                    </button>
 
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => handleExportCard("png")}
-                            disabled={isExportingFormat !== null}
-                            className="px-4 py-2.5 bg-[#E5A500] hover:bg-[#C98600] text-white font-bold font-space text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
-                        >
-                            {isExportingFormat === "png" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                            Transparent PNG (300 DPI)
-                        </button>
-
-                        <button
-                            onClick={() => handleExportCard("pdf")}
-                            disabled={isExportingFormat !== null}
-                            className="px-4 py-2.5 bg-gray-900 hover:bg-black text-white font-bold font-space text-xs rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
-                        >
-                            {isExportingFormat === "pdf" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4 text-[#E5A500]" />}
-                            Printable PDF (Vector)
-                        </button>
-                    </div>
-
-                    {renderNextButton(false, "Get Card →")}
+                    {renderNextButton(false, "اطلب كارتتك الآن 🚀")}
                 </div>
             </motion.div>
         );
     };
 
+    const TUNISIA_GOVERNORATES = [
+        "تونس",
+        "أريانة",
+        "بن عروس",
+        "منوبة",
+        "نابل",
+        "زغوان",
+        "بنزرت",
+        "باجة",
+        "جندوبة",
+        "الكاف",
+        "سليانة",
+        "سوسة",
+        "المنستير",
+        "المهدية",
+        "صفاقس",
+        "القيروان",
+        "القصرين",
+        "سيدي بوزيد",
+        "قابص",
+        "مدنين",
+        "تطاوين",
+        "قفصة",
+        "توذر",
+        "قبلي",
+    ];
+
+    const handleOrderSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setOrderError(null);
+
+        const nameToUse = orderForm.customerName || profileInfo.name || editorName;
+        if (!nameToUse.trim()) {
+            setOrderError("الرجاء إدخال الاسم واللقب الكامل");
+            return;
+        }
+
+        if (!orderForm.phone.trim() || orderForm.phone.trim().length < 8) {
+            setOrderError("الرجاء إدخال رقم هاتف تونسي صحيح (8 أرقام)");
+            return;
+        }
+
+        if (!orderForm.city.trim() || !orderForm.address.trim()) {
+            setOrderError("الرجاء إدخال المدينة والعنوان الكامل للتوصيل");
+            return;
+        }
+
+        setIsSubmittingOrder(true);
+
+        try {
+            const cardImg = generatedCardUrl || uploadPreview || editorBgUrl;
+            const unitPrice = selectedSize === "mega" ? 69 : 49;
+            const deliveryFee = 8;
+            const totalPrice = (orderForm.quantity * unitPrice) + deliveryFee;
+
+            const payload = {
+                customerName: nameToUse.trim(),
+                phone: orderForm.phone.trim(),
+                governorate: orderForm.governorate,
+                city: orderForm.city.trim(),
+                address: orderForm.address.trim(),
+                cardSize: selectedSize,
+                quantity: orderForm.quantity,
+                unitPrice,
+                deliveryFee,
+                totalPrice,
+                cardImageUrl: cardImg,
+                notes: orderForm.notes.trim(),
+                // Card metadata for high-res PDF generation
+                playerName: nameToUse.toUpperCase(),
+                rating: overallRating || editorRating || 99,
+                position: editorPosition || "GOAT",
+                stats: editorStats,
+                badges: editorBadges,
+                subtitle: editorSubtitle || "Born to be legendary",
+                description: editorDescription || "Skill • Charisma • Influence • Focus",
+                quoteFr: editorQuoteFr,
+                quoteAr: editorQuoteAr,
+                hashtags: editorHashtags,
+                accentColor: editorAccentColor,
+            };
+
+            const res = await fetch("/api/orders", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.error || "فشل تسجيل الطلب");
+            }
+
+            setOrderSuccessModal({
+                visible: true,
+                orderId: data.orderId || `FLW-${Math.floor(100000 + Math.random() * 900000)}`,
+                details: {
+                    name: nameToUse.trim(),
+                    phone: orderForm.phone.trim(),
+                    governorate: orderForm.governorate,
+                    city: orderForm.city.trim(),
+                    address: orderForm.address.trim(),
+                    size: selectedSize === "mega" ? "60x40 cm (Mega Giant)" : "45x30 cm (Standard)",
+                    quantity: orderForm.quantity,
+                    totalPrice,
+                },
+            });
+        } catch (err: any) {
+            console.error("Order submission error:", err);
+            setOrderError(err.message || "حدث خطأ أثناء تسجيل الطلب. الرجاء المحاولة مرة أخرى.");
+        } finally {
+            setIsSubmittingOrder(false);
+        }
+    };
+
     const renderCheckout = () => {
+        const nameToDisplay = profileInfo.name || editorName || "LEGEND";
+        const unitPrice = selectedSize === "mega" ? 69 : 49;
+        const deliveryFee = 8;
+        const subtotal = unitPrice * orderForm.quantity;
+        const totalPrice = subtotal + deliveryFee;
+        const cardImg = generatedCardUrl || uploadPreview || editorBgUrl;
+
         return (
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-10"
+                className="space-y-10 max-w-4xl mx-auto"
+                dir="rtl"
             >
-                <div className="relative">
-                    <div className="absolute inset-0 bg-[#E5A500] blur-[100px] opacity-10" />
-                    <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
-                        className="relative w-16 h-16 rounded-full bg-[#E5A500]/10 flex items-center justify-center text-[#E5A500]"
-                    >
-                        <PartyPopper className="w-8 h-8" />
-                    </motion.div>
-                </div>
-
-                <div className="space-y-4 max-w-md">
-                    <h2 className="text-3xl font-bold font-sora text-gray-900">
-                        You're getting a{" "}
-                        <span className="bg-gradient-to-r from-[#E5A500] to-[#C98600] bg-clip-text text-transparent">
-                            Legendary Card
-                        </span>
-                    </h2>
-                    <p className="text-gray-600 font-space text-base">
-                        Your personalized Flawless card is ready. Complete the checkout to claim it.
+                <div className="space-y-3 text-center sm:text-right">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E5A500]/10 border border-[#E5A500]/30 text-[#E5A500] text-xs font-bold font-space">
+                        <Truck className="w-4 h-4" />
+                        <span>الدفع عند التوصيل 100% (Cash on Delivery)</span>
+                    </div>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight">
+                        تأكيد طلب <span className="bg-gradient-to-r from-[#E5A500] to-[#C98600] bg-clip-text text-transparent">الكارت الأسطوري</span>
+                    </h1>
+                    <p className="text-gray-400 font-space text-sm sm:text-base max-w-lg">
+                        أدخل معطياتك ليصلك الكارت مطبوعاً بأعلى جودة PVC إلى باب منزلك مع التوصيل لكل الولايات التونسية.
                     </p>
                 </div>
 
-                <div className="w-full max-w-sm space-y-4">
-                    <div className="p-6 rounded-3xl bg-white border border-gray-200 shadow-sm space-y-3 text-left">
-                        <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500 font-space">Card</span>
-                            <span className="text-gray-900 font-space font-semibold capitalize">
-                                {cardData.recipient || "Legend"} · {cardData.mood || "Funny"}
-                            </span>
+                {/* Main grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    {/* Form side (7 cols) */}
+                    <div className="lg:col-span-7 bg-neutral-900/80 border border-white/10 backdrop-blur-xl p-6 sm:p-8 rounded-3xl space-y-6">
+                        <h3 className="text-xl font-bold text-white font-sora flex items-center gap-2">
+                            <UserCircle className="w-5 h-5 text-[#E5A500]" />
+                            معلومات التوصيل والطلب
+                        </h3>
+
+                        {/* Size Picker */}
+                        <div className="space-y-3">
+                            <label className="block text-xs font-bold text-gray-300 font-space uppercase tracking-wider">
+                                اختر الحجم (Card Size):
+                            </label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedSize("standard")}
+                                    className={`p-4 rounded-2xl border transition-all text-right cursor-pointer flex flex-col justify-between ${
+                                        selectedSize === "standard"
+                                            ? "border-[#E5A500] bg-[#E5A500]/10 shadow-[0_0_20px_rgba(229,165,0,0.15)]"
+                                            : "border-white/10 bg-white/5 hover:border-white/20"
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="font-bold text-sm text-white">45×30 cm</span>
+                                        <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedSize === "standard" ? "border-[#E5A500] bg-[#E5A500]" : "border-gray-500"}`}>
+                                            {selectedSize === "standard" && <span className="w-1.5 h-1.5 rounded-full bg-black" />}
+                                        </span>
+                                    </div>
+                                    <div className="text-xs text-gray-400">Standard Pack</div>
+                                    <div className="text-lg font-black text-[#E5A500] mt-1">49 DT</div>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedSize("mega")}
+                                    className={`p-4 rounded-2xl border transition-all text-right cursor-pointer flex flex-col justify-between ${
+                                        selectedSize === "mega"
+                                            ? "border-[#E5A500] bg-[#E5A500]/10 shadow-[0_0_20px_rgba(229,165,0,0.15)]"
+                                            : "border-white/10 bg-white/5 hover:border-white/20"
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="font-bold text-sm text-white">60×40 cm</span>
+                                        <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedSize === "mega" ? "border-[#E5A500] bg-[#E5A500]" : "border-gray-500"}`}>
+                                            {selectedSize === "mega" && <span className="w-1.5 h-1.5 rounded-full bg-black" />}
+                                        </span>
+                                    </div>
+                                    <div className="text-xs text-gray-400">Mega Giant Pack</div>
+                                    <div className="text-lg font-black text-[#E5A500] mt-1">69 DT</div>
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-500 font-space">Overall Rating</span>
-                            <span className="text-[#C98600] font-space font-bold font-semibold">
-                                OVR {overallRating || 87}
-                            </span>
-                        </div>
-                        <div className="h-px bg-gray-100" />
-                        <div className="flex items-center justify-between">
-                            <span className="text-gray-800 font-space font-semibold">Price</span>
-                            <span className="text-gray-900 font-sora font-black text-xl">
-                                $4.99
-                            </span>
-                        </div>
+
+                        {orderError && (
+                            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-space font-semibold">
+                                ⚠️ {orderError}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleOrderSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-bold text-gray-300 font-space mb-1.5">
+                                    الاسم واللقب الكامل <span className="text-[#E5A500]">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={orderForm.customerName || profileInfo.name || editorName}
+                                    onChange={(e) => setOrderForm((prev) => ({ ...prev, customerName: e.target.value }))}
+                                    placeholder="مثال: محمد بن علي"
+                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#E5A500] transition-colors"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-300 font-space mb-1.5">
+                                        رقم الهاتف (8 أرقام) <span className="text-[#E5A500]">*</span>
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        required
+                                        maxLength={8}
+                                        value={orderForm.phone}
+                                        onChange={(e) => setOrderForm((prev) => ({ ...prev, phone: e.target.value.replace(/\D/g, "") }))}
+                                        placeholder="22 123 456"
+                                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#E5A500] transition-colors font-mono"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-300 font-space mb-1.5">
+                                        الولاية <span className="text-[#E5A500]">*</span>
+                                    </label>
+                                    <select
+                                        value={orderForm.governorate}
+                                        onChange={(e) => setOrderForm((prev) => ({ ...prev, governorate: e.target.value }))}
+                                        className="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-white/10 text-white text-sm focus:outline-none focus:border-[#E5A500] transition-colors"
+                                    >
+                                        {TUNISIA_GOVERNORATES.map((gov) => (
+                                            <option key={gov} value={gov}>
+                                                {gov}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-300 font-space mb-1.5">
+                                        المدينة / المعتمدية <span className="text-[#E5A500]">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={orderForm.city}
+                                        onChange={(e) => setOrderForm((prev) => ({ ...prev, city: e.target.value }))}
+                                        placeholder="مثال: أريانة المدينة"
+                                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#E5A500] transition-colors"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-300 font-space mb-1.5">
+                                        الكمية (Quantity)
+                                    </label>
+                                    <select
+                                        value={orderForm.quantity}
+                                        onChange={(e) => setOrderForm((prev) => ({ ...prev, quantity: Number(e.target.value) }))}
+                                        className="w-full px-4 py-3 rounded-xl bg-neutral-900 border border-white/10 text-white text-sm focus:outline-none focus:border-[#E5A500] transition-colors"
+                                    >
+                                        {[1, 2, 3, 4, 5, 10].map((num) => (
+                                            <option key={num} value={num}>
+                                                {num} {num === 1 ? "كارت" : "كروت"}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-300 font-space mb-1.5">
+                                    العنوان التفصيلي <span className="text-[#E5A500]">*</span>
+                                </label>
+                                <textarea
+                                    required
+                                    rows={2}
+                                    value={orderForm.address}
+                                    onChange={(e) => setOrderForm((prev) => ({ ...prev, address: e.target.value }))}
+                                    placeholder="النهج، رقم العمارة / الشقة، الإقامة أو علامة مميزة..."
+                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-[#E5A500] transition-colors resize-none"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-400 font-space mb-1.5">
+                                    ملاحظات للتوصيل (اختياري)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={orderForm.notes}
+                                    onChange={(e) => setOrderForm((prev) => ({ ...prev, notes: e.target.value }))}
+                                    placeholder="أي تعليمات إضافية للموزّع..."
+                                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-[#E5A500] transition-colors"
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={isSubmittingOrder}
+                                className="w-full mt-4 py-4 rounded-2xl bg-gradient-to-r from-[#E5A500] to-[#C98600] hover:from-[#C98600] hover:to-[#A36A00] text-black font-black font-space text-lg shadow-[0_8px_30px_rgba(229,165,0,0.25)] hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                            >
+                                {isSubmittingOrder ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 animate-spin" />
+                                        <span>جاري تسجيل الطلب...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span>تأكيد الطلب — {totalPrice} DT</span>
+                                        <ArrowRight className="w-5 h-5 rotate-180" />
+                                    </>
+                                )}
+                            </button>
+                        </form>
                     </div>
 
-                    <button className="w-full group relative py-4 rounded-2xl bg-gradient-to-r from-[#E5A500] to-[#C98600] text-white font-bold font-space text-lg shadow-[0_4px_20px_rgba(229,165,0,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 overflow-hidden cursor-pointer">
-                        <span className="relative z-10 flex items-center justify-center gap-2">
-                            Claim Card
-                            <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                        </span>
-                        <div className="absolute inset-0 bg-white/20 group-hover:opacity-0 transition-opacity duration-300" />
-                    </button>
+                    {/* Summary side (5 cols) */}
+                    <div className="lg:col-span-5 space-y-6">
+                        {/* Card preview thumbnail */}
+                        <div className="bg-neutral-900/80 border border-white/10 backdrop-blur-xl p-5 rounded-3xl space-y-4">
+                            <div className="text-xs font-bold text-gray-400 font-space uppercase tracking-wider">
+                                معاينة الكارت المطاطي
+                            </div>
+                            <div className="relative aspect-[2/3] w-full max-w-[200px] mx-auto rounded-2xl overflow-hidden border border-[#E5A500]/50 shadow-lg">
+                                {cardImg ? (
+                                    <Image src={cardImg} alt="Card preview" fill className="object-cover" />
+                                ) : (
+                                    <div className="w-full h-full bg-neutral-800 flex items-center justify-center text-gray-500 text-xs font-space">
+                                        لا توجد صورة
+                                    </div>
+                                )}
+                            </div>
+                            <div className="text-center space-y-1">
+                                <div className="font-bold text-white font-sora text-base">{nameToDisplay}</div>
+                                <div className="text-xs text-[#E5A500] font-space font-semibold">OVR {overallRating || 87}</div>
+                            </div>
+                        </div>
 
-                    <button
-                        onClick={() => setCurrentStep("review")}
-                        className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-space text-sm flex items-center justify-center gap-1.5 mx-auto cursor-pointer"
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                        Back to review
-                    </button>
+                        {/* Order breakdown */}
+                        <div className="bg-neutral-900/80 border border-white/10 backdrop-blur-xl p-6 rounded-3xl space-y-4">
+                            <h4 className="font-bold text-white font-sora text-base">تفاصيل الفاتورة</h4>
+                            <div className="space-y-2.5 text-xs font-space">
+                                <div className="flex justify-between text-gray-300">
+                                    <span>نوع الحجم:</span>
+                                    <span className="font-bold text-white">
+                                        {selectedSize === "mega" ? "Mega Giant (60×40 cm)" : "Standard (45×30 cm)"}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-gray-300">
+                                    <span>سعر الكارت:</span>
+                                    <span className="font-bold text-white">{unitPrice} DT</span>
+                                </div>
+                                <div className="flex justify-between text-gray-300">
+                                    <span>الكمية:</span>
+                                    <span className="font-bold text-white">{orderForm.quantity}</span>
+                                </div>
+                                <div className="flex justify-between text-gray-300">
+                                    <span>مجموع الكروت:</span>
+                                    <span className="font-bold text-white">{subtotal} DT</span>
+                                </div>
+                                <div className="flex justify-between text-gray-300">
+                                    <span>مصاريف التوصيل:</span>
+                                    <span className="font-bold text-white">{deliveryFee} DT</span>
+                                </div>
+                                <div className="h-px bg-white/10 my-2" />
+                                <div className="flex justify-between text-base font-bold text-white">
+                                    <span>المجموع الجملي:</span>
+                                    <span className="text-[#E5A500] font-black text-lg">{totalPrice} DT</span>
+                                </div>
+                            </div>
+
+                            <div className="p-3 rounded-xl bg-[#E5A500]/10 border border-[#E5A500]/30 text-center text-xs font-space text-[#E5A500] font-semibold flex items-center justify-center gap-2">
+                                <span>💵</span>
+                                <span>الدفع نقداً عند الاستلام من الموزّع</span>
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={() => setCurrentStep("review")}
+                            className="text-gray-400 hover:text-white transition-colors text-xs font-space flex items-center justify-center gap-1 mx-auto cursor-pointer"
+                        >
+                            <ChevronLeft className="w-4 h-4 rotate-180" />
+                            العودة لمراجعة الكارت
+                        </button>
+                    </div>
                 </div>
             </motion.div>
         );
@@ -2648,7 +2859,12 @@ export default function FIFAMemeTN() {
                                 <div className="flex items-center gap-4">
                                     {renderBackButton()}
                                 </div>
-                                {renderStepIndicator()}
+                                <div className="flex items-center gap-3">
+                                    <div className={`px-3 py-1.5 rounded-full border text-xs font-bold font-mono flex items-center gap-1.5 ${remainingGenerations > 0 ? "bg-amber-50 text-amber-700 border-amber-200" : "bg-red-50 text-red-700 border-red-200"}`}>
+                                        <span>⚡ {remainingGenerations}/{totalGenerations} Generations Left</span>
+                                    </div>
+                                    {renderStepIndicator()}
+                                </div>
                             </div>
 
                             {/* Content */}
@@ -2659,6 +2875,71 @@ export default function FIFAMemeTN() {
                     </div>
                 </div>
             </div>
+
+            {/* Order Success Confirmation Modal */}
+            {orderSuccessModal?.visible && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in" dir="rtl">
+                    <div className="relative w-full max-w-lg p-6 sm:p-8 bg-neutral-900 border border-[#E5A500]/40 rounded-3xl shadow-2xl space-y-6 text-right">
+                        <div className="text-center space-y-3">
+                            <div className="w-16 h-16 mx-auto rounded-full bg-[#E5A500]/20 border border-[#E5A500] flex items-center justify-center text-[#E5A500]">
+                                <CheckCircle2 className="w-9 h-9" />
+                            </div>
+                            <h3 className="text-2xl sm:text-3xl font-black font-sora text-white">
+                                تم تسجيل طلبك بنجاح! 🎉
+                            </h3>
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#E5A500]/10 border border-[#E5A500]/30 text-[#E5A500] rounded-xl font-mono text-sm font-bold">
+                                <span>رقم الطلب: {orderSuccessModal.orderId}</span>
+                            </div>
+                            <p className="text-gray-300 font-space text-sm max-w-md mx-auto leading-relaxed">
+                                شكراً لك! سيتم التواصل معك عبر الهاتف لتأكيد التوصيل. كارتتك الأسطورية ستصلك مطبوعة خلال 2 إلى 4 أيام عمل.
+                            </p>
+                        </div>
+
+                        <div className="p-5 bg-white/5 border border-white/10 rounded-2xl space-y-2.5 text-xs font-space">
+                            <div className="flex justify-between text-gray-300">
+                                <span>صاحب الطلب:</span>
+                                <span className="font-bold text-white">{orderSuccessModal.details.name}</span>
+                            </div>
+                            <div className="flex justify-between text-gray-300">
+                                <span>رقم الهاتف:</span>
+                                <span className="font-bold text-white font-mono">{orderSuccessModal.details.phone}</span>
+                            </div>
+                            <div className="flex justify-between text-gray-300">
+                                <span>مكان التوصيل:</span>
+                                <span className="font-bold text-white">{orderSuccessModal.details.governorate} - {orderSuccessModal.details.city}</span>
+                            </div>
+                            <div className="flex justify-between text-gray-300">
+                                <span>الحجم والكمية:</span>
+                                <span className="font-bold text-white">{orderSuccessModal.details.size} (×{orderSuccessModal.details.quantity})</span>
+                            </div>
+                            <div className="h-px bg-white/10 my-2" />
+                            <div className="flex justify-between text-sm font-bold text-white">
+                                <span>المبلغ عند التوصيل:</span>
+                                <span className="text-[#E5A500] font-black text-base">{orderSuccessModal.details.totalPrice} DT</span>
+                            </div>
+                        </div>
+
+                        <div className="pt-2 text-center flex flex-col sm:flex-row gap-3">
+                            <button
+                                onClick={() => {
+                                    setOrderSuccessModal(null);
+                                    setCurrentStep("upload");
+                                    window.scrollTo({ top: 0, behavior: "smooth" });
+                                }}
+                                className="flex-1 py-3 px-4 rounded-xl bg-[#E5A500] hover:bg-[#C98600] text-black font-bold font-space text-sm transition-all cursor-pointer"
+                            >
+                                تصميم كارت جديد 🚀
+                            </button>
+                            <a
+                                href="/"
+                                className="py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-bold font-space text-sm text-center transition-all cursor-pointer"
+                            >
+                                الصفحة الرئيسية
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Cooldown Share Unlock Popup Modal */}
             {showCooldownModal && (
@@ -2675,60 +2956,22 @@ export default function FIFAMemeTN() {
                                 <Lock className="w-8 h-8" />
                             </div>
                             <h3 className="text-2xl font-bold font-sora text-gray-900">
-                                24-Hour AI Generation Cooldown
+                                Daily Limit Reached (3/3 Used)
                             </h3>
                             <div className="inline-flex items-center space-x-2 px-4 py-2 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl font-mono text-lg font-bold">
-                                <span>⏳ {formatCooldownTime(cooldownRemainingSeconds)}</span>
+                                <span>⏳ Refreshing in {formatCooldownTime(cooldownRemainingSeconds)}</span>
                             </div>
                             <p className="text-gray-600 font-space text-sm max-w-sm mx-auto">
-                                AI card generation is limited to once every 24 hours. You can edit your current card details freely, or <strong>share your card on social media</strong> to unlock an instant AI regeneration!
+                                You have used all 3 AI card generations for today. Generations refresh automatically every 24 hours.
                             </p>
-                        </div>
-
-                        <div className="p-5 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-200 rounded-2xl space-y-3">
-                            <h4 className="text-xs font-bold font-sora text-amber-900 text-center uppercase tracking-wider">
-                                🚀 Share to Unlock & Regenerate Now
-                            </h4>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                                <button
-                                    onClick={() => handleShareSocial("whatsapp")}
-                                    className="px-3.5 py-3 bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
-                                >
-                                    💬 WhatsApp
-                                </button>
-                                <button
-                                    onClick={() => handleShareSocial("instagram")}
-                                    className="px-3.5 py-3 bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] hover:opacity-90 text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
-                                >
-                                    📸 Instagram
-                                </button>
-                                <button
-                                    onClick={() => handleShareSocial("facebook")}
-                                    className="px-3.5 py-3 bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
-                                >
-                                    📘 Facebook
-                                </button>
-                                <button
-                                    onClick={() => handleShareSocial("twitter")}
-                                    className="px-3.5 py-3 bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
-                                >
-                                    🐦 X / Twitter
-                                </button>
-                                <button
-                                    onClick={() => handleShareSocial("copy")}
-                                    className="px-3.5 py-3 bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold font-space rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
-                                >
-                                    🔗 Copy Link
-                                </button>
-                            </div>
                         </div>
 
                         <div className="pt-2 text-center">
                             <button
                                 onClick={() => setShowCooldownModal(false)}
-                                className="text-xs text-gray-500 hover:text-gray-800 underline font-space cursor-pointer"
+                                className="w-full py-3 bg-[#111827] hover:bg-[#1f2937] text-white font-bold font-space rounded-2xl shadow-sm transition-all cursor-pointer"
                             >
-                                Continue Editing Current Card
+                                Close
                             </button>
                         </div>
                     </div>

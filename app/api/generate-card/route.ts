@@ -1,137 +1,247 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabase } from "../../../lib/supabase";
+import { OpenAI } from "openai";
+import fs from "fs";
+import path from "path";
+import { buildDynamicPrompt } from "../../generator/lib/buildPrompt";
 
-// ─── Cooldown Helper (24-Hour Rate Limit) ───────────────────────────────────
-const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+// Helper to get OpenAI client lazily with fallback for build time
+function getOpenAIClient() {
+    return new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY || "dummy_key_for_build",
+    });
+}
 
-function checkCooldown(req: NextRequest) {
-    const cookie = req.cookies.get("card_last_gen");
-    if (!cookie || !cookie.value) {
-        return { isAllowed: true, remainingSeconds: 0 };
+// Helper to load reference image as base64
+function loadReferenceImageBase64(filename: string): string | null {
+    try {
+        const cleanName = path.basename(filename);
+        let imgPath = path.join(process.cwd(), "public", "images", cleanName);
+        if (!fs.existsSync(imgPath)) {
+            imgPath = path.join(process.cwd(), "public", "prompting", cleanName);
+        }
+        if (!fs.existsSync(imgPath)) {
+            console.warn(`Reference image not found: ${filename}`);
+            return null;
+        }
+        const buffer = fs.readFileSync(imgPath);
+        return `data:image/png;base64,${buffer.toString("base64")}`;
+    } catch (e) {
+        console.error(`Failed to load reference image ${filename}:`, e);
+        return null;
+    }
+}
+
+// ─── Helper: process image response from gpt-image-2 ─────────────────────────
+async function processImageResponse(imageResponse: any): Promise<string> {
+    const imageData = imageResponse.data?.[0];
+    const base64Image = imageData?.b64_json;
+    const imageUrl = imageData?.url;
+
+    if (base64Image) {
+        console.log("✅ Received b64_json response from gpt-image-2");
+        return `data:image/png;base64,${base64Image}`;
+    } else if (imageUrl) {
+        console.log("✅ Received URL response, downloading...");
+        const imgResponse = await fetch(imageUrl);
+        if (!imgResponse.ok) {
+            throw new Error("Failed to download generated card image");
+        }
+        const arrayBuffer = await imgResponse.arrayBuffer();
+        const base64 = Buffer.from(arrayBuffer).toString("base64");
+        return `data:image/png;base64,${base64}`;
+    } else {
+        console.error("❌ gpt-image-2 returned no image data:", JSON.stringify(imageResponse.data));
+        throw new Error("OpenAI returned no image data.");
+    }
+}
+
+// ─── Full AI Card Generator ────────────────────────────────────────────────────
+async function generateFullAICard(
+    photo: string,
+    cardData: any,
+    overallRating: number,
+    profileInfo?: any,
+    stats?: any[]
+): Promise<string> {
+    const promptTemplatePath = path.join(process.cwd(), "public", "prompting", "prompt.txt");
+    if (!fs.existsSync(promptTemplatePath)) {
+        throw new Error("Prompt template not found");
+    }
+    const template = fs.readFileSync(promptTemplatePath, "utf-8");
+
+    const name = profileInfo?.name || cardData?.name || "LEGEND";
+    const finalPrompt = buildDynamicPrompt(template, {
+        name,
+        overallRating: overallRating || 85,
+        position: cardData?.position || "BOSS",
+        stats: stats || cardData?.stats || [
+            { code: "DHK", value: 85 },
+            { code: "JAW", value: 90 },
+            { code: "S7B", value: 88 },
+            { code: "9HW", value: 80 },
+            { code: "DBR", value: 82 },
+            { code: "HRB", value: 75 },
+        ],
+        mood: cardData?.mood || "Legendary",
+        recipient: cardData?.recipient || "Friend",
+        modelId: cardData?.modelId,
+        backgroundStyle: cardData?.backgroundStyle || profileInfo?.backgroundStyle || (cardData?.selectedBgUrl ? `Selected background: ${cardData.selectedBgUrl}` : undefined),
+        badges: cardData?.badges,
+        profileInfo,
+        designNotes: cardData?.designNotes || profileInfo?.designNotes,
+        answers: cardData?.answers || cardData?.personality,
+        personality: cardData?.personality,
+        freeDescription: cardData?.freeDescription,
+        title: `${name.toUpperCase()} - THE LEGEND`,
+    });
+
+    const base64Data = photo.replace(/^data:image\/\w+;base64,/, "");
+    const photoBuffer = Buffer.from(base64Data, "base64");
+
+    const shapeRefBase64 = loadReferenceImageBase64("images/save.png");
+
+    console.log("Generating card with gpt-image-2 (user photo + model reference)...");
+
+    const imageInputs: any[] = [
+        new File([photoBuffer], "photo.png", { type: "image/png" }),
+    ];
+
+    if (shapeRefBase64) {
+        const shapeBase64Data = shapeRefBase64.replace(/^data:image\/\w+;base64,/, "");
+        const shapeBuffer = Buffer.from(shapeBase64Data, "base64");
+        imageInputs.push(new File([shapeBuffer], "card_model_reference.png", { type: "image/png" }));
     }
 
-    const lastGenTime = parseInt(cookie.value, 10);
-    if (isNaN(lastGenTime)) {
-        return { isAllowed: true, remainingSeconds: 0 };
+    const openai = getOpenAIClient();
+
+    const shapePromptSuffix = shapeRefBase64
+        ? "\n\nCRITICAL SHAPE INSTRUCTION: The second image (card_model_reference.png) shows the EXACT gold frame outline your card MUST follow. Copy this shield silhouette precisely: small crown notch at top center, slightly concave curved sides, gentle inward curve at bottom. The gold border style, thickness, and 3D metallic sheen must match. Everything OUTSIDE this gold frame must be 100% transparent. Do NOT make a rectangular card. Do NOT invent a different shape."
+        : "";
+
+    const imageResponse = await openai.images.edit({
+        model: "gpt-image-2",
+        image: imageInputs,
+        prompt: finalPrompt + shapePromptSuffix,
+        size: "auto",
+    });
+
+    return processImageResponse(imageResponse);
+}
+
+// ─── Cooldown & Rate Limit Helper (3 Generations per 24 Hours) ────────────────
+const MAX_GENERATIONS = 3;
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+interface RateLimitStatus {
+    canGenerate: boolean;
+    remainingGenerations: number;
+    totalGenerations: number;
+    usedGenerations: number;
+    cooldownRemainingSeconds: number;
+    windowStart: number;
+}
+
+function getGenerationStatus(req: NextRequest): RateLimitStatus {
+    const cookie = req.cookies.get("card_limit_data");
+    let count = 0;
+    let windowStart = Date.now();
+
+    if (cookie && cookie.value) {
+        try {
+            const parsed = JSON.parse(cookie.value);
+            if (typeof parsed.count === "number" && typeof parsed.windowStart === "number") {
+                count = parsed.count;
+                windowStart = parsed.windowStart;
+            }
+        } catch (e) {
+            // fallback
+        }
+    } else {
+        const legacyCookie = req.cookies.get("card_last_gen");
+        if (legacyCookie && legacyCookie.value) {
+            const legacyTime = parseInt(legacyCookie.value, 10);
+            if (!isNaN(legacyTime)) {
+                windowStart = legacyTime;
+                count = 1;
+            }
+        }
     }
 
-    const elapsed = Date.now() - lastGenTime;
-    if (elapsed < COOLDOWN_MS) {
-        const remainingSeconds = Math.ceil((COOLDOWN_MS - elapsed) / 1000);
+    const elapsed = Date.now() - windowStart;
+
+    if (elapsed >= COOLDOWN_MS) {
         return {
-            isAllowed: false,
-            remainingSeconds,
-            nextAllowedAt: new Date(lastGenTime + COOLDOWN_MS).toISOString(),
+            canGenerate: true,
+            remainingGenerations: MAX_GENERATIONS,
+            totalGenerations: MAX_GENERATIONS,
+            usedGenerations: 0,
+            cooldownRemainingSeconds: 0,
+            windowStart: Date.now(),
         };
     }
 
-    return { isAllowed: true, remainingSeconds: 0 };
+    const remainingGenerations = Math.max(0, MAX_GENERATIONS - count);
+    const cooldownRemainingSeconds = remainingGenerations === 0 ? Math.ceil((COOLDOWN_MS - elapsed) / 1000) : 0;
+
+    return {
+        canGenerate: remainingGenerations > 0,
+        remainingGenerations,
+        totalGenerations: MAX_GENERATIONS,
+        usedGenerations: count,
+        cooldownRemainingSeconds,
+        windowStart,
+    };
 }
 
-// ─── GET Handler: Check generation cooldown status ──────────────────────────
+// ─── GET Handler: Check generation status & remaining attempts ─────────────
 export async function GET(req: NextRequest) {
-    const cooldown = checkCooldown(req);
-    if (!cooldown.isAllowed) {
-        return NextResponse.json({
-            canGenerate: false,
-            cooldownRemainingSeconds: cooldown.remainingSeconds,
-            nextAllowedAt: cooldown.nextAllowedAt,
-            message: "24-hour AI generation cooldown active. You can edit your card details freely or share on social media to unlock!",
-        });
-    }
-
-    return NextResponse.json({
-        canGenerate: true,
-        cooldownRemainingSeconds: 0,
-    });
+    const status = getGenerationStatus(req);
+    return NextResponse.json(status);
 }
 
-// ─── DELETE Handler: Unlock 24-hour cooldown by social media share ─────────
-export async function DELETE() {
-    const response = NextResponse.json({
-        success: true,
-        message: "AI Card Regeneration unlocked via social media share! 🎉",
-    });
-
-    // Clear rate limit cookie
-    response.cookies.set("card_last_gen", "", {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 0,
-        expires: new Date(0),
-    });
-
-    return response;
-}
-
-// ─── Main POST handler: Instant job creation + fire-and-forget ────────────────
+// ─── Synchronous POST Handler ────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
     try {
-        // 1. Enforce 24-hour rate limit
-        const cooldown = checkCooldown(req);
-        if (!cooldown.isAllowed) {
+        const status = getGenerationStatus(req);
+        if (!status.canGenerate) {
             return NextResponse.json(
                 {
-                    error: `You can only generate an AI card once every 24 hours. You can still edit your existing card details freely! Next generation available in ${Math.floor((cooldown.remainingSeconds || 0) / 3600)}h ${Math.floor(((cooldown.remainingSeconds || 0) % 3600) / 60)}m.`,
-                    cooldownRemainingSeconds: cooldown.remainingSeconds,
-                    nextAllowedAt: cooldown.nextAllowedAt,
+                    error: "You have used all 3 AI card generations for today. Your attempts will refresh automatically after 24 hours. You can still edit your existing card details freely!",
+                    remainingGenerations: 0,
+                    totalGenerations: MAX_GENERATIONS,
+                    cooldownRemainingSeconds: status.cooldownRemainingSeconds,
                 },
                 { status: 429 }
             );
         }
 
-        // 2. Parse & validate request body
         const body = await req.json();
-        const { photo } = body;
+        const { photo, cardData, overallRating, profileInfo, stats } = body;
 
         if (!photo) {
             return NextResponse.json({ error: "Photo is required" }, { status: 400 });
         }
 
-        // 3. Generate a unique job ID
-        const jobId = crypto.randomUUID();
+        console.log("=== FULL AI CARD GENERATION (Synchronous) ===");
+        const rawDataUrl = await generateFullAICard(photo, cardData, overallRating, profileInfo, stats);
 
-        // 4. Insert job into Supabase as "pending"
-        const supabase = createServerSupabase();
-        const { error: insertError } = await supabase
-            .from("card_jobs")
-            .insert({
-                id: jobId,
-                status: "pending",
-                input: body,  // full payload: photo, cardData, stats, profileInfo, etc.
-            });
+        const newCount = status.usedGenerations + 1;
+        const newWindowStart = status.usedGenerations === 0 ? Date.now() : status.windowStart;
+        const newRemaining = Math.max(0, MAX_GENERATIONS - newCount);
+        const cooldownRemainingSeconds = newRemaining === 0 ? Math.ceil((COOLDOWN_MS - (Date.now() - newWindowStart)) / 1000) : 0;
 
-        if (insertError) {
-            console.error("[generate-card] Failed to create job:", insertError);
-            return NextResponse.json(
-                { error: "Failed to queue card generation" },
-                { status: 500 }
-            );
-        }
-
-        // 5. Fire-and-forget: trigger the background worker (dynamically resolves host for Vercel)
-        const host = req.headers.get("host");
-        const protocol = req.headers.get("x-forwarded-proto") || (host?.includes("localhost") ? "http" : "https");
-        const baseUrl = process.env.BASE_URL || (host ? `${protocol}://${host}` : "http://localhost:3000");
-
-        fetch(`${baseUrl}/api/process-card`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ jobId }),
-        }).catch((err) => {
-            console.error("[generate-card] Fire-and-forget failed:", err.message);
+        const response = NextResponse.json({
+            imageUrl: rawDataUrl,
+            remainingGenerations: newRemaining,
+            totalGenerations: MAX_GENERATIONS,
+            cooldownRemainingSeconds,
         });
 
-        console.log(`[generate-card] ✅ Job ${jobId} queued — returning immediately`);
-
-        // 6. Set cooldown cookie and return jobId instantly
-        const response = NextResponse.json({ jobId });
-        response.cookies.set("card_last_gen", Date.now().toString(), {
+        response.cookies.set("card_limit_data", JSON.stringify({ count: newCount, windowStart: newWindowStart }), {
             httpOnly: true,
             sameSite: "lax",
             path: "/",
-            maxAge: 86400, // 24 hours in seconds
+            maxAge: 86400,
         });
 
         return response;
@@ -140,7 +250,7 @@ export async function POST(req: NextRequest) {
         console.error("API Route Error:", error);
         return NextResponse.json(
             {
-                error: error.message || "Failed to queue card generation",
+                error: error.message || "Failed to generate card",
                 details: {
                     message: error.message || null,
                     code: error.code || null,
@@ -151,3 +261,4 @@ export async function POST(req: NextRequest) {
         );
     }
 }
+

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "images-to-pdf": "node convert_images_to_pdf.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",

@@ -6,7 +6,7 @@ import { CreditCard, Gift, Sparkles, Ruler, Truck, ShieldCheck } from "lucide-re
 const PACKAGES_DATA = [
   {
     name: "PREMIUM PACK",
-    price: "59",
+    price: "49",
     size: "45x30 cm",
     badge: "POPULAR CHOICE",
     description: "Ideal for individual gifts, desk displays, and standard size custom cards.",
@@ -19,7 +19,7 @@ const PACKAGES_DATA = [
   },
   {
     name: "ULTIMATE PACK",
-    price: "79",
+    price: "69",
     size: "60x40 cm",
     badge: "BEST VALUE (MEGA SIZE)",
     isFeatured: true,
@@ -130,7 +130,7 @@ export function Packages() {
 
                 {/* Choose Button */}
                 <a
-                  href="/generator"
+                  href={`/generator?size=${isFeatured ? "mega" : "standard"}`}
                   className={`mt-10 w-full py-4 rounded-2xl text-center text-xs font-black uppercase tracking-wider transition-all duration-300 cursor-pointer ${
                     isFeatured
                       ? "bg-gradient-to-r from-[#D4AF37] to-[#F6D365] text-black shadow-lg shadow-[#D4AF37]/30 hover:scale-[1.02]"

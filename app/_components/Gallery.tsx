@@ -195,12 +195,12 @@ export function Gallery() {
                       <div className="absolute -left-40 top-0 h-full w-20 rotate-12 bg-white/10 blur-xl transition-all duration-1000 group-hover:left-[140%]" />
                     </div>
 
-                    {/* Stats overlay */}
+                    {/* Stats overlay commented out for now - will be added later for all cards */}
                     <div className="mt-3 px-1 border-t border-white/10 pt-2.5">
-                      <div className="text-sm font-bold text-white uppercase tracking-wide mb-1.5 text-center">
+                      <div className="text-sm font-bold text-white uppercase tracking-wide text-center">
                         {card.name}
                       </div>
-                      <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                      {/* <div className="grid grid-cols-2 gap-x-3 gap-y-1 mt-1.5">
                         {statEntries.map(([key, value]) => (
                           <div
                             key={key}
@@ -214,7 +214,7 @@ export function Gallery() {
                             </span>
                           </div>
                         ))}
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

@@ -88,7 +88,7 @@ async function generateFullAICard(
         mood: cardData?.mood || "Legendary",
         recipient: cardData?.recipient || "Friend",
         modelId: cardData?.modelId,
-        backgroundStyle: cardData?.backgroundStyle,
+        backgroundStyle: cardData?.backgroundStyle || profileInfo?.backgroundStyle || (cardData?.selectedBgUrl ? `Selected background: ${cardData.selectedBgUrl}` : undefined),
         badges: cardData?.badges,
         profileInfo,
         designNotes: cardData?.designNotes || profileInfo?.designNotes,
@@ -128,7 +128,7 @@ async function generateFullAICard(
     const openai = getOpenAIClient();
 
     const shapePromptSuffix = shapeRefBase64
-        ? "\n\nIMPORTANT: The second image is the EXACT PVC card frame shape and model silhouette reference. Your generated card MUST use this EXACT outline shape — crown notch at top, straight sides, pointed shield bottom."
+        ? "\n\nCRITICAL SHAPE INSTRUCTION: The second image (card_model_reference.png) shows the EXACT gold frame outline your card MUST follow. Copy this shield silhouette precisely: small crown notch at top center, slightly concave curved sides, gentle inward curve at bottom. The gold border style, thickness, and 3D metallic sheen must match. Everything OUTSIDE this gold frame must be 100% transparent. Do NOT make a rectangular card. Do NOT invent a different shape."
         : "";
 
     const imageResponse = await openai.images.edit({
