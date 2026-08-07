@@ -493,15 +493,13 @@ function Slide1({ goNext }: { goNext: () => void }) {
         </div>
 
         <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.15] text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
-          حوّل صحابك إلى
+          كل تونسي أسطورة...
           <br />
-          <span className="text-gold-grad">أساطير الكارطة</span>
+          <span className="text-gold-grad">يلزملو غير الكارطة الصحيحة</span>
         </h1>
 
         <p className="mt-5 text-sm sm:text-lg text-gray-200 font-medium leading-relaxed max-w-xl mr-0 ml-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-          كارطة تونسية مضحكة، مصنوعة باسمك، صورتك،
-          <br className="hidden sm:block" />
-          و ستاتيكس تقطس بالضحك.
+          كارطة تونسية 100%، باسمك، بصورتك، وستاتيكس تلقّى فيها روحك — تضحك وتعتز بيها 🇹🇳
         </p>
 
         <div className="mt-8 flex flex-wrap justify-start gap-4">
