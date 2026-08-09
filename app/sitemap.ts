@@ -5,7 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL ||
     process.env.BASE_URL ||
-    "https://flawlesstunisia.com";
+    "https://beflawless.art";
 
   return [
     {
