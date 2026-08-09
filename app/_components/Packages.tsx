@@ -8,28 +8,27 @@ const PACKAGES_DATA = [
     name: "PREMIUM PACK",
     price: "49",
     size: "45x30 cm",
-    badge: "POPULAR CHOICE",
-    description: "Ideal for individual gifts, desk displays, and standard size custom cards.",
+    badge: "STANDARD SIZE",
+    description: "Standard size custom card with premium rigid PVC and anti-scratch UV finish.",
     features: [
       { text: "Dimensions: 45x30 cm Standard", icon: Ruler },
       { text: "High-Quality Rigid PVC Card", icon: CreditCard },
-      { text: "Luxury Custom Gift Packaging", icon: Gift },
       { text: "Anti-Scratch UV Protective Finish", icon: Sparkles },
+      { text: "Luxury Custom Gift Packaging", icon: Gift },
     ],
   },
   {
     name: "ULTIMATE PACK",
     price: "69",
     size: "60x40 cm",
-    badge: "BEST VALUE (MEGA SIZE)",
+    badge: "MEGA SIZE",
     isFeatured: true,
-    description: "The ultimate showstopper! Large size card with gold finish & premium box.",
+    description: "Mega giant size card with the exact same premium rigid PVC and anti-scratch UV finish.",
     features: [
-      { text: "Dimensions: 60x40 cm (Mega Giant Size)", icon: Ruler },
-      { text: "Extra Heavy Rigid PVC Master Card", icon: CreditCard },
-      { text: "Deluxe Gift Packaging + Display Stand", icon: Gift },
-      { text: "Liquid Gold Accent & Glossy Coating", icon: Sparkles },
-      { text: "Priority Delivery in Tunisia 🚚", icon: Truck },
+      { text: "Dimensions: 60x40 cm (Mega Size)", icon: Ruler },
+      { text: "High-Quality Rigid PVC Card", icon: CreditCard },
+      { text: "Anti-Scratch UV Protective Finish", icon: Sparkles },
+      { text: "Luxury Custom Gift Packaging", icon: Gift },
     ],
   },
 ];
@@ -54,8 +53,8 @@ export function Packages() {
           <SectionTitle className="text-white text-3xl sm:text-4xl font-black tracking-wider">
             CHOOSE YOUR PACKAGE
           </SectionTitle>
-          <p className="mt-3 text-sm sm:text-base text-gray-400 max-w-md mx-auto font-medium" dir="rtl">
-            اختر الحجم والباك المناسب لك، التوصيل لكامل تراب الجمهورية.
+          <p className="mt-3 text-sm sm:text-base text-gray-400 max-w-lg mx-auto font-medium" dir="rtl">
+            نفس الجودة العالية (Rigid PVC & Anti-Scratch UV Finish)، الفرق الوحيد بين الباكين هو الحجم.
           </p>
         </div>
 
@@ -148,11 +147,11 @@ export function Packages() {
         <div className="mt-12 text-center flex flex-wrap items-center justify-center gap-6 text-xs text-gray-400 font-semibold">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-[#F6D365]" />
-            <span>Paiement 100% sécurisé à la livraison</span>
+            <span>100% Secure Cash on Delivery</span>
           </div>
           <div className="flex items-center gap-2">
             <Truck className="h-4 w-4 text-[#F6D365]" />
-            <span>توصيل سريع في 24-48 ساعة</span>
+            <span>Fast Delivery in 24-48 Hours</span>
           </div>
         </div>
       </div>

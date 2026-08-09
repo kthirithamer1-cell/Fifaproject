@@ -73,10 +73,11 @@ async function generateFullAICard(
 
     // 2. Build dynamic personalized prompt
     const name = profileInfo?.name || cardData?.name || "LEGEND";
+    const defaultPosition = profileInfo?.gender === "female" ? "QUEEN" : "BOSS";
     const finalPrompt = buildDynamicPrompt(template, {
         name,
         overallRating: overallRating || 85,
-        position: cardData?.position || "BOSS",
+        position: cardData?.position || profileInfo?.position || defaultPosition,
         stats: stats || cardData?.stats || [
             { code: "DHK", value: 85 },
             { code: "JAW", value: 90 },
@@ -95,7 +96,7 @@ async function generateFullAICard(
         answers: cardData?.answers || cardData?.personality,
         personality: cardData?.personality,
         freeDescription: cardData?.freeDescription,
-        title: `${name.toUpperCase()} - THE LEGEND`,
+        title: `${name.toUpperCase()} - ${profileInfo?.gender === "female" ? "THE QUEEN" : "THE LEGEND"}`,
     });
 
     console.log("[process-card] modelId:", cardData?.modelId || "none");

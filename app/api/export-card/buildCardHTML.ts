@@ -1,4 +1,5 @@
 import type { CardStat, CardBadge } from "../../_components/generator/CardComposer";
+import { getDynamicStatNote } from "../../generator/lib/tunisiaStats";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -65,6 +66,7 @@ export function buildCardHTML(data: CardHTMLData): string {
         .slice(0, 6)
         .map((stat, i) => {
             const icon = statIcons[i % statIcons.length];
+            const noteText = stat.note || getDynamicStatNote(stat.label, stat.value);
             const divider =
                 i < Math.min(stats.length, 6) - 1
                     ? `<div style="position:absolute;right:0;top:15%;height:70%;width:1px;background:rgba(255,255,255,0.25)"></div>`
@@ -76,6 +78,7 @@ export function buildCardHTML(data: CardHTMLData): string {
                 </div>
                 <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:9.5px;color:#fff;text-align:center;margin-bottom:2px;white-space:nowrap;opacity:0.9">${stat.label}</div>
                 <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;font-weight:bold;color:#fff;text-align:center;line-height:1">${stat.value}</div>
+                <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:7.8px;color:${accentColor};text-align:center;margin-top:3px;letter-spacing:0.3px;text-transform:uppercase;white-space:nowrap;max-width:82px;overflow:hidden;text-overflow:ellipsis">${noteText}</div>
                 ${divider}
             </div>`;
         })

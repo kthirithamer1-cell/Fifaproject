@@ -1,4 +1,9 @@
-import { SelectedStat } from "./tunisiaStats";
+import {
+    SelectedStat,
+    getDynamicStatNote,
+    extractNotesFromContext,
+    resolveDynamicPositionAndTitle,
+} from "./tunisiaStats";
 
 export interface DynamicPromptInput {
     name: string;
@@ -27,41 +32,43 @@ export interface DynamicPromptInput {
 
 // Expanded Tunisian & Global Hobby to Background Directives map
 const HOBBY_DIRECTIVES: Record<string, string> = {
-    coffee: "Modern Tunisian lounge café, espresso & chicha aesthetic, warm golden lighting.",
-    kahwa: "Modern Tunisian lounge café, espresso & chicha aesthetic, warm golden lighting.",
-    "9ahwa": "Modern Tunisian lounge café, espresso & chicha aesthetic, warm golden lighting.",
-    game: "Cyberpunk RGB esports room, neon cyan & gold trim, gaming headset, matrix particle aura.",
-    gamer: "Cyberpunk RGB esports room, neon cyan & gold trim, gaming headset, matrix particle aura.",
-    gaming: "Cyberpunk RGB esports room, neon cyan & gold trim, gaming headset, matrix particle aura.",
-    car: "Sleek night drive on Tunis highway, neon reflection, gold-accented sports car background.",
-    karhba: "Sleek night drive on Tunis highway, neon reflection, gold-accented sports car background.",
-    driving: "Sleek night drive on Tunis highway, neon reflection, gold-accented sports car background.",
-    football: "Floodlit Tunisian stadium atmosphere, golden confetti, championship derby match vibe.",
-    kora: "Floodlit Tunisian stadium atmosphere, golden confetti, championship derby match vibe.",
-    soccer: "Floodlit Tunisian stadium atmosphere, golden confetti, championship derby match vibe.",
-    sports: "Floodlit Tunisian stadium atmosphere, golden confetti, championship derby match vibe.",
-    gym: "High-contrast elite gym, intense workout mood, golden spotlighting.",
-    kasa: "High-contrast elite gym, intense workout mood, golden spotlighting.",
-    fitness: "High-contrast elite gym, intense workout mood, golden spotlighting.",
-    workout: "High-contrast elite gym, intense workout mood, golden spotlighting.",
-    fishing: "Mediterranean coastal breeze, Bizerte sea boat sunset, golden sea glare.",
-    siyada: "Mediterranean coastal breeze, Bizerte sea boat sunset, golden sea glare.",
-    bahr: "Mediterranean coastal breeze, Bizerte sea boat sunset, golden sea glare.",
-    sea: "Mediterranean coastal breeze, Bizerte sea boat sunset, golden sea glare.",
-    beach: "Mediterranean coastal breeze, Bizerte sea boat sunset, golden sea glare.",
-    swimming: "Mediterranean coastal breeze, Bizerte sea boat sunset, golden sea glare.",
-    music: "Neon studio setup, vinyl beats, gold microphone aura.",
-    singing: "Neon studio setup, vinyl beats, gold microphone aura.",
-    guitar: "Neon studio setup, vinyl beats, gold microphone aura.",
-    rap: "Neon studio setup, vinyl beats, gold microphone aura.",
-    code: "Futuristic developer matrix HUD, neon gold code overlays.",
-    coding: "Futuristic developer matrix HUD, neon gold code overlays.",
-    dev: "Futuristic developer matrix HUD, neon gold code overlays.",
-    tech: "Futuristic developer matrix HUD, neon gold code overlays.",
-    computer: "Futuristic developer matrix HUD, neon gold code overlays.",
-    cooking: "Gourmet master chef kitchen studio, warm ambient amber lighting, culinary gold details.",
-    food: "Gourmet master chef kitchen studio, warm ambient amber lighting, culinary gold details.",
-    chef: "Gourmet master chef kitchen studio, warm ambient amber lighting, culinary gold details.",
+    coffee: "Luxury modern Tunisian lounge café ambiance, glowing espresso machine steam, rich amber ambient lighting, warm gold highlights.",
+    kahwa: "Luxury modern Tunisian lounge café ambiance, glowing espresso machine steam, rich amber ambient lighting, warm gold highlights.",
+    "9ahwa": "Luxury modern Tunisian lounge café ambiance, glowing espresso machine steam, rich amber ambient lighting, warm gold highlights.",
+    game: "High-tech cyberpunk esports battle station, glowing cyan and gold RGB lighting, holographic matrix particle aura.",
+    gamer: "High-tech cyberpunk esports battle station, glowing cyan and gold RGB lighting, holographic matrix particle aura.",
+    gaming: "High-tech cyberpunk esports battle station, glowing cyan and gold RGB lighting, holographic matrix particle aura.",
+    fifa: "High-tech cyberpunk esports arena, glowing neon gold HUD, electronic gaming aura.",
+    valorant: "Tactical esports arena, glowing neon cybernetic HUD, victory gold particle aura.",
+    car: "Cinematic night drive on Tunis highway, neon city light reflections, sleek supercar backdrop with gold trim.",
+    karhba: "Cinematic night drive on Tunis highway, neon city light reflections, sleek supercar backdrop with gold trim.",
+    driving: "Cinematic night drive on Tunis highway, neon city light reflections, sleek supercar backdrop with gold trim.",
+    football: "Majestic floodlit Tunisian derby stadium, golden confetti explosion, electric championship atmosphere.",
+    kora: "Majestic floodlit Tunisian derby stadium, golden confetti explosion, electric championship atmosphere.",
+    soccer: "Majestic floodlit Tunisian derby stadium, golden confetti explosion, electric championship atmosphere.",
+    sports: "Majestic floodlit sports arena, golden victory confetti, championship energy.",
+    gym: "High-contrast elite bodybuilding & fitness arena, dramatic rim-light shadows, intense golden spotlighting.",
+    kasa: "High-contrast elite bodybuilding & fitness arena, dramatic rim-light shadows, intense golden spotlighting.",
+    fitness: "High-contrast elite fitness arena, golden power lighting, athletic energy.",
+    workout: "High-contrast elite gym arena, golden spotlighting, intense motivation aesthetic.",
+    fishing: "Mediterranean coastal breeze, Bizerte sea boat sunset, golden sun glare on deep azure water.",
+    siyada: "Mediterranean coastal breeze, Bizerte sea boat sunset, golden sun glare on deep azure water.",
+    bahr: "Mediterranean coastal breeze, sea sunset, golden horizon glare.",
+    sea: "Mediterranean coastal breeze, sea sunset, golden horizon glare.",
+    beach: "Mediterranean coastal sunset, golden sand dunes, sparkling sun rays.",
+    swimming: "Crystal turquoise Mediterranean water, golden sun caustics and radiant sunlight.",
+    music: "Neon-lit sound recording studio, glowing vinyl records, golden microphone aura and audio wave particles.",
+    singing: "Neon-lit sound recording studio, glowing vinyl records, golden microphone aura and audio wave particles.",
+    guitar: "Acoustic stage concert lighting, golden lens flare, musical notes particle aura.",
+    rap: "Underground urban neon studio, golden chains aesthetic, bold dynamic contrast.",
+    code: "Futuristic developer matrix HUD, glowing holographic gold code streams, quantum circuit background.",
+    coding: "Futuristic developer matrix HUD, glowing holographic gold code streams, quantum circuit background.",
+    dev: "Futuristic developer matrix HUD, glowing holographic gold code streams, quantum circuit background.",
+    tech: "Futuristic developer matrix HUD, glowing holographic gold code streams, quantum circuit background.",
+    computer: "Futuristic developer matrix HUD, glowing holographic gold code streams, quantum circuit background.",
+    cooking: "Michelin-star master chef kitchen studio, warm amber flame glow, culinary gold accent details.",
+    food: "Michelin-star master chef kitchen studio, warm amber flame glow, culinary gold accent details.",
+    chef: "Michelin-star master chef kitchen studio, warm amber flame glow, culinary gold accent details.",
     reading: "Cozy luxury leather library, antique books with gold leaf edges, warm reading lamp glow.",
     books: "Cozy luxury leather library, antique books with gold leaf edges, warm reading lamp glow.",
     study: "Cozy luxury leather library, antique books with gold leaf edges, warm reading lamp glow.",
@@ -69,14 +76,14 @@ const HOBBY_DIRECTIVES: Record<string, string> = {
     movies: "Hollywood red carpet premiere, cinematic anamorphic lens flare, golden spotlight camera aura.",
     fashion: "High-fashion Paris/Tunis runway, luxury gold accents, stylish magazine aesthetic.",
     style: "High-fashion Paris/Tunis runway, luxury gold accents, stylish magazine aesthetic.",
-    shopping: "High-fashion Paris/Tunis runway, luxury gold accents, stylish magazine aesthetic.",
-    travel: "Panoramic mountain peak sunrise, golden horizon, adventurous wanderlust atmosphere.",
-    trips: "Panoramic mountain peak sunrise, golden horizon, adventurous wanderlust atmosphere.",
-    hiking: "Panoramic mountain peak sunrise, golden horizon, adventurous wanderlust atmosphere.",
+    shopping: "High-fashion boutique avenue, luxury gold accents, stylish magazine aesthetic.",
+    travel: "Panoramic mountain peak sunrise, golden horizon clouds, adventurous wanderlust atmosphere.",
+    trips: "Panoramic mountain peak sunrise, golden horizon clouds, adventurous wanderlust atmosphere.",
+    hiking: "Panoramic mountain peak sunrise, golden horizon clouds, adventurous wanderlust atmosphere.",
     photography: "Professional studio photography setup, golden hour lighting, camera aperture gold bokeh.",
     photo: "Professional studio photography setup, golden hour lighting, camera aperture gold bokeh.",
-    art: "Creative artist studio, golden paint splatters, canvas watercolor particle atmosphere.",
-    drawing: "Creative artist studio, golden paint splatters, canvas watercolor particle atmosphere.",
+    art: "Creative artist atelier, golden paint splatters, canvas watercolor particle atmosphere.",
+    drawing: "Creative artist atelier, golden paint splatters, canvas watercolor particle atmosphere.",
     dance: "Dynamic stage performance lighting, golden spotlight motion trails, energetic atmosphere.",
     dancing: "Dynamic stage performance lighting, golden spotlight motion trails, energetic atmosphere.",
 };
@@ -88,7 +95,7 @@ export function buildDynamicPrompt(
     const {
         name,
         overallRating,
-        position = "GOAT",
+        position: directPosition,
         stats,
         profileInfo,
         backgroundStyle,
@@ -97,9 +104,6 @@ export function buildDynamicPrompt(
         freeDescription,
         designNotes: directDesignNotes,
     } = input;
-
-    // Format stats as compact "CODE VALUE" strings — image model only needs what to print
-    const statStrings = (stats || []).slice(0, 6).map((s) => `${s.code} ${s.value}`);
 
     // Parse multi-hobbies
     const rawHobbies = profileInfo?.hobbies;
@@ -110,86 +114,138 @@ export function buildDynamicPrompt(
         : [];
     const hobbiesFormatted = hobbiesArray.filter(Boolean).join(", ");
 
-    // Combined search text for keyword detection
+    // Combined context text for keyword & contextual detection
     const combinedAnswers = { ...(answers || {}), ...(personality || {}) };
-    const combinedText = `${hobbiesFormatted} ${profileInfo?.description || ""} ${freeDescription || ""} ${JSON.stringify(combinedAnswers)}`.toLowerCase();
+    const contextText = `${hobbiesFormatted} ${profileInfo?.description || ""} ${freeDescription || ""} ${directDesignNotes || ""} ${JSON.stringify(combinedAnswers)}`.toLowerCase();
 
-    // Detect background directives
+    // 1. Resolve Dynamic Position & Title if default or not set
+    const dynamicResolved = resolveDynamicPositionAndTitle({
+        gender: profileInfo?.gender,
+        age: profileInfo?.age,
+        description: profileInfo?.description || freeDescription,
+        hobbies: hobbiesArray,
+        designNotes: directDesignNotes || profileInfo?.designNotes,
+        answers: combinedAnswers,
+    });
+
+    const personName = (profileInfo?.name || name || "LEGEND").toUpperCase();
+    const finalPosition = (directPosition && directPosition !== "GOAT" && directPosition !== "BOSS" ? directPosition : dynamicResolved.position).toUpperCase();
+
+    // 2. Format 6 Stats with contextual explanation sub-notes
+    const finalStats = (stats && stats.length > 0
+        ? stats
+        : [
+              { code: "DHK", value: 85 },
+              { code: "JAW", value: 90 },
+              { code: "S7B", value: 88 },
+              { code: "9HW", value: 80 },
+              { code: "DBR", value: 82 },
+              { code: "HRB", value: 75 },
+          ]
+    ).slice(0, 6);
+
+    // Build explicit 3-line column layout specification
+    let statsSpecDirective = `CRITICAL STATS & EXPLANATION SUB-NOTES (MUST BE PRINTED UNDER EACH STAT COLUMN):\n`;
+    statsSpecDirective += `Each of the 6 stat columns along the bottom row MUST strictly contain 3 elements stacked vertically in metallic GOLD lettering:\n`;
+    statsSpecDirective += `- Line 1 (Top): 3-letter Stat CODE (uppercase bold gold, e.g. DHK)\n`;
+    statsSpecDirective += `- Line 2 (Middle): Numeric Stat VALUE (large bold gold number, e.g. 98)\n`;
+    statsSpecDirective += `- Line 3 (Bottom): Explanation SUB-NOTE (small uppercase bold gold/white text, e.g. DIMA YADH7AK)\n\n`;
+    statsSpecDirective += `EXACT 6 STAT COLUMNS TO RENDER:\n`;
+
+    const statStrings: string[] = [];
+    finalStats.forEach((s, idx) => {
+        const resolvedNote = s.note || extractNotesFromContext(s.code, s.value, contextText);
+        statsSpecDirective += `Column ${idx + 1}: Code "${s.code}" | Number "${s.value}" | Sub-Note "${resolvedNote}"\n`;
+        statStrings.push(`${s.code} ${s.value} (${resolvedNote})`);
+    });
+
+    // 3. Synthesize Background Art Direction based on Hobbies / Style
     let themeDirectives: string[] = [];
-
     if (backgroundStyle && backgroundStyle.trim()) {
-        themeDirectives.push(`Background Style Preference: ${backgroundStyle.trim()}`);
+        themeDirectives.push(backgroundStyle.trim());
     }
 
     Object.entries(HOBBY_DIRECTIVES).forEach(([keyword, directive]) => {
-        if (combinedText.includes(keyword) && !themeDirectives.includes(directive)) {
+        if (contextText.includes(keyword) && !themeDirectives.includes(directive)) {
             themeDirectives.push(directive);
         }
     });
 
-    // Custom text & design specifications
-    const customNotes = (directDesignNotes || profileInfo?.designNotes || "").trim().slice(0, 200);
-
-    // Build comprehensive person profile block
-    let personProfileDirective = `\n# PERSON PROFILE & INDIVIDUAL CHARACTERISTICS\n`;
-    personProfileDirective += `- BRAND LOGO REQUIREMENT: Feature the official "FLAWLESS" company logo emblem on the card (golden 3D crest badge with FLAWLESS logo text).\n`;
-    personProfileDirective += `- STRICT COLOR RULE: Gold metallic finish is reserved STRICTLY for TEXT typography (Player Name, Rating number, Position, 6 Stat codes & values). Do NOT make the background all-gold.\n`;
-    personProfileDirective += `- CHIP EXCLUSION RULE: DO NOT generate any SKILL, WEAK FOOT, or WORK RATE chips or text on the card. Keep top-right area clean.\n`;
-
-    const personName = (profileInfo?.name || name || "LEGEND").toUpperCase();
-    personProfileDirective += `- Subject Name: ${personName}\n`;
-
-    if (profileInfo?.gender) {
-        personProfileDirective += `- Subject Gender: ${profileInfo.gender}\n`;
-        personProfileDirective += `- Gender Visual Representation: The portrait MUST accurately reflect a ${profileInfo.gender} subject appearance.\n`;
+    let backgroundArtDirective = "";
+    if (themeDirectives.length > 0) {
+        backgroundArtDirective = `- Thematic Environment: ${themeDirectives.slice(0, 3).join(" blended with ")}\n`;
+        backgroundArtDirective += `- Color Palette & Tone: Deep elegant dark obsidian and rich cinematic atmospheric lighting tailored to the theme, with high dynamic contrast. Do NOT make the background all-gold.`;
+    } else {
+        backgroundArtDirective = `- Thematic Environment: Deep elegant dark obsidian with subtle white Carrara marble texture and rich dynamic contrast.\n`;
+        backgroundArtDirective += `- Color Palette & Tone: Sophisticated dark luxury sports card atmosphere with subtle gold rim reflections. Do NOT make the entire background golden.`;
     }
 
-    if (profileInfo?.age) {
-        personProfileDirective += `- Subject Age: ${profileInfo.age} years old\n`;
-        personProfileDirective += `- Age Visual Representation: The facial features and character portrait MUST realistically represent a ${profileInfo.age}-year-old individual.\n`;
-    }
+    // 4. Synthesize Subject Portrait & Age Archetype Direction
+    const ageNum = parseInt(String(profileInfo?.age || "25"), 10) || 25;
+    const gender = profileInfo?.gender === "female" ? "female" : "male";
 
-    if (hobbiesFormatted) {
-        personProfileDirective += `- Hobbies & Passions: ${hobbiesFormatted}\n`;
+    let portraitDirective = `- Subject Name: ${personName}\n`;
+    portraitDirective += `- Gender & Identity: The portrait MUST accurately reflect a ${gender} subject appearance, preserving facial likeness from the photo.\n`;
+    portraitDirective += `- Subject Age: ${ageNum} years old.\n`;
+
+    if (ageNum < 13) {
+        portraitDirective += `- AGE ARCHETYPE (CHILD / WONDERKID): Young prodigy / future superstar portrait. Bright youthful energy, boy/girl wonder sports aura, energetic expression, clean junior athletic apparel.\n`;
+    } else if (ageNum < 20) {
+        portraitDirective += `- AGE ARCHETYPE (TEEN / NEXT-GEN): Next-generation rookie phenom / rising star portrait. Dynamic modern athletic styling, confident young face, fresh swagger.\n`;
+    } else if (ageNum < 35) {
+        portraitDirective += `- AGE ARCHETYPE (PRIME ADULT / SUPERSTAR): Peak prime elite athlete portrait. Chiseled confidence, heroic focus, supreme athletic expression.\n`;
+    } else if (ageNum < 51) {
+        portraitDirective += `- AGE ARCHETYPE (VETERAN / CAPTAIN): Seasoned team captain / iconic maestro portrait. Distinguished mature charisma, commanding leadership presence, poised authority.\n`;
+    } else {
+        portraitDirective += `- AGE ARCHETYPE (SENIOR / GRANDMASTER): Timeless patriarch/matriarch / grandmaster portrait. Regal dignity, wise charisma, distinguished silver-touched elegance.\n`;
     }
 
     if (profileInfo?.description && profileInfo.description.trim()) {
-        personProfileDirective += `- Self Description & Story: ${profileInfo.description.trim().slice(0, 200)}\n`;
+        portraitDirective += `- Subject Persona & Story: ${profileInfo.description.trim().slice(0, 200)}\n`;
+    }
+    if (hobbiesFormatted) {
+        portraitDirective += `- Passions & Lifestyle: ${hobbiesFormatted}\n`;
     }
 
-    if (freeDescription && freeDescription.trim() && freeDescription.trim() !== profileInfo?.description?.trim()) {
-        personProfileDirective += `- Additional User Input: ${freeDescription.trim().slice(0, 200)}\n`;
-    }
-
-    // Format personality & interview summary if present
-    const answersEntries = Object.entries(combinedAnswers).filter(([_, v]) => v !== undefined && v !== null && v !== "");
-    if (answersEntries.length > 0) {
-        const answersSummary = answersEntries
-            .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`)
-            .slice(0, 10)
-            .join(" | ");
-        personProfileDirective += `- Personality & Traits: ${answersSummary}\n`;
-    }
-
-    if (themeDirectives.length > 0) {
-        personProfileDirective += `- Background Theme Directives: ${themeDirectives.slice(0, 4).join(" | ")}\n`;
-    }
+    // Custom text & design specifications
+    const customNotes = (directDesignNotes || profileInfo?.designNotes || "").trim().slice(0, 200);
+    const subtitleToPrint = customNotes || profileInfo?.description?.slice(0, 50) || dynamicResolved.bio;
 
     if (customNotes) {
-        personProfileDirective += `- Custom User Spec & Text Notes: ${customNotes}\n`;
+        statsSpecDirective += `\nCRITICAL PRINTED SUBTITLE / CUSTOM BANNER:\nVisibly print the text "${customNotes}" as the subtitle banner directly below the Player Name in crisp gold typography.\n`;
     }
 
-    // Compact JSON — data the image model needs to RENDER on the card
+    // 5. Compact JSON for image model
     const jsonString = JSON.stringify({
         name: personName,
         rating: overallRating || 85,
-        pos: position,
+        pos: finalPosition,
+        subtitle: subtitleToPrint,
         stats: statStrings,
     });
 
-    // Replace placeholder and append full person profile directives
-    let prompt = template.replace(/{PLAYER_DATA_JSON}/g, jsonString);
-    prompt += personProfileDirective;
+    // 6. Template replacements
+    let prompt = template;
+    if (prompt.includes("{BACKGROUND_ART_DIRECTION}")) {
+        prompt = prompt.replace(/{BACKGROUND_ART_DIRECTION}/g, backgroundArtDirective);
+    } else {
+        prompt += `\n# BACKGROUND THEME:\n${backgroundArtDirective}\n`;
+    }
+
+    if (prompt.includes("{SUBJECT_PORTRAIT_DIRECTION}")) {
+        prompt = prompt.replace(/{SUBJECT_PORTRAIT_DIRECTION}/g, portraitDirective);
+    } else {
+        prompt += `\n# SUBJECT PORTRAIT:\n${portraitDirective}\n`;
+    }
+
+    if (prompt.includes("{CARD_STATS_AND_NOTES_SPECIFICATION}")) {
+        prompt = prompt.replace(/{CARD_STATS_AND_NOTES_SPECIFICATION}/g, statsSpecDirective);
+    } else {
+        prompt += `\n${statsSpecDirective}\n`;
+    }
+
+    prompt = prompt.replace(/{PLAYER_DATA_JSON}/g, jsonString);
 
     return prompt;
 }
+

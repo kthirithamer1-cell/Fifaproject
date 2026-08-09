@@ -48,7 +48,7 @@ export function Header() {
             href="/generator"
             className="hidden rounded-lg bg-[#D4AF37] px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:bg-[#C89B3C] hover:shadow-[0_0_24px_rgba(212,175,55,.35)] lg:inline-flex"
           >
-            صمّم كارطتي
+            Design My Card
           </a>
 
           {/* Mobile Button */}
@@ -89,7 +89,7 @@ export function Header() {
               onClick={() => setIsOpen(false)}
               className="mt-2 flex justify-center rounded-lg bg-[#D4AF37] py-2.5 text-sm font-bold text-white transition hover:scale-[1.02]"
             >
-              صمّم كارطتي
+              Design My Card
             </a>
           </nav>
         </div>

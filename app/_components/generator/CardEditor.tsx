@@ -145,6 +145,8 @@ export default function CardEditor({
         const newStats = [...stats];
         if (field === "value") {
             newStats[index] = { ...newStats[index], value: Number(value) };
+        } else if (field === "note") {
+            newStats[index] = { ...newStats[index], note: String(value) };
         } else {
             newStats[index] = { ...newStats[index], label: String(value) };
         }
@@ -243,19 +245,31 @@ export default function CardEditor({
             </Section>
 
             {/* Stats */}
-            <Section title="Stats">
-                <div className="space-y-2">
+            <Section title="Stats & Explanations">
+                <div className="space-y-3">
                     {stats.map((stat, i) => (
-                        <div key={i} className="space-y-1">
-                            <input
-                                type="text"
-                                value={stat.label}
-                                onChange={(e) =>
-                                    updateStat(i, "label", e.target.value)
-                                }
-                                className="text-[10px] text-gray-500 font-space font-bold uppercase tracking-wider bg-transparent border-none outline-none w-full"
-                                maxLength={20}
-                            />
+                        <div key={i} className="p-2.5 rounded-xl bg-gray-50 border border-gray-200/70 space-y-1.5">
+                            <div className="flex items-center justify-between gap-2">
+                                <input
+                                    type="text"
+                                    value={stat.label}
+                                    onChange={(e) =>
+                                        updateStat(i, "label", e.target.value)
+                                    }
+                                    className="text-[11px] text-gray-900 font-space font-bold uppercase tracking-wider bg-transparent border-none outline-none w-24"
+                                    maxLength={10}
+                                />
+                                <input
+                                    type="text"
+                                    value={stat.note || ""}
+                                    placeholder="Sub-note (e.g. DIMA YADH7AK)"
+                                    onChange={(e) =>
+                                        updateStat(i, "note", e.target.value)
+                                    }
+                                    className="text-[10px] text-[#8C6A00] font-space font-semibold uppercase tracking-wide bg-white px-2 py-0.5 rounded border border-gray-200 outline-none text-right flex-1"
+                                    maxLength={16}
+                                />
+                            </div>
                             <SliderField
                                 label={stat.label}
                                 value={stat.value}

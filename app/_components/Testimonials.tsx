@@ -38,7 +38,7 @@ export function Testimonials() {
               <span>REAL TUNISIAN REVIEWS</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-black text-white leading-tight">
-              آراء <span className="text-gold-grad">أصحابنا والتونسيّة</span>
+              آراء <span className="text-gold-grad">تونسية، ما فيهاش مجاملة</span>
             </h2>
             <p className="mt-3 text-sm text-gray-300 max-w-xl leading-relaxed font-medium" dir="rtl">
               أكثر من 500+ تونسي جربوا كروت Flawless وفرحوا أصحابهم بعروض وأفكار كارتات مضحكة وأسطورية.

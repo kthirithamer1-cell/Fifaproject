@@ -16,29 +16,31 @@ The second attached image is the EXACT card outline frame you MUST follow:
 
 # VISUAL & ART DIRECTION
 
-1. INSIDE THE CARD FRAME:
-   - Background: Deep elegant dark obsidian and white Carrara marble texture with rich dynamic contrast. Do NOT make the entire background golden.
+1. INSIDE THE CARD FRAME & BACKGROUND ATMOSPHERE:
+{BACKGROUND_ART_DIRECTION}
 
 2. LIGHTING & ATMOSPHERE:
-   - Cinematic rim lighting on hair, shoulders, and background elements.
-   - Clean metallic frame border with polished highlights.
+- Cinematic rim lighting on hair, shoulders, and background elements.
+- Clean metallic frame border with polished highlights.
 
-3. PORTRAIT:
-   - Heroic digital sports illustration of the uploaded face photo, sharp focus, athletic expression.
-   - White jersey with collar trim, matching card aesthetic.
-   - Preserve face identity exactly from the uploaded photo.
+3. PORTRAIT & SUBJECT ARCHETYPE:
+{SUBJECT_PORTRAIT_DIRECTION}
+- STRICT PLAIN CLOTHING RULE: The subject's clothes, jersey, shirt, or outfit MUST be 100% plain and clean with ZERO logos, ZERO brand names, ZERO badges, and ZERO text printed or embroidered on it. NEVER put any Flawless logo, crown, or letters on the subject's shirt, chest, collar, sleeves, or props.
+- Preserve face identity exactly from the uploaded photo.
 
-4. BADGES & TEXT (STRICT COLOR RULES):
-   - Top-left: OVR rating + position in metallic GOLD text.
-   - Below OVR: Tunisia flag (🇹🇳) in glossy 3D badge.
-   - Next to flag: Official "FLAWLESS" company brand logo badge (3D crest emblem with "FLAWLESS" logo & crown symbol).
-   - DO NOT generate any SKILL, WEAK FOOT, or WORK RATE text/chips on the card. Keep top-right clean.
+4. BADGES & HEADER (CARD UI LAYER ONLY):
+- Top-left: OVR rating + Position/Title in metallic GOLD text.
+- Below OVR: Tunisia flag (🇹🇳) in glossy 3D badge.
+- Next to flag: Official "FLAWLESS" brand logo emblem badge (prestigious 3D gold metallic "F" monogram with an integrated shield crest nestled inside its lower curve).
+- DO NOT generate any SKILL, WEAK FOOT, or WORK RATE text/chips on the card. Keep top-right clean.
 
-5. BOTTOM (GOLD TEXT & STATS):
-   - Player name centered under portrait in bold uppercase GOLD metallic lettering.
-   - 6 stat columns in a row in GOLD text & numbers: code above value (DHK 98 | JAW 95 | etc).
-   - GOLD COLOR RULE: Gold metallic finish is reserved strictly for TEXT elements (Player Name, Rating, Position, Stat numbers & codes).
-   - Official "FLAWLESS" brand logo emblem & shoe icon at bottom center.
+5. BOTTOM (PLAYER NAME, SUBTITLE/CUSTOM NOTE & 6 STATS WITH EXPLANATION SUB-NOTES):
+- Player name centered under portrait in bold uppercase GOLD metallic lettering.
+- Subtitle / Custom text note banner centered directly below Player Name in elegant GOLD lettering.
+- Official "FLAWLESS" gold "F-Shield" brand emblem & golden shoe icon at bottom center.
+- GOLD COLOR RULE: Gold metallic finish is reserved strictly for TEXT elements (Player Name, Rating, Position, Subtitle banner, Stat numbers & codes).
+
+{CARD_STATS_AND_NOTES_SPECIFICATION}
 
 # PLAYER DATA
 {PLAYER_DATA_JSON}

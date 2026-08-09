@@ -70,10 +70,11 @@ async function generateFullAICard(
     const template = fs.readFileSync(promptTemplatePath, "utf-8");
 
     const name = profileInfo?.name || cardData?.name || "LEGEND";
+    const defaultPosition = profileInfo?.gender === "female" ? "QUEEN" : "BOSS";
     const finalPrompt = buildDynamicPrompt(template, {
         name,
         overallRating: overallRating || 85,
-        position: cardData?.position || "BOSS",
+        position: cardData?.position || profileInfo?.position || defaultPosition,
         stats: stats || cardData?.stats || [
             { code: "DHK", value: 85 },
             { code: "JAW", value: 90 },
@@ -92,7 +93,7 @@ async function generateFullAICard(
         answers: cardData?.answers || cardData?.personality,
         personality: cardData?.personality,
         freeDescription: cardData?.freeDescription,
-        title: `${name.toUpperCase()} - THE LEGEND`,
+        title: `${name.toUpperCase()} - ${profileInfo?.gender === "female" ? "THE QUEEN" : "THE LEGEND"}`,
     });
 
     const base64Data = photo.replace(/^data:image\/\w+;base64,/, "");

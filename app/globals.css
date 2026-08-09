@@ -33,9 +33,9 @@
   --color-gold-shadow: var(--gold-shadow);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-poppins), system-ui, sans-serif;
-  --font-poppins: var(--font-poppins), system-ui, sans-serif;
-  --font-space: var(--font-poppins), system-ui, sans-serif;
+  --font-sans: 'Poppins', system-ui, sans-serif;
+  --font-poppins: 'Poppins', system-ui, sans-serif;
+  --font-space: 'Poppins', system-ui, sans-serif;
 }
 
 * {

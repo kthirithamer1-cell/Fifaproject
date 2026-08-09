@@ -1,12 +1,12 @@
-"use client";
-
 import React, { forwardRef } from "react";
+import { getDynamicStatNote } from "../../generator/lib/tunisiaStats";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
 export interface CardStat {
     label: string;
     value: number;
+    note?: string;
 }
 
 export interface CardBadge {
@@ -509,6 +509,27 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                                         }}
                                     >
                                         {stat.value}
+                                    </div>
+
+                                    {/* Explanatory Sub-Note */}
+                                    <div
+                                        style={{
+                                            fontFamily: "'Montserrat', sans-serif",
+                                            fontWeight: 800,
+                                            fontSize: 7.8,
+                                            color: accentColor,
+                                            textAlign: "center",
+                                            marginTop: 3,
+                                            letterSpacing: 0.3,
+                                            textTransform: "uppercase",
+                                            whiteSpace: "nowrap",
+                                            maxWidth: 82,
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                        }}
+                                        title={stat.note || getDynamicStatNote(stat.label, stat.value)}
+                                    >
+                                        {stat.note || getDynamicStatNote(stat.label, stat.value)}
                                     </div>
 
                                     {/* Divider */}

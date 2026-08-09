@@ -276,11 +276,11 @@ export const STATIC_BACKGROUNDS: BackgroundOption[] = [
 // ─── 4. Landing Page Data ─────────────────────────────────────────────────
 
 export const NAV_ITEMS = [
-    { href: "#top", label: "Accueil" },
-    { href: "#about", label: "À propos" },
-    { href: "#gallery", label: "Exemples" },
-    { href: "#how", label: "Comment ça marche" },
-    { href: "#testimonials", label: "Avis" },
+    { href: "#top", label: "Home" },
+    { href: "#about", label: "About" },
+    { href: "#gallery", label: "Examples" },
+    { href: "#how", label: "How It Works" },
+    { href: "#testimonials", label: "Testimonials" },
     { href: "#faq", label: "FAQ" },
 ];
 
@@ -324,6 +324,14 @@ export const MARKETING_FEATURES = [
 
 export const GALLERY_MEMES = [
     {
+        rating: 98,
+        name: "KARIM GHARBI",
+        type: "COMEDY KING",
+        color: "#d4af37",
+        image: "/images/karimgharbi.webp",
+        stats: { DHK: 99, JAW: 98, NKT: 99, S7B: 95, "9HW": 94, DRM: 92 },
+    },
+    {
         rating: 93,
         name: "YOUSSEF",
         type: "LEGEND",
@@ -348,52 +356,12 @@ export const GALLERY_MEMES = [
         stats: { DHK: 99, JAW: 98, S7B: 97, RKD: 94, "9HW": 96, HRB: 91 },
     },
     {
-        rating: 97,
-        name: "ALUI",
-        type: "LEGEND",
-        color: "#c9c2a8",
-        image: "/images/alui.webp",
-        stats: { DHK: 98, TKK: 12, RKD: 95, HRB: 93, "9HW": 90, S7B: 94 },
-    },
-    {
         rating: 96,
         name: "DELLAI",
         type: "LEGEND",
         color: "#2e8b57",
         image: "/images/delai.webp",
         stats: { DHK: 97, TKK: 15, RKD: 94, HRB: 92, "9HW": 89, S7B: 90 },
-    },
-    {
-        rating: 98,
-        name: "MAHER",
-        type: "LEGEND",
-        color: "#c99a3e",
-        image: "/images/maher.webp",
-        stats: { DHK: 99, TKK: 18, RKD: 96, HRB: 95, "9HW": 93, S7B: 93 },
-    },
-    {
-        rating: 99,
-        name: "ISSAM",
-        type: "LEGEND",
-        color: "#f4c430",
-        image: "/images/Issam.webp",
-        stats: { DHK: 99, TKK: 10, RKD: 98, HRB: 94, "9HW": 95, S7B: 97 },
-    },
-    {
-        rating: 95,
-        name: "Amine",
-        type: "LEGEND",
-        color: "#9b59b6",
-        image: "/images/aluii.webp",
-        stats: { DHK: 96, TKK: 13, RKD: 93, HRB: 90, "9HW": 89, S7B: 89 },
-    },
-    {
-        rating: 94,
-        name: "Nour",
-        type: "LEGEND",
-        color: "#3aa0c9",
-        image: "/images/sankooh.webp",
-        stats: { DHK: 95, TKK: 11, RKD: 92, HRB: 89, "9HW": 88, S7B: 91 },
     },
 ];
 

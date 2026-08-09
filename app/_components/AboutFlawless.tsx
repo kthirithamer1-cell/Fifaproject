@@ -34,7 +34,7 @@ export function AboutFlawless() {
   ];
 
   const brandStats = [
-    { value: "+1,500", label: "كارطة تونسية صمّمت" },
+    { value: "3", label: "كارطة تونسية صمّمت" },
     { value: "24", label: "ولاية توصيل في تونس" },
     { value: "4.9★", label: "تقييم أصحاب الكروت" },
     { value: "100%", label: "جودة ورضا الحرفاء" },
@@ -78,8 +78,8 @@ export function AboutFlawless() {
               </div>
 
               <h3 className="text-2xl sm:text-4xl font-black text-white leading-tight">
-                كل عيب فيك يولّي ستاتيك أسطوري... <br />
-                <span className="text-gold-grad">باش تكون ديما فخور بروحك.</span>
+                ما فماش عيب يبقى عيب... <br />
+                <span className="text-gold-grad">عندنا يولّي ستاتيك أسطوري</span>
               </h3>
 
               <p className="text-gray-300 text-sm sm:text-base leading-relaxed">

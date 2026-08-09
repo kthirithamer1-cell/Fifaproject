@@ -43,7 +43,7 @@ export function Footer() {
 
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold" dir="rtl">
               <Sparkles className="h-3.5 w-3.5 text-[#F6D365]" />
-              <span>كارطة مضحكة. ذكريات خالدة</span>
+              <span>كارطة مضحكة اليوم... ذكرى خالدة بعد سنين</span>
             </div>
 
             <div className="flex items-center gap-2 text-[11px] font-semibold text-gray-300 mt-2">
@@ -61,19 +61,19 @@ export function Footer() {
             <ul className="flex flex-col gap-3 text-xs font-medium">
               <li>
                 <a href="#top" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
-                  <span>Accueil</span>
+                  <span>Home</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
                 </a>
               </li>
               <li>
                 <a href="#gallery" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
-                  <span>Exemples & Galerie</span>
+                  <span>Examples & Gallery</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
                 </a>
               </li>
               <li>
                 <a href="#how" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
-                  <span>Comment ça marche</span>
+                  <span>How It Works</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
                 </a>
               </li>
@@ -85,7 +85,7 @@ export function Footer() {
               </li>
               <li>
                 <a href="#testimonials" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
-                  <span>Avis Clients</span>
+                  <span>Customer Reviews</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
                 </a>
               </li>
@@ -96,30 +96,30 @@ export function Footer() {
           <div className="flex flex-col gap-4" suppressHydrationWarning>
             <h3 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
-              Commander & Info
+              Order & Info
             </h3>
             <ul className="flex flex-col gap-3 text-xs font-medium">
               <li>
                 <a href="/generator" className="group inline-flex items-center gap-1.5 text-[#F6D365] font-bold hover:text-white transition-colors">
-                  <span>+ Créer ma carte</span>
+                  <span>+ Design My Card</span>
                   <Sparkles className="h-3.5 w-3.5" />
                 </a>
               </li>
               <li>
                 <a href="#packages" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
-                  <span>Packs & Tarifs</span>
+                  <span>Packages & Pricing</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
                 </a>
               </li>
               <li>
                 <a href="#faq" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
-                  <span>Foire Aux Questions</span>
+                  <span>Frequently Asked Questions</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
                 </a>
               </li>
               <li>
                 <a href="#" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
-                  <span>Politique de Confidentialité</span>
+                  <span>Privacy Policy</span>
                 </a>
               </li>
             </ul>
@@ -129,11 +129,13 @@ export function Footer() {
           <div className="flex flex-col gap-4" suppressHydrationWarning>
             <h3 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
-              Contact & Réseaux
+              Contact & Socials
             </h3>
             <div className="flex gap-3" suppressHydrationWarning>
               <a
-                href="#"
+                href="https://www.instagram.com/flawless_official1/"
+                target="_blank"
+                rel="noreferrer"
                 className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-neutral-300 hover:text-[#F6D365] hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 hover:scale-110 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-300"
                 aria-label="Instagram"
               >
@@ -141,15 +143,6 @@ export function Footer() {
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              </a>
-              <a
-                href="#"
-                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-neutral-300 hover:text-[#F6D365] hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 hover:scale-110 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-300"
-                aria-label="Facebook"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                 </svg>
               </a>
               <a
@@ -166,10 +159,10 @@ export function Footer() {
             <div className="mt-2 text-xs text-neutral-400 bg-white/5 border border-white/10 rounded-2xl p-3.5" suppressHydrationWarning>
               <div className="font-bold text-white mb-1 flex items-center gap-1.5" suppressHydrationWarning>
                 <ShieldCheck className="h-4 w-4 text-[#F6D365]" />
-                <span>Service Client & Support</span>
+                <span>Customer Service & Support</span>
               </div>
               <span className="text-neutral-300 font-semibold" suppressHydrationWarning>support@flawless.tn</span>
-              <div className="text-[10px] text-gray-500 mt-1" suppressHydrationWarning>Paiement à la livraison 🚚</div>
+              <div className="text-[10px] text-gray-500 mt-1" suppressHydrationWarning>Cash on Delivery 🚚</div>
             </div>
           </div>
         </div>

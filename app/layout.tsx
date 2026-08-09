@@ -1,12 +1,23 @@
 
 
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Flawless - #1 Custom Football Meme Cards in Tunisia",
-  description: "Redesign your friends into football legends with funny Tunisian stats and custom printed PVC cards.",
+  title: "Flawless 🇹🇳 — كل تونسي أسطورة! كروت تونسية مخصصة 100%",
+  description: "كل تونسي أسطورة... يلزملو غير الكارطة الصحيحة! صمّم كارتك التونسية 100% باسمك، بصورتك، وستاتيكس تلقّى فيها روحك تضحك وتعتز بيها مع طباعة PVC فاخرة وتوصيل لكل تونس.",
+  openGraph: {
+    title: "Flawless 🇹🇳 — كل تونسي أسطورة! كروت تونسية مخصصة 100%",
+    description: "كل تونسي أسطورة... يلزملو غير الكارطة الصحيحة! صمّم كارتك التونسية 100% باسمك، بصورتك، وستاتيكس تلقّى فيها روحك مع طباعة PVC فاخرة وتوصيل لكل تونس 🇹🇳",
+    type: "website",
+    locale: "ar_TN",
+    siteName: "Flawless Tunisia",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Flawless 🇹🇳 — كل تونسي أسطورة!",
+    description: "كل تونسي أسطورة... يلزملو غير الكارطة الصحيحة! صمّم كارتك التونسية 100% باسمك، بصورتك، وستاتيكس تلقّى فيها روحك 🇹🇳",
+  },
 };
 
 export default function RootLayout({
@@ -20,22 +31,16 @@ export default function RootLayout({
       className="h-full antialiased"
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
-        <Script
+      <head>
+        <script
           id="bis-skin-remover"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `
-              if (typeof window !== 'undefined') {
-                const removeBisSkin = () => {
-                  document.querySelectorAll('[bis_skin_checked]').forEach(el => el.removeAttribute('bis_skin_checked'));
-                };
-                removeBisSkin();
-                document.addEventListener('DOMContentLoaded', removeBisSkin);
-              }
-            `,
+            __html: `(function(){try{var r=function(){var e=document.querySelectorAll('[bis_skin_checked]');for(var i=0;i<e.length;i++)e[i].removeAttribute('bis_skin_checked')};r();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',r)}}catch(e){}})();`,
           }}
+          suppressHydrationWarning
         />
+      </head>
+      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
         {children}
       </body>
     </html>

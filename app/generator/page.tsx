@@ -41,7 +41,15 @@ import type { CardStat, CardBadge } from "../_components/generator/CardComposer"
 import CardEditor from "../_components/generator/CardEditor";
 import BackgroundPicker from "../_components/generator/BackgroundPicker";
 import TunisiaStatPicker from "../_components/generator/TunisiaStatPicker";
-import { TUNISIA_STATS, getStatByCode, calculateOverall, type SelectedStat } from "./lib/tunisiaStats";
+import {
+    TUNISIA_STATS,
+    getStatByCode,
+    getDynamicStatNote,
+    extractNotesFromContext,
+    resolveDynamicPositionAndTitle,
+    calculateOverall,
+    type SelectedStat,
+} from "./lib/tunisiaStats";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -511,7 +519,7 @@ export default function FIFAMemeTN() {
                 downloadCardImage();
                 showShareToast("⬇️ الصورة تحملت! ارفعها على إنستغرام");
             }
-            popup = window.open("https://www.instagram.com/", "_blank");
+            popup = window.open("https://www.instagram.com/flawless_official1/", "_blank");
             waitForPopupClose(popup, "Instagram");
 
         } else if (platform === "whatsapp") {
@@ -646,13 +654,14 @@ export default function FIFAMemeTN() {
         }, 800);
 
         try {
-            // Step 1: Call AI to analyze interview answers and pick stats
+            // Step 1: Call AI to analyze interview answers and pick stats (passing full profile info)
             const aiCardResponse = await fetch("/api/generate-ai-card", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     answers: aiInterviewAnswers,
                     photo: uploadPreview,
+                    profileInfo: profileInfo,
                 }),
             });
 
@@ -662,18 +671,29 @@ export default function FIFAMemeTN() {
                 throw new Error(aiCardData.error || "Failed to generate AI card data");
             }
 
-            // Apply AI-selected stats to the editor
-            const aiStats: CardStat[] = (aiCardData.stats || []).map((s: { code: string; value: number }) => ({
+            const dynamicResolved = resolveDynamicPositionAndTitle({
+                gender: profileInfo.gender,
+                age: profileInfo.age,
+                description: profileInfo.description,
+                hobbies: profileInfo.hobbies,
+                designNotes: profileInfo.designNotes,
+                answers: aiInterviewAnswers,
+            });
+
+            // Apply AI-selected stats to the editor with contextual notes
+            const contextText = `${(profileInfo.hobbies || []).join(" ")} ${profileInfo.description || ""} ${profileInfo.designNotes || ""} ${JSON.stringify(aiInterviewAnswers)}`.toLowerCase();
+            const aiStats: CardStat[] = (aiCardData.stats || []).map((s: { code: string; value: number; note?: string }) => ({
                 label: s.code,
                 value: s.value,
+                note: s.note || extractNotesFromContext(s.code, s.value, contextText),
             }));
             setEditorStats(aiStats);
             setEditorRating(aiCardData.overall || calculateOverall(aiCardData.stats || []));
             setOverallRating(aiCardData.overall || calculateOverall(aiCardData.stats || []));
-            setEditorName(aiCardData.cardTitle || profileInfo.name || "LEGEND");
-            setEditorSubtitle(aiCardData.bio || "Born to be legendary");
-            const defaultPos = profileInfo.gender === "female" ? "QUEEN" : "BOSS";
-            setEditorPosition(aiCardData.position || defaultPos);
+            setEditorName(aiCardData.cardTitle || profileInfo.name || dynamicResolved.title);
+            setEditorSubtitle(aiCardData.bio || dynamicResolved.bio);
+            const resolvedPos = aiCardData.position || dynamicResolved.position;
+            setEditorPosition(resolvedPos);
             if (aiCardData.description) setEditorDescription(aiCardData.description);
 
             // Step 2: Generate AI card image (Synchronous)
@@ -685,12 +705,15 @@ export default function FIFAMemeTN() {
                     cardData: {
                         ...cardData,
                         answers: aiInterviewAnswers,
-                        position: aiCardData.position || defaultPos,
+                        position: resolvedPos,
                     },
                     overallRating: aiCardData.overall || 85,
-                    profileInfo: profileInfo,
+                    profileInfo: {
+                        ...profileInfo,
+                        position: resolvedPos,
+                    },
                     stats: aiStats,
-                    freeDescription: aiCardData.bio || "",
+                    freeDescription: aiCardData.bio || dynamicResolved.bio,
                 }),
             });
 
@@ -717,9 +740,9 @@ export default function FIFAMemeTN() {
             setGeneratedCardUrl(bgData.imageUrl);
             setEditorBgUrl(bgData.imageUrl);
             saveCardToLocalStorage(bgData.imageUrl, {
-                editorName: aiCardData.cardTitle || profileInfo.name || "LEGEND",
-                editorSubtitle: aiCardData.bio || "Born to be legendary",
-                editorPosition: aiCardData.position || defaultPos,
+                editorName: aiCardData.cardTitle || profileInfo.name || dynamicResolved.title,
+                editorSubtitle: profileInfo.designNotes || aiCardData.bio || dynamicResolved.bio,
+                editorPosition: resolvedPos,
                 editorRating: aiCardData.overall || calculateOverall(aiCardData.stats || []),
                 editorStats: aiStats,
                 editorDescription: aiCardData.description,
@@ -743,18 +766,32 @@ export default function FIFAMemeTN() {
 
     // ── Apply manual stats to editor (Describe Yourself mode) ──
     const applyManualStatsToEditor = () => {
-        const manualStats: CardStat[] = selectedStatCodes.map((code) => ({
-            label: code,
-            value: statValues[code] || 75,
-        }));
+        const contextText = `${(profileInfo.hobbies || []).join(" ")} ${profileInfo.description || ""} ${profileInfo.designNotes || ""}`.toLowerCase();
+        const dynamicResolved = resolveDynamicPositionAndTitle({
+            gender: profileInfo.gender,
+            age: profileInfo.age,
+            description: profileInfo.description,
+            hobbies: profileInfo.hobbies,
+            designNotes: profileInfo.designNotes,
+        });
+
+        const manualStats: CardStat[] = selectedStatCodes.map((code) => {
+            const val = statValues[code] || 75;
+            return {
+                label: code,
+                value: val,
+                note: extractNotesFromContext(code, val, contextText),
+            };
+        });
         setEditorStats(manualStats);
         const overall = calculateOverall(
             selectedStatCodes.map((code) => ({ code, value: statValues[code] || 75 }))
         );
         setOverallRating(overall);
         setEditorRating(overall);
-        setEditorName(profileInfo.name || "LEGEND");
-        setEditorSubtitle(profileInfo.description || "Born to be legendary");
+        setEditorName(profileInfo.name || dynamicResolved.title);
+        setEditorPosition(dynamicResolved.position);
+        setEditorSubtitle(profileInfo.designNotes || profileInfo.description || dynamicResolved.bio);
         const descParts = selectedStatCodes.map((code) => {
             const stat = getStatByCode(code);
             return stat ? stat.meaning : code;
@@ -1617,10 +1654,23 @@ export default function FIFAMemeTN() {
         }, 800);
 
         try {
-            const formattedStats = selectedStatCodes.map((code) => ({
-                code,
-                value: statValues[code] || 75,
-            }));
+            const contextText = `${(profileInfo.hobbies || []).join(" ")} ${profileInfo.description || ""} ${profileInfo.designNotes || ""}`.toLowerCase();
+            const dynamicResolved = resolveDynamicPositionAndTitle({
+                gender: profileInfo.gender,
+                age: profileInfo.age,
+                description: profileInfo.description,
+                hobbies: profileInfo.hobbies,
+                designNotes: profileInfo.designNotes,
+            });
+
+            const formattedStats = selectedStatCodes.map((code) => {
+                const val = statValues[code] || 75;
+                return {
+                    code,
+                    value: val,
+                    note: extractNotesFromContext(code, val, contextText),
+                };
+            });
             const overall = calculateOverall(formattedStats);
 
             const response = await fetch("/api/generate-card", {
@@ -1628,7 +1678,14 @@ export default function FIFAMemeTN() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     photo: uploadPreview,
-                    profileInfo,
+                    profileInfo: {
+                        ...profileInfo,
+                        position: dynamicResolved.position,
+                    },
+                    cardData: {
+                        ...cardData,
+                        position: dynamicResolved.position,
+                    },
                     stats: formattedStats,
                     overallRating: overall,
                     mode: "full-ai",
@@ -1658,9 +1715,9 @@ export default function FIFAMemeTN() {
             setGeneratedCardUrl(data.imageUrl);
             setEditorBgUrl(data.imageUrl);
             saveCardToLocalStorage(data.imageUrl, {
-                editorName: profileInfo.name || "LEGEND",
-                editorSubtitle: "Born to be legendary",
-                editorPosition: selectedStatCodes[0] || "PRO",
+                editorName: profileInfo.name || dynamicResolved.title,
+                editorSubtitle: profileInfo.designNotes || profileInfo.description || dynamicResolved.bio,
+                editorPosition: dynamicResolved.position,
                 editorRating: overall,
                 editorStats: formattedStats,
             });
