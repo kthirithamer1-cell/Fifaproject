@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 // ─── DEV ONLY: Simulate or reset 24h rate limit for testing ─────────────────
 // Visit /api/test-cooldown?reset=true in your browser to RESET attempts back to 3
 // Visit /api/test-cooldown in your browser to ACTIVATE 24h cooldown mode (3/3 used)

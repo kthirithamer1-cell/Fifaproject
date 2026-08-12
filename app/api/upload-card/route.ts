@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 
+export const dynamic = "force-dynamic";
+
 // Directory to store shared card images
 const SHARED_DIR = path.join(process.cwd(), "public", "shared-cards");
 

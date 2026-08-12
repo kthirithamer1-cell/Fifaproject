@@ -276,12 +276,14 @@ export const STATIC_BACKGROUNDS: BackgroundOption[] = [
 // ─── 4. Landing Page Data ─────────────────────────────────────────────────
 
 export const NAV_ITEMS = [
-    { href: "#top", label: "Home" },
-    { href: "#about", label: "About" },
-    { href: "#gallery", label: "Examples" },
-    { href: "#how", label: "How It Works" },
-    { href: "#testimonials", label: "Testimonials" },
-    { href: "#faq", label: "FAQ" },
+    { href: "/", label: "Home" },
+    { href: "/#about", label: "About" },
+    { href: "/cards", label: "Cards" },
+    { href: "/#gallery", label: "Examples" },
+    { href: "/#how", label: "How It Works" },
+    { href: "/affiliate", label: "برنامج الشركاء (10 DT) 💰" },
+    { href: "/#testimonials", label: "Testimonials" },
+    { href: "/#faq", label: "FAQ" },
 ];
 
 export const MARKETING_FEATURES = [
@@ -324,40 +326,50 @@ export const MARKETING_FEATURES = [
 
 export const GALLERY_MEMES = [
     {
+        slug: "karim-gharbi",
         rating: 98,
         name: "KARIM GHARBI",
+        arabicName: "كريم الغربي",
         type: "COMEDY KING",
         color: "#d4af37",
         image: "/images/karimgharbi.webp",
         stats: { DHK: 99, JAW: 98, NKT: 99, S7B: 95, "9HW": 94, DRM: 92 },
     },
     {
+        slug: "youssef",
         rating: 93,
         name: "YOUSSEF",
+        arabicName: "يوسف المايسترو",
         type: "LEGEND",
         color: "#e5b839",
         image: "/images/youssef.webp",
         stats: { DHK: 98, JAW: 99, S7B: 96, "9HW": 92, DBR: 90, HRB: 88 },
     },
     {
+        slug: "kader",
         rating: 97,
         name: "KADER",
+        arabicName: "عبد القادر البوس",
         type: "BOSS",
         color: "#d4af37",
         image: "/images/kader.webp",
         stats: { GZR: 97, MRG: 95, DHK: 96, TKK: 91, S7B: 95, "9HW": 93 },
     },
     {
+        slug: "sousou",
         rating: 96,
         name: "SOUSOU",
+        arabicName: "سوسو الملكة",
         type: "Qween",
         color: "#ffbf00",
         image: "/images/Sousou.webp",
         stats: { DHK: 99, JAW: 98, S7B: 97, RKD: 94, "9HW": 96, HRB: 91 },
     },
     {
+        slug: "dellai",
         rating: 96,
         name: "DELLAI",
+        arabicName: "الدلاعي",
         type: "LEGEND",
         color: "#2e8b57",
         image: "/images/delai.webp",

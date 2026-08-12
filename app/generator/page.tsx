@@ -50,6 +50,7 @@ import {
     calculateOverall,
     type SelectedStat,
 } from "./lib/tunisiaStats";
+import { initAffiliateTracker, getAffiliateCode, trackCardGenerated } from "@/lib/affiliateTracker";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -206,6 +207,7 @@ export default function FIFAMemeTN() {
 
     // ── Order & Checkout State ──
     const [selectedSize, setSelectedSize] = useState<"standard" | "mega">("standard");
+    const [affiliateInputCode, setAffiliateInputCode] = useState<string>("");
     const [orderForm, setOrderForm] = useState({
         customerName: "",
         phone: "",
@@ -239,9 +241,23 @@ export default function FIFAMemeTN() {
 
     useEffect(() => {
         setMounted(true);
+        initAffiliateTracker().then((code) => {
+            if (code) setAffiliateInputCode(code);
+        });
+        const currentCode = getAffiliateCode();
+        if (currentCode) setAffiliateInputCode(currentCode);
         // Check rate limit & remaining attempts on mount
         fetch("/api/generate-card")
-            .then((res) => res.json())
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error(`Status ${res.status}`);
+                }
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("Invalid response format");
+                }
+                return res.json();
+            })
             .then((data) => {
                 if (data) {
                     if (typeof data.remainingGenerations === "number") {
@@ -261,7 +277,9 @@ export default function FIFAMemeTN() {
                     }
                 }
             })
-            .catch((err) => console.error("Error checking generation rate limit:", err));
+            .catch((err) => {
+                console.warn("Notice: Using default rate limit state:", err?.message || err);
+            });
     }, []);
 
     useEffect(() => {
@@ -739,6 +757,7 @@ export default function FIFAMemeTN() {
 
             setGeneratedCardUrl(bgData.imageUrl);
             setEditorBgUrl(bgData.imageUrl);
+            trackCardGenerated();
             saveCardToLocalStorage(bgData.imageUrl, {
                 editorName: aiCardData.cardTitle || profileInfo.name || dynamicResolved.title,
                 editorSubtitle: profileInfo.designNotes || aiCardData.bio || dynamicResolved.bio,
@@ -818,6 +837,7 @@ export default function FIFAMemeTN() {
             if (!response.ok) throw new Error(data.error || "Failed to generate background");
 
             setEditorBgUrl(data.imageUrl);
+            trackCardGenerated();
         } catch (err: any) {
             console.error("Background generation failed:", err);
         } finally {
@@ -1714,6 +1734,7 @@ export default function FIFAMemeTN() {
 
             setGeneratedCardUrl(data.imageUrl);
             setEditorBgUrl(data.imageUrl);
+            trackCardGenerated();
             saveCardToLocalStorage(data.imageUrl, {
                 editorName: profileInfo.name || dynamicResolved.title,
                 editorSubtitle: profileInfo.designNotes || profileInfo.description || dynamicResolved.bio,
@@ -2366,7 +2387,15 @@ export default function FIFAMemeTN() {
                 quoteAr: editorQuoteAr,
                 hashtags: editorHashtags,
                 accentColor: editorAccentColor,
+                affiliateCode: (affiliateInputCode || getAffiliateCode() || "").trim().toUpperCase() || null,
             };
+
+            const codeToPersist = (affiliateInputCode || getAffiliateCode() || "").trim().toUpperCase();
+            if (codeToPersist) {
+                localStorage.setItem("flw_ref", codeToPersist);
+                const maxAge = 30 * 24 * 60 * 60;
+                document.cookie = `flw_ref=${encodeURIComponent(codeToPersist)}; max-age=${maxAge}; path=/; SameSite=Lax`;
+            }
 
             const res = await fetch("/api/orders", {
                 method: "POST",
@@ -2589,6 +2618,30 @@ export default function FIFAMemeTN() {
                             </div>
 
                             <div>
+                                <label className="block text-xs font-bold text-gray-400 font-space mb-1.5 flex items-center justify-between">
+                                    <span>كود الإحالة / الشريك (اختياري)</span>
+                                    {affiliateInputCode ? (
+                                        <span className="text-emerald-400 text-[10px] font-bold">🟢 كود مفعّل</span>
+                                    ) : (
+                                        <span className="text-gray-500 text-[10px]">إذا عندك كود من صديق</span>
+                                    )}
+                                </label>
+                                <input
+                                    type="text"
+                                    value={affiliateInputCode}
+                                    onChange={(e) => {
+                                        const cleanVal = e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, "");
+                                        setAffiliateInputCode(cleanVal);
+                                        if (cleanVal) {
+                                            localStorage.setItem("flw_ref", cleanVal);
+                                        }
+                                    }}
+                                    placeholder="مثال: KHALILTIME1"
+                                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[#E5A500] placeholder-gray-600 text-xs font-mono font-bold focus:outline-none focus:border-[#E5A500] transition-colors uppercase tracking-wider"
+                                />
+                            </div>
+
+                            <div>
                                 <label className="block text-xs font-bold text-gray-400 font-space mb-1.5">
                                     ملاحظات للتوصيل (اختياري)
                                 </label>
@@ -2669,6 +2722,12 @@ export default function FIFAMemeTN() {
                                     <span>مصاريف التوصيل:</span>
                                     <span className="font-bold text-white">{deliveryFee} DT</span>
                                 </div>
+                                {getAffiliateCode() && (
+                                    <div className="flex justify-between items-center text-xs px-2.5 py-1.5 rounded-lg bg-[#E5A500]/15 border border-[#E5A500]/30 text-[#E5A500]">
+                                        <span>كود الإحالة المفعّل:</span>
+                                        <span className="font-mono font-bold font-space">@{getAffiliateCode()}</span>
+                                    </div>
+                                )}
                                 <div className="h-px bg-white/10 my-2" />
                                 <div className="flex justify-between text-base font-bold text-white">
                                     <span>المجموع الجملي:</span>

@@ -273,20 +273,27 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                             <TunisianFlag />
                         </div>
 
-                        {/* Made in Tunisia */}
+                        {/* Official FLAWLESS Brand Emblem */}
                         <div
                             style={{
-                                fontFamily: "'Montserrat', sans-serif",
-                                fontWeight: 900,
-                                fontSize: 11,
-                                color: "#24115d",
-                                textAlign: "center",
                                 marginTop: 12,
-                                letterSpacing: 0.5,
-                                whiteSpace: "nowrap",
+                                width: 68,
+                                height: 68,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
                             }}
                         >
-                            MADE IN TUNISIA
+                            <img
+                                src="/images/favi.png"
+                                alt="FLAWLESS"
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                    filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))",
+                                }}
+                            />
                         </div>
 
                         {/* Instagramable */}

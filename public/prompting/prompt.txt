@@ -37,7 +37,7 @@ The second attached image is the EXACT card outline frame you MUST follow:
 5. BOTTOM (PLAYER NAME, SUBTITLE/CUSTOM NOTE & 6 STATS WITH EXPLANATION SUB-NOTES):
 - Player name centered under portrait in bold uppercase GOLD metallic lettering.
 - Subtitle / Custom text note banner centered directly below Player Name in elegant GOLD lettering.
-- Official "FLAWLESS" gold "F-Shield" brand emblem & golden shoe icon at bottom center.
+- Official "FLAWLESS" gold "F-Shield" brand emblem centered at bottom edge.
 - GOLD COLOR RULE: Gold metallic finish is reserved strictly for TEXT elements (Player Name, Rating, Position, Subtitle banner, Stat numbers & codes).
 
 {CARD_STATS_AND_NOTES_SPECIFICATION}

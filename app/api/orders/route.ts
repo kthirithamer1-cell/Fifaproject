@@ -2,6 +2,8 @@ import { NextRequest, NextResponse, after } from "next/server";
 import puppeteer from "puppeteer";
 import { createServerSupabase } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 async function generatePdfWithPuppeteerAsync(
     supabase: any,
     orderId: string,
@@ -185,6 +187,7 @@ export async function POST(req: NextRequest) {
             totalPrice,
             cardImageUrl,
             notes = "",
+            affiliateCode,
         } = body;
 
         // Validation
@@ -198,6 +201,32 @@ export async function POST(req: NextRequest) {
         const supabase = createServerSupabase();
         const orderIdTemp = `FLW-${Date.now()}`;
         const cleanName = customerName.replace(/[^a-zA-Z0-9]/g, "_");
+
+        // Affiliate attribution lookup (from payload or cookie)
+        const cookieAffCode = req.cookies.get("flw_ref")?.value;
+        const rawAffCode = affiliateCode || cookieAffCode;
+        let matchedAffiliate: any = null;
+        const cleanAffCode = rawAffCode ? String(rawAffCode).trim().toUpperCase() : null;
+
+        if (cleanAffCode) {
+            try {
+                const { data: affData } = await supabase
+                    .from("affiliates")
+                    .select("*")
+                    .or(`code.ilike.${cleanAffCode},ref_code.ilike.${cleanAffCode}`)
+                    .maybeSingle();
+
+                if (affData) {
+                    matchedAffiliate = affData;
+                    matchedAffiliate.code = affData.code || affData.ref_code || cleanAffCode;
+                    console.log(`🎯 [API Orders] Attributed order to affiliate: ${matchedAffiliate.code} (ID: ${affData.id})`);
+                } else {
+                    console.log(`[API Orders] Affiliate code '${cleanAffCode}' not found in DB`);
+                }
+            } catch (affErr) {
+                console.warn("[API Orders] Affiliate lookup warning:", affErr);
+            }
+        }
 
         let finalImageUrl = cardImageUrl;
         let rawImageBuffer: Buffer | null = null;
@@ -238,6 +267,7 @@ export async function POST(req: NextRequest) {
         }
 
         const computedTotal = totalPrice || ((Number(quantity) * Number(unitPrice)) + Number(deliveryFee));
+        const commissionAmount = matchedAffiliate ? Number(matchedAffiliate.commission_per_order || 10.00) : 10.00;
 
         const initialPayload: Record<string, any> = {
             customer_name: customerName.trim(),
@@ -258,6 +288,10 @@ export async function POST(req: NextRequest) {
             card_image_url: finalImageUrl,
             notes: notes ? notes.trim() : null,
             status: "pending",
+            affiliate_code: matchedAffiliate ? matchedAffiliate.code : (cleanAffCode || null),
+            affiliate_id: matchedAffiliate ? matchedAffiliate.id : null,
+            commission_amount: matchedAffiliate ? commissionAmount : null,
+            commission_status: matchedAffiliate ? "pending" : null,
         };
 
         const { data: orderData, error: insertError } = await insertOrderResilient(supabase, initialPayload);
@@ -265,6 +299,22 @@ export async function POST(req: NextRequest) {
         if (insertError) {
             console.error("[API Orders] Insert error:", insertError);
             throw new Error(insertError.message || "Failed to create order");
+        }
+
+        // Increment affiliate statistics
+        if (matchedAffiliate) {
+            try {
+                await supabase
+                    .from("affiliates")
+                    .update({
+                        total_orders: (matchedAffiliate.total_orders || 0) + 1,
+                        total_earned: (Number(matchedAffiliate.total_earned) || 0) + commissionAmount,
+                        updated_at: new Date().toISOString(),
+                    })
+                    .eq("id", matchedAffiliate.id);
+            } catch (updateAffErr) {
+                console.warn("[API Orders] Failed to increment affiliate count:", updateAffErr);
+            }
         }
 
         const finalOrderId = orderData?.id || orderIdTemp;

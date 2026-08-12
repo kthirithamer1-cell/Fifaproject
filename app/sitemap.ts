@@ -7,6 +7,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     process.env.BASE_URL ||
     "https://beflawless.art";
 
+  const cardSlugs = ["karim-gharbi", "youssef", "kader", "sousou", "dellai"];
+  const cardUrls: MetadataRoute.Sitemap = cardSlugs.map((slug) => ({
+    url: `${baseUrl}/cards/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: slug === "karim-gharbi" ? 0.9 : 0.8,
+  }));
+
   return [
     {
       url: `${baseUrl}`,
@@ -20,6 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
-    // If you add more public pages in the future (e.g. /about, /faq, /cards), list them here:
+    {
+      url: `${baseUrl}/cards`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    ...cardUrls,
   ];
 }

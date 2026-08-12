@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { Logo } from "./Logo";
-import { MessageCircle, Heart, Sparkles, ShieldCheck, Truck, ArrowUpRight } from "lucide-react";
+import { MessageCircle, Heart, Sparkles, ShieldCheck, Truck, ArrowUpRight, Coins } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function Footer() {
@@ -60,34 +61,40 @@ export function Footer() {
             </h3>
             <ul className="flex flex-col gap-3 text-xs font-medium">
               <li>
-                <a href="#top" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                <Link href="/" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
                   <span>Home</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#gallery" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                <Link href="/cards" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                  <span>Collection & Cards</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/affiliate" className="group inline-flex items-center gap-1 text-[#F6D365] font-bold hover:text-white transition-colors">
+                  <span>Affiliate Program (10 DT) 💰</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/#gallery" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
                   <span>Examples & Gallery</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#how" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                <Link href="/#how" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
                   <span>How It Works</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#glossary" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
-                  <span>Stats Dictionary</span>
-                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
-                </a>
-              </li>
-              <li>
-                <a href="#testimonials" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                <Link href="/#testimonials" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
                   <span>Customer Reviews</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -100,22 +107,28 @@ export function Footer() {
             </h3>
             <ul className="flex flex-col gap-3 text-xs font-medium">
               <li>
-                <a href="/generator" className="group inline-flex items-center gap-1.5 text-[#F6D365] font-bold hover:text-white transition-colors">
+                <Link href="/generator" className="group inline-flex items-center gap-1.5 text-[#F6D365] font-bold hover:text-white transition-colors">
                   <span>+ Design My Card</span>
                   <Sparkles className="h-3.5 w-3.5" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#packages" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                <Link href="/affiliate/signup" className="group inline-flex items-center gap-1 text-[#F6D365] font-semibold hover:text-white transition-colors">
+                  <span>Devenir Affilié (سجل كشريك)</span>
+                  <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/#packages" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
                   <span>Packages & Pricing</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#faq" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
+                <Link href="/#faq" className="group inline-flex items-center gap-1 hover:text-white transition-colors">
                   <span>Frequently Asked Questions</span>
                   <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#D4AF37]" />
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="group inline-flex items-center gap-1 hover:text-white transition-colors">

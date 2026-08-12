@@ -1,4 +1,4 @@
-'use client'
+import Link from "next/link";
 
 interface LogoProps {
   className?: string;
@@ -14,7 +14,12 @@ export function Logo({
   height,
 }: LogoProps) {
   return (
-    <div className={`logo inline-flex items-center ${className}`} aria-label="Flawless" suppressHydrationWarning>
+    <Link
+      href="/"
+      className={`logo inline-flex items-center group cursor-pointer ${className}`}
+      aria-label="Flawless Home"
+      suppressHydrationWarning
+    >
       <img
         src="/images/logo.webp"
         alt="Flawless Logo"
@@ -22,8 +27,8 @@ export function Logo({
           width: width ? (typeof width === 'number' ? `${width}px` : width) : undefined,
           height: height ? (typeof height === 'number' ? `${height}px` : height) : undefined,
         }}
-        className={`w-auto h-10 sm:h-12 md:h-14 max-h-16 object-contain object-left transition-transform duration-300 hover:scale-105 ${imgClassName}`}
+        className={`w-auto h-10 sm:h-12 md:h-14 max-h-16 object-contain object-left transition-transform duration-300 group-hover:scale-105 ${imgClassName}`}
       />
-    </div>
+    </Link>
   );
 }

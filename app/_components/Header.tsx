@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { navItems } from "./data";
@@ -33,23 +34,23 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-8 lg:flex">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 className="relative text-[13px] font-medium text-gray-200 transition duration-300 hover:text-white after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#D4AF37] after:transition-all hover:after:w-full"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
           {/* Desktop CTA */}
-          <a
+          <Link
             href="/generator"
             className="hidden rounded-lg bg-[#D4AF37] px-5 py-2.5 text-sm font-bold text-white transition-all duration-300 hover:bg-[#C89B3C] hover:shadow-[0_0_24px_rgba(212,175,55,.35)] lg:inline-flex"
           >
             Design My Card
-          </a>
+          </Link>
 
           {/* Mobile Button */}
           <button
@@ -74,23 +75,23 @@ export function Header() {
         <div className="border-t border-white/10 bg-black/95 px-4 py-4 backdrop-blur-2xl">
           <nav className="flex flex-col gap-4">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className="text-sm font-medium text-gray-200 transition hover:text-white"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
 
-            <a
+            <Link
               href="/generator"
               onClick={() => setIsOpen(false)}
               className="mt-2 flex justify-center rounded-lg bg-[#D4AF37] py-2.5 text-sm font-bold text-white transition hover:scale-[1.02]"
             >
               Design My Card
-            </a>
+            </Link>
           </nav>
         </div>
       </div>

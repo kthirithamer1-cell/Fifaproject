@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, Eye, Sparkles } from "lucide-react";
 import { gallery } from "./data";
 
 export function Gallery() {
@@ -91,6 +92,7 @@ export function Gallery() {
         <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-3">
+              <Sparkles className="h-3.5 w-3.5" />
               <span>GALLERY OF MEME LEGENDS</span>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
@@ -98,15 +100,23 @@ export function Gallery() {
             </h2>
           </div>
 
-          <a
-            href="/generator"
-            className="group flex items-center gap-2 text-sm font-bold text-[#F6D365] transition hover:text-[#D4AF37]"
-          >
-            صمّم كارتك واكتشف التشكيلة
-            <span className="transition-transform duration-300 group-hover:translate-x-1">
-              ←
-            </span>
-          </a>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/cards"
+              className="text-xs sm:text-sm font-bold text-gray-300 hover:text-white transition underline underline-offset-4"
+            >
+              عرض التشكيلة كاملة
+            </Link>
+            <Link
+              href="/generator"
+              className="group flex items-center gap-2 text-xs sm:text-sm font-bold text-[#F6D365] transition hover:text-[#D4AF37]"
+            >
+              صمّم كارتك الخاصة
+              <span className="transition-transform duration-300 group-hover:translate-x-1">
+                ←
+              </span>
+            </Link>
+          </div>
         </div>
 
         {/* Gallery Carousel Container */}
@@ -146,18 +156,19 @@ export function Gallery() {
             onScroll={handleScroll}
             className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pb-4 px-2"
           >
-            {gallery.map((card) => {
-              const statEntries = Object.entries(card.stats);
+            {gallery.map((card: any) => {
+              const cardSlug = card.slug || (card.name.toLowerCase().includes("karim") ? "karim-gharbi" : card.name.toLowerCase());
               return (
-                <div
+                <Link
                   key={card.name}
-                  className="w-[240px] sm:w-[260px] md:w-[280px] flex-shrink-0 snap-start transition duration-500 group relative cursor-pointer"
+                  href={`/cards/${cardSlug}`}
+                  className="w-[240px] sm:w-[260px] md:w-[280px] flex-shrink-0 snap-start transition duration-500 group relative block cursor-pointer"
                 >
                   {/* Glow on hover */}
                   <div className="absolute inset-0 rounded-2xl bg-[#D4AF37]/20 blur-xl opacity-0 transition duration-500 group-hover:opacity-100" />
 
                   {/* Card container */}
-                  <div className="relative rounded-2xl border border-white/10 bg-black/90 p-3 backdrop-blur-xl transition duration-500 group-hover:-translate-y-2 group-hover:border-[#D4AF37]/50 group-hover:shadow-[0_10px_30px_rgba(212,175,55,0.2)]">
+                  <div className="relative rounded-2xl border border-white/10 bg-black/90 p-3 backdrop-blur-xl transition duration-500 group-hover:-translate-y-2 group-hover:border-[#D4AF37]/60 group-hover:shadow-[0_12px_35px_rgba(212,175,55,0.25)]">
                     {/* Rating badge */}
                     <div className="absolute top-4 left-4 z-10 flex items-center gap-1 rounded-lg bg-black/80 backdrop-blur-md border border-[#D4AF37]/40 px-2 py-0.5 shadow-md">
                       <span className="text-lg font-black text-[#F6D365] leading-none">
@@ -176,8 +187,8 @@ export function Gallery() {
                     {card.image ? (
                       <img
                         src={card.image}
-                        alt={card.name}
-                        className="w-full rounded-xl select-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]"
+                        alt={`كارت فيفا ${card.arabicName || card.name} تونسية مخصصة — Flawless`}
+                        className="w-full rounded-xl select-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] group-hover:scale-[1.02] transition duration-300"
                       />
                     ) : (
                       <div
@@ -191,33 +202,22 @@ export function Gallery() {
                     )}
 
                     {/* Shine sweep */}
-                    <div className="absolute inset-0 overflow-hidden rounded-xl">
+                    <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
                       <div className="absolute -left-40 top-0 h-full w-20 rotate-12 bg-white/10 blur-xl transition-all duration-1000 group-hover:left-[140%]" />
                     </div>
 
-                    {/* Stats overlay commented out for now - will be added later for all cards */}
-                    <div className="mt-3 px-1 border-t border-white/10 pt-2.5">
-                      <div className="text-sm font-bold text-white uppercase tracking-wide text-center">
-                        {card.name}
+                    {/* Name & Quick Action */}
+                    <div className="mt-3 px-1 border-t border-white/10 pt-2.5 flex items-center justify-between">
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-[#F6D365] group-hover:underline">
+                        <span>تفاصيل الكارت</span>
+                        <Eye className="h-3.5 w-3.5" />
                       </div>
-                      {/* <div className="grid grid-cols-2 gap-x-3 gap-y-1 mt-1.5">
-                        {statEntries.map(([key, value]) => (
-                          <div
-                            key={key}
-                            className="flex items-center justify-between text-[11px] py-0.5 px-1 rounded bg-white/5"
-                          >
-                            <span className="font-semibold text-gray-400 uppercase tracking-wider">
-                              {key}
-                            </span>
-                            <span className="font-bold text-[#F6D365]">
-                              {value}
-                            </span>
-                          </div>
-                        ))}
-                      </div> */}
+                      <div className="text-sm font-black text-white uppercase tracking-wide">
+                        {card.arabicName || card.name}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })}
           </div>

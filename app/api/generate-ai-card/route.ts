@@ -7,6 +7,8 @@ import {
     resolveDynamicPositionAndTitle,
 } from "@/app/generator/lib/tunisiaStats";
 
+export const dynamic = "force-dynamic";
+
 // Helper to get OpenAI client lazily with fallback for build time
 function getOpenAIClient() {
     return new OpenAI({

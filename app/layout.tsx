@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import "./globals.css";
+import { AffiliateTrackerProvider } from "./_components/AffiliateTrackerProvider";
 
 export const metadata: Metadata = {
   title: "Flawless 🇹🇳 — كل تونسي أسطورة! كروت تونسية مخصصة 100%",
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html
       lang="en"
       className="h-full antialiased"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <head>
@@ -41,6 +43,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
+        <AffiliateTrackerProvider />
         {children}
       </body>
     </html>

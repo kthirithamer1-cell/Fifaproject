@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { buildDynamicPrompt } from "../../generator/lib/buildPrompt";
 import { createServerSupabase } from "../../../lib/supabase";
+import { stampFlawlessLogo } from "@/app/lib/stampLogo";
 
 // ─── OpenAI Client ────────────────────────────────────────────────────────────
 function getOpenAIClient() {
@@ -38,9 +39,11 @@ async function processImageResponse(imageResponse: any): Promise<string> {
     const base64Image = imageData?.b64_json;
     const imageUrl = imageData?.url;
 
+    let imageBuffer: Buffer;
+
     if (base64Image) {
         console.log("✅ Received b64_json response from gpt-image-2");
-        return `data:image/png;base64,${base64Image}`;
+        imageBuffer = Buffer.from(base64Image, "base64");
     } else if (imageUrl) {
         console.log("✅ Received URL response, downloading...");
         const imgResponse = await fetch(imageUrl);
@@ -48,12 +51,13 @@ async function processImageResponse(imageResponse: any): Promise<string> {
             throw new Error("Failed to download generated card image");
         }
         const arrayBuffer = await imgResponse.arrayBuffer();
-        const base64 = Buffer.from(arrayBuffer).toString("base64");
-        return `data:image/png;base64,${base64}`;
+        imageBuffer = Buffer.from(arrayBuffer);
     } else {
         console.error("❌ gpt-image-2 returned no image data:", JSON.stringify(imageResponse.data));
         throw new Error("OpenAI returned no image data.");
     }
+
+    return `data:image/png;base64,${imageBuffer.toString("base64")}`;
 }
 
 // ─── Full AI Card Generation (the slow 15-30s OpenAI call) ────────────────────

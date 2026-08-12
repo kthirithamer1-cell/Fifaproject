@@ -3,6 +3,9 @@ import { OpenAI } from "openai";
 import fs from "fs";
 import path from "path";
 import { buildDynamicPrompt } from "../../generator/lib/buildPrompt";
+import { stampFlawlessLogo } from "@/app/lib/stampLogo";
+
+export const dynamic = "force-dynamic";
 
 // Helper to get OpenAI client lazily with fallback for build time
 function getOpenAIClient() {
@@ -37,9 +40,11 @@ async function processImageResponse(imageResponse: any): Promise<string> {
     const base64Image = imageData?.b64_json;
     const imageUrl = imageData?.url;
 
+    let imageBuffer: Buffer;
+
     if (base64Image) {
         console.log("✅ Received b64_json response from gpt-image-2");
-        return `data:image/png;base64,${base64Image}`;
+        imageBuffer = Buffer.from(base64Image, "base64");
     } else if (imageUrl) {
         console.log("✅ Received URL response, downloading...");
         const imgResponse = await fetch(imageUrl);
@@ -47,12 +52,13 @@ async function processImageResponse(imageResponse: any): Promise<string> {
             throw new Error("Failed to download generated card image");
         }
         const arrayBuffer = await imgResponse.arrayBuffer();
-        const base64 = Buffer.from(arrayBuffer).toString("base64");
-        return `data:image/png;base64,${base64}`;
+        imageBuffer = Buffer.from(arrayBuffer);
     } else {
         console.error("❌ gpt-image-2 returned no image data:", JSON.stringify(imageResponse.data));
         throw new Error("OpenAI returned no image data.");
     }
+
+    return `data:image/png;base64,${imageBuffer.toString("base64")}`;
 }
 
 // ─── Full AI Card Generator ────────────────────────────────────────────────────
@@ -262,4 +268,35 @@ export async function POST(req: NextRequest) {
         );
     }
 }
+
+// ─── DELETE Handler: Reset / Unlock rate limit (e.g. on social share) ─────────
+export async function DELETE() {
+    const response = NextResponse.json({
+        success: true,
+        canGenerate: true,
+        remainingGenerations: MAX_GENERATIONS,
+        totalGenerations: MAX_GENERATIONS,
+        usedGenerations: 0,
+        cooldownRemainingSeconds: 0,
+    });
+
+    response.cookies.set("card_limit_data", "", {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 0,
+        expires: new Date(0),
+    });
+
+    response.cookies.set("card_last_gen", "", {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        maxAge: 0,
+        expires: new Date(0),
+    });
+
+    return response;
+}
+
 

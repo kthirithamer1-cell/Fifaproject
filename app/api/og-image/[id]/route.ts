@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
+export const dynamic = "force-dynamic";
+
 // ─── Dynamic OG Image Endpoint ──────────────────────────────────────────────
 // Serves the uploaded card image as image/png.
 // Facebook's crawler hits this URL (from the og:image meta tag) and gets the actual image.
