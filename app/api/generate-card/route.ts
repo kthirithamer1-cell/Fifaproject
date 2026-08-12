@@ -3,7 +3,6 @@ import { OpenAI } from "openai";
 import fs from "fs";
 import path from "path";
 import { buildDynamicPrompt } from "../../generator/lib/buildPrompt";
-import { stampFlawlessLogo } from "@/app/lib/stampLogo";
 
 export const dynamic = "force-dynamic";
 

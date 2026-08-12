@@ -30,10 +30,10 @@ export async function GET() {
       .limit(10);
 
     // Merge and rank
-    let leaders = (dbAffiliates || []).map((aff) => ({
+    let leaders = (dbAffiliates || []).map((aff: any) => ({
       id: aff.id,
-      name: aff.name,
-      code: aff.code,
+      name: aff.name || "Affiliate",
+      code: aff.code || aff.ref_code || "",
       orders: aff.total_orders || 0,
       earned: Number(aff.total_earned || (aff.total_orders || 0) * 10),
       city: "Tunisie",
@@ -41,7 +41,7 @@ export async function GET() {
 
     // If fewer than 7 registered affiliates, combine with benchmark leaders for realistic gamification
     if (leaders.length < BENCHMARK_LEADERS.length) {
-      const existingCodes = new Set(leaders.map((l) => l.code.toUpperCase()));
+      const existingCodes = new Set(leaders.map((l) => (l.code || "").toUpperCase()));
       for (const b of BENCHMARK_LEADERS) {
         if (!existingCodes.has(b.code)) {
           leaders.push({

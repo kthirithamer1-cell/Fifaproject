@@ -4,7 +4,6 @@ import fs from "fs";
 import path from "path";
 import { buildDynamicPrompt } from "../../generator/lib/buildPrompt";
 import { createServerSupabase } from "../../../lib/supabase";
-import { stampFlawlessLogo } from "@/app/lib/stampLogo";
 
 // ─── OpenAI Client ────────────────────────────────────────────────────────────
 function getOpenAIClient() {

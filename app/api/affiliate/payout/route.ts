@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     // 1. Fetch Affiliate Record
     const { data: affiliate, error: affError } = await supabase
       .from("affiliates")
-      .select("id, name, phone, payment_method, payment_details, commission_per_order")
+      .select("id, name, phone, code, ref_code, payment_method, payment_details, commission_per_order")
       .eq("id", affiliateId)
       .single();
 
@@ -31,7 +31,8 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Check Available Balance from DELIVERED orders ONLY
-    const affCode = affiliate.code || affiliate.ref_code || "";
+    const affData = affiliate as any;
+    const affCode = affData.code || affData.ref_code || "";
     const { data: deliveredOrders } = await supabase
       .from("orders")
       .select("id, status")
