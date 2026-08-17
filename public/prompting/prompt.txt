@@ -4,15 +4,11 @@ FUT master card concept artist, 3D illustrator.
 # GOAL
 Create a premium 3D FUT collectible card. AAA sports game special edition quality. The card MUST use the EXACT shield shape from the reference frame image provided.
 
-# CARD SHAPE — CRITICAL
-The second attached image is the EXACT card outline frame you MUST follow:
-- Shield-shaped card with a small decorative CROWN NOTCH at top center.
-- Slightly concave/curved sides that taper inward at the bottom.
-- Bottom has a gentle inward curve (NOT a sharp point).
-- Rounded corners at the top sides, smooth contour everywhere.
-- 3D brushed-gold metallic border frame with polished highlights.
-- The generated card silhouette MUST perfectly match this frame — no rectangular cards, no different shapes.
-- 100% TRANSPARENT background OUTSIDE the gold frame border. Nothing outside the shield.
+# CARD SHAPE & FRAME (CRITICAL)
+The attached reference image is the EXACT shield frame silhouette you MUST replicate:
+- Perfectly reproduce the shield outline: crown notch at top center, smooth contoured sides tapering inward at bottom.
+- 3D brushed-gold metallic border with polished highlights.
+- 100% TRANSPARENT background OUTSIDE the gold shield border. Nothing outside the card frame.
 
 # VISUAL & ART DIRECTION
 
@@ -28,17 +24,19 @@ The second attached image is the EXACT card outline frame you MUST follow:
 - STRICT PLAIN CLOTHING RULE: The subject's clothes, jersey, shirt, or outfit MUST be 100% plain and clean with ZERO logos, ZERO brand names, ZERO badges, and ZERO text printed or embroidered on it. NEVER put any Flawless logo, crown, or letters on the subject's shirt, chest, collar, sleeves, or props.
 - Preserve face identity exactly from the uploaded photo.
 
-4. BADGES & HEADER (CARD UI LAYER ONLY):
-- Top-left: OVR rating + Position/Title in metallic GOLD text.
-- Below OVR: Tunisia flag (🇹🇳) in glossy 3D badge.
-- Next to flag: Official "FLAWLESS" brand logo emblem badge (prestigious 3D gold metallic "F" monogram with an integrated shield crest nestled inside its lower curve).
-- DO NOT generate any SKILL, WEAK FOOT, or WORK RATE text/chips on the card. Keep top-right clean.
+4. HEADER & BRAND BADGE (CARD UI LAYER):
+- Top-left: OVR rating + Position/Title in bold metallic GOLD text.
+- Single official "FLAWLESS" brand emblem badge (prestigious 3D gold metallic "F" monogram shield crest) next to/below the rating.
+- ONLY ONE FLAWLESS LOGO ON THE CARD: Do NOT duplicate the logo anywhere else.
+- DO NOT generate any Tunisian flag, skill moves, weak foot, or extra badges. Keep the header sleek, clean, and focused.
 
-5. BOTTOM (PLAYER NAME, SUBTITLE/CUSTOM NOTE & 6 STATS WITH EXPLANATION SUB-NOTES):
+5. BOTTOM (PLAYER NAME, SUBTITLE & 6 STATS WITH EMOJIS AND EXPLANATION SUB-NOTES):
 - Player name centered under portrait in bold uppercase GOLD metallic lettering.
-- Subtitle / Custom text note banner centered directly below Player Name in elegant GOLD lettering.
-- Official "FLAWLESS" gold "F-Shield" brand emblem centered at bottom edge.
-- GOLD COLOR RULE: Gold metallic finish is reserved strictly for TEXT elements (Player Name, Rating, Position, Subtitle banner, Stat numbers & codes).
+- Subtitle: Brief honorary player title / bio centered directly below Player Name in elegant gold lettering (e.g. "BORN TO BE LEGENDARY").
+- DO NOT print user design notes or prompt text under the name. Design notes are exclusively for rendering the visual background environment.
+- NO logos or brand emblems at the bottom edge. Keep the lower area clean for the player name, subtitle, and stats.
+- GOLD COLOR RULE: Gold metallic finish is reserved strictly for TEXT elements (Player Name, Rating, Position, Subtitle, Stat numbers & codes).
+- STAT COLUMNS WITH EMOJIS: Each of the 6 stat columns along the bottom row displays the cultural emoji alongside the 3-letter stat code, the large numeric stat value, and the explanation sub-note directly below.
 
 {CARD_STATS_AND_NOTES_SPECIFICATION}
 

@@ -700,11 +700,15 @@ export default function FIFAMemeTN() {
 
             // Apply AI-selected stats to the editor with contextual notes
             const contextText = `${(profileInfo.hobbies || []).join(" ")} ${profileInfo.description || ""} ${profileInfo.designNotes || ""} ${JSON.stringify(aiInterviewAnswers)}`.toLowerCase();
-            const aiStats: CardStat[] = (aiCardData.stats || []).map((s: { code: string; value: number; note?: string }) => ({
-                label: s.code,
-                value: s.value,
-                note: s.note || extractNotesFromContext(s.code, s.value, contextText),
-            }));
+            const aiStats: CardStat[] = (aiCardData.stats || []).map((s: { code: string; value: number; note?: string; emoji?: string }) => {
+                const statDef = getStatByCode(s.code);
+                return {
+                    label: s.code,
+                    value: s.value,
+                    note: s.note || extractNotesFromContext(s.code, s.value, contextText),
+                    emoji: s.emoji || statDef?.emoji || "⭐",
+                };
+            });
             setEditorStats(aiStats);
             setEditorRating(aiCardData.overall || calculateOverall(aiCardData.stats || []));
             setOverallRating(aiCardData.overall || calculateOverall(aiCardData.stats || []));
@@ -760,7 +764,7 @@ export default function FIFAMemeTN() {
             trackCardGenerated();
             saveCardToLocalStorage(bgData.imageUrl, {
                 editorName: aiCardData.cardTitle || profileInfo.name || dynamicResolved.title,
-                editorSubtitle: profileInfo.designNotes || aiCardData.bio || dynamicResolved.bio,
+                editorSubtitle: aiCardData.bio || dynamicResolved.bio,
                 editorPosition: resolvedPos,
                 editorRating: aiCardData.overall || calculateOverall(aiCardData.stats || []),
                 editorStats: aiStats,
@@ -796,10 +800,12 @@ export default function FIFAMemeTN() {
 
         const manualStats: CardStat[] = selectedStatCodes.map((code) => {
             const val = statValues[code] || 75;
+            const statDef = getStatByCode(code);
             return {
                 label: code,
                 value: val,
                 note: extractNotesFromContext(code, val, contextText),
+                emoji: statDef?.emoji || "⭐",
             };
         });
         setEditorStats(manualStats);
@@ -810,7 +816,7 @@ export default function FIFAMemeTN() {
         setEditorRating(overall);
         setEditorName(profileInfo.name || dynamicResolved.title);
         setEditorPosition(dynamicResolved.position);
-        setEditorSubtitle(profileInfo.designNotes || profileInfo.description || dynamicResolved.bio);
+        setEditorSubtitle(dynamicResolved.bio || profileInfo.description?.slice(0, 50) || "Born to be legendary");
         const descParts = selectedStatCodes.map((code) => {
             const stat = getStatByCode(code);
             return stat ? stat.meaning : code;
@@ -1225,7 +1231,7 @@ export default function FIFAMemeTN() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="space-y-10"
+                className="space-y-8"
             >
                 <div className="space-y-3" dir="rtl">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight">
@@ -1235,7 +1241,7 @@ export default function FIFAMemeTN() {
                         </span>
                     </h1>
                     <p className="text-gray-300 font-space text-base max-w-md">
-                        اختر صورة واضحة للشخص ليتم معالجتها وطباعتها على الكارطة.
+                        اختر صورة واضحة تظهر الوجه والأكتاف ليتم معالجتها وطباعتها على الكارطة.
                     </p>
                 </div>
 
@@ -1243,13 +1249,14 @@ export default function FIFAMemeTN() {
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
-                    onClick={() => fileInputRef.current?.click()}
-                    className={`relative rounded-3xl border-2 border-dashed transition-all duration-500 cursor-pointer overflow-hidden backdrop-blur-xl ${isDragging
-                        ? "border-[#D4AF37] bg-[#D4AF37]/15 shadow-[0_10px_30px_rgba(212,175,55,0.25)]"
-                        : isUploaded
-                            ? "border-[#D4AF37]/50 bg-black/90 shadow-2xl"
-                            : "border-white/20 bg-black/70 hover:border-[#D4AF37]/60 hover:bg-black/90 shadow-xl"
-                        }`}
+                    onClick={() => !isUploaded && fileInputRef.current?.click()}
+                    className={`relative rounded-3xl border-2 transition-all duration-500 overflow-hidden backdrop-blur-xl ${
+                        isDragging
+                            ? "border-[#D4AF37] bg-[#D4AF37]/15 shadow-[0_10px_30px_rgba(212,175,55,0.25)] border-dashed cursor-pointer"
+                            : isUploaded
+                            ? "border-[#D4AF37]/60 bg-black/90 shadow-2xl"
+                            : "border-2 border-dashed border-white/20 bg-black/70 hover:border-[#D4AF37]/60 hover:bg-black/90 shadow-xl cursor-pointer"
+                    }`}
                 >
                     <input
                         ref={fileInputRef}
@@ -1262,39 +1269,68 @@ export default function FIFAMemeTN() {
                         className="hidden"
                     />
 
-                    <div className="aspect-[4/3] flex items-center justify-center p-8">
+                    <div className="relative min-h-[380px] sm:min-h-[460px] flex items-center justify-center p-4 sm:p-6">
                         {isUploaded ? (
                             <motion.div
-                                initial={{ scale: 0.9, opacity: 0 }}
+                                initial={{ scale: 0.95, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="relative w-full h-full rounded-2xl overflow-hidden border border-white/10"
+                                className="relative w-full h-[360px] sm:h-[430px] rounded-2xl overflow-hidden bg-[#0a0a0a] border border-[#D4AF37]/30 flex items-center justify-center"
                             >
-                                <Image
-                                    src={uploadPreview!}
-                                    alt="Uploaded"
-                                    fill
-                                    className="object-cover"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-sm font-space">
-                                    <span className="px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-[#D4AF37]/40 flex items-center gap-1.5 text-xs font-bold text-[#F6D365]">
-                                        <Check className="w-4 h-4 text-emerald-400 stroke-[3]" /> الصورة جاهزة
+                                {/* Holographic grid backdrop */}
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.08)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+
+                                {/* Full Uncropped Image with object-contain */}
+                                <div className="relative w-full h-full p-2">
+                                    <Image
+                                        src={uploadPreview!}
+                                        alt="Uploaded Full Photo"
+                                        fill
+                                        className="object-contain"
+                                        priority
+                                    />
+                                </div>
+
+                                {/* Floating Overlay Actions Bar */}
+                                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20" dir="rtl">
+                                    <span className="px-3.5 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-[#D4AF37]/40 flex items-center gap-1.5 text-xs font-bold text-[#F6D365] shadow-lg">
+                                        <Check className="w-4 h-4 text-emerald-400 stroke-[3]" /> الصورة كاملة واضحة
                                     </span>
-                                    <span className="px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-[#D4AF37]/40 flex items-center gap-1.5 text-xs font-bold text-[#F6D365]">
-                                        <Sparkles className="w-4 h-4 text-[#F6D365] fill-[#F6D365]" /> جاهز للتصميم
-                                    </span>
+
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                fileInputRef.current?.click();
+                                            }}
+                                            className="px-3.5 py-1.5 rounded-full bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 border border-[#D4AF37]/60 text-xs font-bold font-space text-[#F6D365] transition-all cursor-pointer shadow-md flex items-center gap-1.5"
+                                        >
+                                            <Camera className="w-3.5 h-3.5" /> تغيير الصورة
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setUploadPreview(null);
+                                                setUploadedFile(null);
+                                            }}
+                                            className="px-3 py-1.5 rounded-full bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-xs font-bold font-space text-red-400 transition-all cursor-pointer shadow-md"
+                                        >
+                                            حذف
+                                        </button>
+                                    </div>
                                 </div>
                             </motion.div>
                         ) : (
-                            <div className="text-center space-y-4" dir="rtl">
-                                <div className="mx-auto w-14 h-14 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#F6D365]">
-                                    <ImagePlus className="w-7 h-7 stroke-[1.75]" />
+                            <div className="text-center space-y-4 py-8" dir="rtl">
+                                <div className="mx-auto w-16 h-16 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#F6D365] shadow-[0_0_25px_rgba(212,175,55,0.2)]">
+                                    <ImagePlus className="w-8 h-8 stroke-[1.75]" />
                                 </div>
-                                <div className="text-white font-bold text-xl">
+                                <div className="text-white font-bold text-xl sm:text-2xl">
                                     اسحب الصّورة هنا أو اضغط للاختيار
                                 </div>
-                                <div className="text-gray-400 font-space text-xs">
-                                    صيغ المتمثلة: PNG, JPG, WEBP (صورة واضحة تضمن أفضل طباعة)
+                                <div className="text-gray-300 font-space text-sm max-w-sm mx-auto">
+                                    صيغ مدعومة: PNG, JPG, WEBP — سيتم عرض صورتك كاملة بدون أي قص.
                                 </div>
                             </div>
                         )}
@@ -1574,25 +1610,25 @@ export default function FIFAMemeTN() {
                             value={profileInfo.designNotes}
                             onChange={(e) => setProfileInfo((p) => ({ ...p, designNotes: e.target.value }))}
                             placeholder="مثال: جملة تونسية مضحكة تحب نكتبوها، لقب خاص (THE KING OF CARS)، خلفية معينة..."
-                            maxLength={150}
+                            maxLength={500}
                             rows={2}
                             className="w-full px-5 py-3.5 rounded-2xl border border-white/15 bg-black/70 text-sm text-white font-space focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-200 placeholder:text-gray-400 resize-none"
                         />
-                        <span className="text-xs text-gray-400 font-space mt-1 block">{profileInfo.designNotes.length}/150</span>
+                        <span className="text-xs text-gray-400 font-space mt-1 block">{profileInfo.designNotes.length}/500</span>
                     </div>
 
                     {/* Description */}
                     <div>
-                        <label className="text-sm font-space font-bold text-white mb-2 block">توصيف أو سيرة سريعة (Short Bio)</label>
+                        <label className="text-sm font-space font-bold text-white mb-2 block">توصيف أو سيرة سريعة (Short Bio / Career History)</label>
                         <textarea
                             value={profileInfo.description}
                             onChange={(e) => setProfileInfo((p) => ({ ...p, description: e.target.value }))}
-                            placeholder="شنوّة أكثر حاجة تميّزك وتخليك أسطورة؟ (مثال: ديما يسألوه وينك، أستاذ في التكتاك...)"
-                            maxLength={200}
-                            rows={3}
+                            placeholder="شنوّة أكثر حاجة تميّزك؟ اكتب خدمتك، أعمالك، مسيرتك ومشاريعك..."
+                            maxLength={1000}
+                            rows={4}
                             className="w-full px-5 py-3.5 rounded-2xl border border-white/15 bg-black/70 text-sm text-white font-space focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-200 placeholder:text-gray-400 resize-none"
                         />
-                        <span className="text-xs text-gray-400 font-space mt-1 block">{profileInfo.description.length}/200</span>
+                        <span className="text-xs text-gray-400 font-space mt-1 block">{profileInfo.description.length}/1000</span>
                     </div>
                 </div>
 
@@ -1685,10 +1721,12 @@ export default function FIFAMemeTN() {
 
             const formattedStats = selectedStatCodes.map((code) => {
                 const val = statValues[code] || 75;
+                const statDef = getStatByCode(code);
                 return {
                     code,
                     value: val,
                     note: extractNotesFromContext(code, val, contextText),
+                    emoji: statDef?.emoji || "⭐",
                 };
             });
             const overall = calculateOverall(formattedStats);
@@ -1737,7 +1775,7 @@ export default function FIFAMemeTN() {
             trackCardGenerated();
             saveCardToLocalStorage(data.imageUrl, {
                 editorName: profileInfo.name || dynamicResolved.title,
-                editorSubtitle: profileInfo.designNotes || profileInfo.description || dynamicResolved.bio,
+                editorSubtitle: dynamicResolved.bio || profileInfo.description?.slice(0, 50) || "Born to be legendary",
                 editorPosition: dynamicResolved.position,
                 editorRating: overall,
                 editorStats: formattedStats,
@@ -2140,67 +2178,165 @@ export default function FIFAMemeTN() {
             );
         }
 
-        const steps = [
-            "Analyzing personality...",
-            "Reading photo...",
-            "Generating legendary title...",
-            "Calculating stats...",
-            "Creating premium artwork...",
-            "Building collectible card...",
+        const generationSteps = [
+            { ar: "تحليل المسيرة والشخصية", en: "Analyzing Persona & Career History", icon: Brain },
+            { ar: "معالجة ملامح الوجه 3D", en: "AI Facial & Identity Synthesis", icon: Camera },
+            { ar: "توليد الخلفية السينمائية", en: "Crafting Thematic Cinematic Scene", icon: Sparkles },
+            { ar: "حساب الستاتيكس والتقييم", en: "Calculating Cultural Stats & OVR", icon: SlidersHorizontal },
+            { ar: "صقل الدرع الذهبي الفاخر", en: "Forging 3D Metallic Gold Shield", icon: Trophy },
         ];
         const currentStepIdx = Math.min(
-            Math.floor((generationProgress / 100) * steps.length),
-            steps.length - 1
+            Math.floor((generationProgress / 100) * generationSteps.length),
+            generationSteps.length - 1
         );
-        const currentLabel = steps[currentStepIdx] || steps[0];
+        const currentStepData = generationSteps[currentStepIdx] || generationSteps[0];
+        const StepIcon = currentStepData.icon;
 
         return (
             <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-12"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="relative flex flex-col items-center justify-center min-h-[75vh] py-8 text-center"
             >
-                <div className="relative">
-                    <div className="absolute inset-0 bg-[#E5A500] blur-[80px] opacity-10" />
-                    <div className="relative w-32 h-32 rounded-full border-4 border-gray-100 flex items-center justify-center">
+                {/* Ambient Golden Background Glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-[#D4AF37]/20 via-[#F6D365]/10 to-transparent rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#D4AF37]/15 rounded-full blur-[80px] pointer-events-none animate-pulse" />
+
+                {/* 3D Holographic Card Forging Container */}
+                <div className="relative mb-8">
+                    {/* Outer Rotating Energy Ring */}
+                    <motion.div
+                        className="absolute -inset-6 rounded-[42px] border border-[#D4AF37]/20 border-dashed"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                    />
+                    {/* Inner Counter-Rotating Ring */}
+                    <motion.div
+                        className="absolute -inset-3 rounded-[36px] border border-[#F6D365]/30"
+                        animate={{ rotate: -360 }}
+                        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+                    />
+
+                    {/* Holographic Card Shield Preview */}
+                    <motion.div
+                        animate={{
+                            y: [0, -10, 0],
+                            rotateY: [0, 6, 0, -6, 0],
+                        }}
+                        transition={{
+                            duration: 5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                        className="relative w-56 sm:w-64 aspect-[3/4.2] rounded-[28px] overflow-hidden bg-gradient-to-b from-[#1C180C] via-[#120F08] to-[#080704] border-2 border-[#D4AF37] shadow-[0_0_50px_rgba(212,175,55,0.35)] flex flex-col items-center justify-center p-4"
+                        style={{ perspective: 1000 }}
+                    >
+                        {/* Shimmer / Laser Scanner Line */}
                         <motion.div
-                            className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#E5A500]"
-                            animate={{ rotate: 360 }}
+                            className="absolute inset-x-0 h-2 bg-gradient-to-r from-transparent via-[#F6D365] to-transparent shadow-[0_0_20px_#F6D365] z-30 opacity-80"
+                            animate={{ top: ["-10%", "110%"] }}
                             transition={{
-                                duration: 1.2,
+                                duration: 2.2,
                                 repeat: Infinity,
-                                ease: "linear",
+                                ease: "easeInOut",
                             }}
                         />
-                        <Sparkles className="w-10 h-10 text-[#E5A500] animate-pulse" />
-                    </div>
+
+                        {/* Subject Photo / Shield Hologram */}
+                        {uploadPreview ? (
+                            <div className="relative w-full h-full rounded-2xl overflow-hidden border border-[#D4AF37]/30">
+                                <Image
+                                    src={uploadPreview}
+                                    alt="Subject preview"
+                                    fill
+                                    className="object-cover opacity-60 filter brightness-90 contrast-125"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-[#D4AF37]/10" />
+                                {/* Glowing Center Rune */}
+                                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 z-10">
+                                    <div className="w-14 h-14 rounded-2xl bg-black/70 border border-[#D4AF37] flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.5)] backdrop-blur-md">
+                                        <StepIcon className="w-7 h-7 text-[#F6D365] animate-pulse" />
+                                    </div>
+                                    <span className="text-[10px] font-space font-black uppercase tracking-widest text-[#F6D365] bg-black/80 px-2.5 py-1 rounded-full border border-[#D4AF37]/40 shadow-sm">
+                                        FLAWLESS AI
+                                    </span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center gap-3">
+                                <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37] flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+                                    <Sparkles className="w-8 h-8 text-[#F6D365] animate-spin" style={{ animationDuration: "6s" }} />
+                                </div>
+                                <span className="text-xs font-space font-bold uppercase tracking-widest text-[#F6D365]">
+                                    3D CARD FORGE
+                                </span>
+                            </div>
+                        )}
+
+                        {/* Card Hologram Grid Pattern */}
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.15)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none" />
+                    </motion.div>
                 </div>
 
-                <div className="space-y-4 max-w-md">
-                    <h2 className="text-2xl font-bold font-sora text-gray-900">
-                        {currentLabel}
-                    </h2>
-                    <p className="text-gray-600 font-space text-sm">
-                        Our AI is crafting a legendary card just for you.
-                    </p>
-                </div>
-
-                <div className="w-full max-w-xs h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                {/* Dynamic Status Text with Bilingual Display */}
+                <div className="space-y-3 max-w-md px-4 mb-6 z-10">
                     <motion.div
-                        className="h-full rounded-full bg-gradient-to-r from-[#E5A500] to-[#C98600]"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${generationProgress}%` }}
-                        transition={{ duration: 0.3 }}
-                    />
+                        key={currentStepData.ar}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="space-y-1.5"
+                    >
+                        <h2 className="text-2xl sm:text-3xl font-black font-space text-white leading-tight" dir="rtl">
+                            <span className="text-gold-grad">{currentStepData.ar}</span>
+                        </h2>
+                        <p className="text-xs sm:text-sm font-space text-gray-300 tracking-wide">
+                            {currentStepData.en}...
+                        </p>
+                    </motion.div>
                 </div>
 
-                <div className="flex items-center gap-2 text-gray-500 font-space text-sm">
-                    <span className="text-[#C98600] font-bold">
-                        {Math.round(generationProgress)}%
-                    </span>
-                    <span className="text-gray-300">·</span>
-                    <span>almost there</span>
+                {/* High-End Golden Progress Bar & Ticker */}
+                <div className="w-full max-w-sm px-4 space-y-3 z-10">
+                    <div className="relative w-full h-3 rounded-full bg-black/80 border border-white/10 overflow-hidden shadow-inner p-0.5">
+                        <motion.div
+                            className="h-full rounded-full bg-gradient-to-r from-[#8A6D1C] via-[#D4AF37] to-[#FFF0A0] shadow-[0_0_15px_#F6D365]"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${generationProgress}%` }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs font-space">
+                        <div className="flex items-center gap-1.5 text-gray-400">
+                            <span className="inline-block w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
+                            <span>جارِ التوليد (Generating)</span>
+                        </div>
+                        <span className="font-black text-base text-[#F6D365] font-sora">
+                            {Math.round(generationProgress)}%
+                        </span>
+                    </div>
+
+                    {/* Step Pills Indicator */}
+                    <div className="grid grid-cols-5 gap-1.5 pt-2">
+                        {generationSteps.map((s, idx) => {
+                            const isDone = idx < currentStepIdx;
+                            const isCurrent = idx === currentStepIdx;
+                            return (
+                                <div
+                                    key={idx}
+                                    className={`h-1.5 rounded-full transition-all duration-500 ${
+                                        isDone
+                                            ? "bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]"
+                                            : isCurrent
+                                            ? "bg-[#F6D365] animate-pulse shadow-[0_0_8px_#F6D365]"
+                                            : "bg-white/10"
+                                    }`}
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
             </motion.div>
         );

@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { getDynamicStatNote } from "../../generator/lib/tunisiaStats";
+import { getDynamicStatNote, getStatByCode } from "../../generator/lib/tunisiaStats";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -7,6 +7,7 @@ export interface CardStat {
     label: string;
     value: number;
     note?: string;
+    emoji?: string;
 }
 
 export interface CardBadge {
@@ -457,6 +458,8 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                     >
                         {stats.slice(0, 6).map((stat, i) => {
                             const StatIcon = STAT_ICONS[i % STAT_ICONS.length];
+                            const statDef = getStatByCode(stat.label);
+                            const statEmoji = stat.emoji || statDef?.emoji;
                             const isLast = i === Math.min(stats.length, 6) - 1;
                             return (
                                 <div
@@ -481,11 +484,16 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                                             alignItems: "center",
                                             justifyContent: "center",
                                             color: "#ffffff",
+                                            fontSize: 22,
                                             marginBottom: 6,
                                             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.15)",
                                         }}
                                     >
-                                        <StatIcon />
+                                        {statEmoji ? (
+                                            <span style={{ lineHeight: 1 }}>{statEmoji}</span>
+                                        ) : (
+                                            <StatIcon />
+                                        )}
                                     </div>
 
                                     {/* Label */}

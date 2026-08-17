@@ -85,7 +85,7 @@ async function generateFullAICard(
             { code: "DHK", value: 85 },
             { code: "JAW", value: 90 },
             { code: "S7B", value: 88 },
-            { code: "9HW", value: 80 },
+            { code: "ZHR", value: 80 },
             { code: "DBR", value: 82 },
             { code: "HRB", value: 75 },
         ],
@@ -132,7 +132,7 @@ async function generateFullAICard(
     const openai = getOpenAIClient();
 
     const shapePromptSuffix = shapeRefBase64
-        ? "\n\nCRITICAL SHAPE INSTRUCTION: The second image (card_model_reference.png) shows the EXACT gold frame outline your card MUST follow. Copy this shield silhouette precisely: small crown notch at top center, slightly concave curved sides, gentle inward curve at bottom. The gold border style, thickness, and 3D metallic sheen must match. Everything OUTSIDE this gold frame must be 100% transparent. Do NOT make a rectangular card. Do NOT invent a different shape."
+        ? "\n\nCRITICAL REFERENCE INSTRUCTION: Follow the exact shield silhouette and 3D gold frame border from the reference image (card_model_reference.png). Ensure 100% transparency outside the card frame and keep the entire shield uncropped."
         : "";
 
     const imageResponse = await openai.images.edit({

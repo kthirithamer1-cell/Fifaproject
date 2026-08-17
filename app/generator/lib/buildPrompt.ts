@@ -3,6 +3,7 @@ import {
     getDynamicStatNote,
     extractNotesFromContext,
     resolveDynamicPositionAndTitle,
+    TUNISIA_STATS,
 } from "./tunisiaStats";
 
 export interface DynamicPromptInput {
@@ -32,9 +33,6 @@ export interface DynamicPromptInput {
 
 // Expanded Tunisian & Global Hobby to Background Directives map
 const HOBBY_DIRECTIVES: Record<string, string> = {
-    coffee: "Luxury modern Tunisian lounge café ambiance, glowing espresso machine steam, rich amber ambient lighting, warm gold highlights.",
-    kahwa: "Luxury modern Tunisian lounge café ambiance, glowing espresso machine steam, rich amber ambient lighting, warm gold highlights.",
-    "9ahwa": "Luxury modern Tunisian lounge café ambiance, glowing espresso machine steam, rich amber ambient lighting, warm gold highlights.",
     game: "High-tech cyberpunk esports battle station, glowing cyan and gold RGB lighting, holographic matrix particle aura.",
     gamer: "High-tech cyberpunk esports battle station, glowing cyan and gold RGB lighting, holographic matrix particle aura.",
     gaming: "High-tech cyberpunk esports battle station, glowing cyan and gold RGB lighting, holographic matrix particle aura.",
@@ -74,6 +72,14 @@ const HOBBY_DIRECTIVES: Record<string, string> = {
     study: "Cozy luxury leather library, antique books with gold leaf edges, warm reading lamp glow.",
     cinema: "Hollywood red carpet premiere, cinematic anamorphic lens flare, golden spotlight camera aura.",
     movies: "Hollywood red carpet premiere, cinematic anamorphic lens flare, golden spotlight camera aura.",
+    theatre: "Prestigious historic grand theatre stage, cinematic velvet gold lighting, dramatic architectural archways and spotlight bokeh.",
+    theater: "Prestigious historic grand theatre stage, cinematic velvet gold lighting, dramatic architectural archways and spotlight bokeh.",
+    masra7: "Prestigious historic grand theatre stage, cinematic velvet gold lighting, dramatic architectural archways and spotlight bokeh.",
+    actor: "Grand cinematic film set and prestigious theatre stage atmosphere, golden rim lighting, anamorphic lens flares.",
+    acting: "Grand cinematic film set and prestigious theatre stage atmosphere, golden rim lighting, anamorphic lens flares.",
+    comedy: "Prestigious comedy theatre arena, cinematic warm golden spotlighting, vibrant live audience ambiance.",
+    comedian: "Prestigious comedy theatre arena, cinematic warm golden spotlighting, vibrant live audience ambiance.",
+    standup: "Prestigious comedy theatre arena, cinematic warm golden spotlighting, vibrant live audience ambiance.",
     fashion: "High-fashion Paris/Tunis runway, luxury gold accents, stylish magazine aesthetic.",
     style: "High-fashion Paris/Tunis runway, luxury gold accents, stylish magazine aesthetic.",
     shopping: "High-fashion boutique avenue, luxury gold accents, stylish magazine aesthetic.",
@@ -116,7 +122,9 @@ export function buildDynamicPrompt(
 
     // Combined context text for keyword & contextual detection
     const combinedAnswers = { ...(answers || {}), ...(personality || {}) };
-    const contextText = `${hobbiesFormatted} ${profileInfo?.description || ""} ${freeDescription || ""} ${directDesignNotes || ""} ${JSON.stringify(combinedAnswers)}`.toLowerCase();
+    // Filter out coffeeLevel key to prevent its name from triggering coffee background
+    const { coffeeLevel: _cl, ...filteredAnswers } = combinedAnswers as any;
+    const contextText = `${hobbiesFormatted} ${profileInfo?.description || ""} ${freeDescription || ""} ${directDesignNotes || ""} ${JSON.stringify(filteredAnswers)}`.toLowerCase();
 
     // 1. Resolve Dynamic Position & Title if default or not set
     const dynamicResolved = resolveDynamicPositionAndTitle({
@@ -138,28 +146,30 @@ export function buildDynamicPrompt(
               { code: "DHK", value: 85 },
               { code: "JAW", value: 90 },
               { code: "S7B", value: 88 },
-              { code: "9HW", value: 80 },
+              { code: "ZHR", value: 80 },
               { code: "DBR", value: 82 },
               { code: "HRB", value: 75 },
           ]
     ).slice(0, 6);
 
     // Build explicit 3-line column layout specification
-    let statsSpecDirective = `CRITICAL STATS & EXPLANATION SUB-NOTES (MUST BE PRINTED UNDER EACH STAT COLUMN):\n`;
-    statsSpecDirective += `Each of the 6 stat columns along the bottom row MUST strictly contain 3 elements stacked vertically in metallic GOLD lettering:\n`;
-    statsSpecDirective += `- Line 1 (Top): 3-letter Stat CODE (uppercase bold gold, e.g. DHK)\n`;
-    statsSpecDirective += `- Line 2 (Middle): Numeric Stat VALUE (large bold gold number, e.g. 98)\n`;
-    statsSpecDirective += `- Line 3 (Bottom): Explanation SUB-NOTE (small uppercase bold gold/white text, e.g. DIMA YADH7AK)\n\n`;
+    let statsSpecDirective = `CRITICAL STATS, EMOJIS & EXPLANATION SUB-NOTES (MUST BE PRINTED UNDER EACH STAT COLUMN):\n`;
+    statsSpecDirective += `Each of the 6 stat columns along the bottom row MUST strictly render:\n`;
+    statsSpecDirective += `- Line 1 (Top): Cultural Emoji icon + 3-letter Stat CODE in uppercase bold metallic gold (e.g. "😂 DHK")\n`;
+    statsSpecDirective += `- Line 2 (Middle): Numeric Stat VALUE in large bold metallic gold numbers (e.g. 98)\n`;
+    statsSpecDirective += `- Line 3 (Bottom): Explanation SUB-NOTE in small uppercase bold gold/white text (e.g. DIMA YADH7AK)\n\n`;
     statsSpecDirective += `EXACT 6 STAT COLUMNS TO RENDER:\n`;
 
     const statStrings: string[] = [];
-    finalStats.forEach((s, idx) => {
+    finalStats.forEach((s: any, idx) => {
         const resolvedNote = s.note || extractNotesFromContext(s.code, s.value, contextText);
-        statsSpecDirective += `Column ${idx + 1}: Code "${s.code}" | Number "${s.value}" | Sub-Note "${resolvedNote}"\n`;
-        statStrings.push(`${s.code} ${s.value} (${resolvedNote})`);
+        const statDef = TUNISIA_STATS.find((t) => t.code === s.code);
+        const emoji = s.emoji || statDef?.emoji || "⭐";
+        statsSpecDirective += `Column ${idx + 1}: Emoji "${emoji}" + Code "${s.code}" | Number "${s.value}" | Sub-Note "${resolvedNote}"\n`;
+        statStrings.push(`${emoji} ${s.code} ${s.value} (${resolvedNote})`);
     });
 
-    // 3. Synthesize Background Art Direction based on Hobbies / Style
+    // 3. Synthesize Background Art Direction — narrative-driven, celebrating user career & works
     let themeDirectives: string[] = [];
     if (backgroundStyle && backgroundStyle.trim()) {
         themeDirectives.push(backgroundStyle.trim());
@@ -171,14 +181,118 @@ export function buildDynamicPrompt(
         }
     });
 
+    // ── Extract contextual mood & personality signals from stats ──
+    const statMoodSignals: string[] = [];
+    const highStats = finalStats.filter((s) => s.value >= 85);
+
+    // Map dominant stat codes to atmospheric hints (no extra AI cost, pure logic)
+    const STAT_ATMOSPHERE: Record<string, string> = {
+        DHK: "warm playful energy, lighthearted radiance",
+        NKT: "comedic stage spotlight, vibrant fun atmosphere",
+        JAW: "chill luxurious lounge vibes, relaxed golden ambiance",
+        DRM: "dramatic cinematic intensity, bold contrast shadows",
+        HDR: "magnetic storytelling aura, stage presence",
+        KHD: "master craftsman work ethic, professional dedication glow",
+        MKH: "intellectual quantum data streams, cerebral glow",
+        DBR: "industrial workshop sparks, problem-solver forge",
+        HRB: "mysterious escape artist smoke, vanishing trails",
+        GZR: "bold fiery confidence aura, blazing presence",
+        "3SB": "intense volcanic energy, fiery red-gold tension",
+        L3B: "mischievous neon trickster glow, playful chaos",
+        HOB: "romantic soft rose-gold ambiance, heartfelt warmth",
+        S7B: "brotherhood golden circle, loyal friendship energy",
+        RKD: "midnight dreamy moonlit atmosphere, sleepy cosmos",
+        S7R: "midnight owl neon city, late-night urban energy",
+        BRM: "gourmet feast golden table, abundant food aesthetic",
+        KRK: "speed dashboard neon, racing cockpit glow",
+        NFS: "competitive arena fire, champion rivalry energy",
+        TKK: "money vault golden luxury, business empire aesthetic",
+        SRF: "shopping luxury bags, premium retail golden glow",
+        LBG: "fashion editorial elegance, haute couture spotlight",
+        MRG: "sleek mirror reflection, polished style confidence",
+        CHJ: "heroic lion-heart courage, brave warrior glow",
+        SBR: "serene zen patience, calm meditative golden mist",
+    };
+
+    highStats.forEach((s) => {
+        const atmo = STAT_ATMOSPHERE[s.code];
+        if (atmo && !statMoodSignals.includes(atmo)) {
+            statMoodSignals.push(atmo);
+        }
+    });
+
+    // ── Extract user career story, projects & design notes ──
+    const rawNotes = (directDesignNotes || profileInfo?.designNotes || "").trim();
+    const userStory = (profileInfo?.description || freeDescription || "").trim();
+    const descriptionHints: string[] = [];
+    const combinedUserText = `${userStory} ${rawNotes}`.toLowerCase();
+
+    // Detect mood/atmosphere keywords from user's free text
+    const MOOD_KEYWORDS: [RegExp, string][] = [
+        [/dark|sombre|mysterious|mysteri/i, "deep mysterious dark shadows with subtle golden rim light"],
+        [/bright|colorful|vibrant|cheerful/i, "vibrant radiant energy with warm golden highlights"],
+        [/elegant|luxury|luxe|royal|premium/i, "ultra-premium luxury elegance with rich gold accents"],
+        [/aggressive|savage|beast|fire|intense/i, "intense fiery energy with bold dramatic contrast"],
+        [/calm|zen|peaceful|quiet|serene/i, "serene tranquil atmosphere with soft golden mist"],
+        [/night|nuit|3am|midnight|ليل/i, "nocturnal urban neon cityscape with moody golden reflections"],
+        [/funny|humor|laugh|yadh7ak|نكت/i, "warm spotlight stage with playful comic energy"],
+        [/leader|boss|patron|captain|chef/i, "commanding throne room power with imperial golden glow"],
+        [/street|urban|city|حومة|7ouma/i, "gritty Tunisian medina street art with golden graffiti accents"],
+        [/nature|mountain|forest|جبل/i, "majestic natural landscape with golden sunlight filtering through"],
+        [/party|celebration|fête|حفلة/i, "festive celebration with golden confetti and sparkler energy"],
+        [/vintage|retro|classic|قديم/i, "vintage sepia-toned aesthetic with classic golden grain texture"],
+    ];
+
+    MOOD_KEYWORDS.forEach(([regex, hint]) => {
+        if (regex.test(combinedUserText) && !descriptionHints.includes(hint)) {
+            descriptionHints.push(hint);
+        }
+    });
+
+    // ── Build the final background art directive ──
     let backgroundArtDirective = "";
-    if (themeDirectives.length > 0) {
-        backgroundArtDirective = `- Thematic Environment: ${themeDirectives.slice(0, 3).join(" blended with ")}\n`;
-        backgroundArtDirective += `- Color Palette & Tone: Deep elegant dark obsidian and rich cinematic atmospheric lighting tailored to the theme, with high dynamic contrast. Do NOT make the background all-gold.`;
-    } else {
-        backgroundArtDirective = `- Thematic Environment: Deep elegant dark obsidian with subtle white Carrara marble texture and rich dynamic contrast.\n`;
-        backgroundArtDirective += `- Color Palette & Tone: Sophisticated dark luxury sports card atmosphere with subtle gold rim reflections. Do NOT make the entire background golden.`;
+
+    // Extract highlighted project names from user story (e.g. *Denya Okhra*, "Super Tounsi", VISA)
+    const projectMatches: string[] = [];
+    const italicOrQuoteRegex = /[\*\"\'\`_]([A-Za-z0-9\s\u0600-\u06FF\-\:\.]{2,35})[\*\"\'\`_]/g;
+    let match;
+    while ((match = italicOrQuoteRegex.exec(userStory)) !== null) {
+        const clean = match[1].trim();
+        if (clean.length >= 2 && !projectMatches.includes(clean)) {
+            projectMatches.push(clean);
+        }
     }
+
+    if (userStory) {
+        backgroundArtDirective += `- PRIMARY BACKGROUND MOTIF — SUBJECT CAREER, WORKS & REAL HISTORY (CRITICAL REQUIREMENT):\n`;
+        backgroundArtDirective += `  The background scene MUST be custom-designed around this subject's real works, projects, career history, and persona:\n`;
+        backgroundArtDirective += `  "${userStory.slice(0, 1000)}"\n`;
+
+        if (projectMatches.length > 0) {
+            backgroundArtDirective += `  - SPECIFIC PROJECTS & SHOW TITLES TO FEATURE IN BACKGROUND:\n`;
+            backgroundArtDirective += `    Prominently display authentic production posters, theatre marquees, cinema billings, and film clapperboards featuring the exact titles: ${projectMatches.map((p) => `"${p}"`).join(", ")}.\n`;
+            backgroundArtDirective += `    Do NOT generate generic stock photos; the background posters, marquees, and monitors MUST specifically showcase these named works and iconic characters.\n`;
+        }
+
+        backgroundArtDirective += `  Illustrate a prestigious, cinematic, atmospheric environment celebrating their specific world (e.g. iconic TV & movie sets, theatrical staging, film production aesthetics, creative milestones) deeply woven into a luxury dark obsidian composition.\n`;
+    }
+
+    if (themeDirectives.length > 0) {
+        backgroundArtDirective += `- Primary Environment Theme: ${themeDirectives.slice(0, 2).join(" blended with ")}\n`;
+    } else if (!userStory) {
+        backgroundArtDirective += `- Thematic Environment: Deep elegant dark obsidian with subtle white Carrara marble texture and rich dynamic contrast.\n`;
+    }
+
+    if (statMoodSignals.length > 0) {
+        backgroundArtDirective += `- Personality Atmosphere: Subtly infuse ${statMoodSignals.slice(0, 2).join(" and ")} into the environment lighting.\n`;
+    }
+
+    if (rawNotes) {
+        backgroundArtDirective += `- CUSTOM VISUAL NOTES: "${rawNotes}" — incorporate this aesthetic into the scene composition.\n`;
+    }
+
+    backgroundArtDirective += `- STRICT CLEANLINESS RULE: NO random neon speech bubbles, NO floating quote balloons with text, NO cartoonish isolated props on stools. Everything must be cohesive, grand, and cinematic.\n`;
+    backgroundArtDirective += `- Color Palette & Tone: Deep elegant dark obsidian and rich cinematic atmospheric lighting tailored to the subject's world, with high dynamic contrast. Do NOT make the entire background solid gold.`;
 
     // 4. Synthesize Subject Portrait & Age Archetype Direction
     const ageNum = parseInt(String(profileInfo?.age || "25"), 10) || 25;
@@ -201,19 +315,14 @@ export function buildDynamicPrompt(
     }
 
     if (profileInfo?.description && profileInfo.description.trim()) {
-        portraitDirective += `- Subject Persona & Story: ${profileInfo.description.trim().slice(0, 200)}\n`;
+        portraitDirective += `- Subject Persona & Story: ${profileInfo.description.trim().slice(0, 600)}\n`;
     }
     if (hobbiesFormatted) {
         portraitDirective += `- Passions & Lifestyle: ${hobbiesFormatted}\n`;
     }
 
-    // Custom text & design specifications
-    const customNotes = (directDesignNotes || profileInfo?.designNotes || "").trim().slice(0, 200);
-    const subtitleToPrint = customNotes || profileInfo?.description?.slice(0, 50) || dynamicResolved.bio;
-
-    if (customNotes) {
-        statsSpecDirective += `\nCRITICAL PRINTED SUBTITLE / CUSTOM BANNER:\nVisibly print the text "${customNotes}" as the subtitle banner directly below the Player Name in crisp gold typography.\n`;
-    }
+    // Player honorary subtitle (title/bio, NOT design notes)
+    const subtitleToPrint = dynamicResolved.bio || profileInfo?.description?.slice(0, 50) || "BORN TO BE LEGENDARY";
 
     // 5. Compact JSON for image model
     const jsonString = JSON.stringify({

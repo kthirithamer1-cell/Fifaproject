@@ -210,7 +210,8 @@ export function resolveDynamicPositionAndTitle(input: DynamicTitleInput): {
     const gender = input.gender === "female" ? "female" : "male";
     const ageNum = typeof input.age === "number" ? input.age : parseInt(String(input.age || "25"), 10) || 25;
     const hobbiesStr = Array.isArray(input.hobbies) ? input.hobbies.join(" ") : String(input.hobbies || "");
-    const combinedText = `${input.description || ""} ${input.designNotes || ""} ${hobbiesStr} ${JSON.stringify(input.answers || "")}`.toLowerCase();
+    const { coffeeLevel: _cl, ...filteredAnswers } = (input.answers || {}) as any;
+    const combinedText = `${input.description || ""} ${input.designNotes || ""} ${hobbiesStr} ${JSON.stringify(filteredAnswers)}`.toLowerCase();
 
     // 1. Age Archetype Defaults
     const isChild = ageNum < 13;
@@ -221,10 +222,13 @@ export function resolveDynamicPositionAndTitle(input: DynamicTitleInput): {
     // 2. Keyword & Domain Context Resolution
     if (gender === "female") {
         // Female Specific dynamic titles
+        if (combinedText.includes("comed") || combinedText.includes("actor") || combinedText.includes("actrice") || combinedText.includes("cinema") || combinedText.includes("theatre") || combinedText.includes("masra7") || combinedText.includes("film") || combinedText.includes("tv") || combinedText.includes("standup") || combinedText.includes("momathel") || combinedText.includes("show")) {
+            return { position: "STAR", title: "CINEMA & STAGE ICON", bio: "Legendary screen presence and master of the stage" };
+        }
         if (combinedText.includes("fashion") || combinedText.includes("style") || combinedText.includes("mode") || combinedText.includes("shopping") || combinedText.includes("chic")) {
             return { position: "DIVA", title: "THE FASHIONISTA", bio: "Always runway ready and iconic" };
         }
-        if (combinedText.includes("coffee") || combinedText.includes("9ahwa") || combinedText.includes("kahwa") || combinedText.includes("direct")) {
+        if (combinedText.includes("coffee") || combinedText.includes("9ahwa") || combinedText.includes("kahwa")) {
             return { position: "9AHWA QUEEN", title: "CAFFEINE QUEEN", bio: "Fuelled by pure Tunisian coffee" };
         }
         if (combinedText.includes("game") || combinedText.includes("gaming") || combinedText.includes("gamer") || combinedText.includes("stream")) {
@@ -271,10 +275,13 @@ export function resolveDynamicPositionAndTitle(input: DynamicTitleInput): {
 
     } else {
         // Male Specific dynamic titles
+        if (combinedText.includes("comed") || combinedText.includes("actor") || combinedText.includes("actrice") || combinedText.includes("cinema") || combinedText.includes("theatre") || combinedText.includes("masra7") || combinedText.includes("film") || combinedText.includes("tv") || combinedText.includes("standup") || combinedText.includes("momathel") || combinedText.includes("show")) {
+            return { position: "STAR", title: "CINEMA & STAGE ICON", bio: "Legendary screen presence and comedy maestro" };
+        }
         if (combinedText.includes("fashion") || combinedText.includes("style") || combinedText.includes("chic") || combinedText.includes("luxe")) {
             return { position: "GENTLEMAN", title: "STYLE ICON", bio: "Timeless class and sharp elegance" };
         }
-        if (combinedText.includes("coffee") || combinedText.includes("9ahwa") || combinedText.includes("kahwa") || combinedText.includes("direct")) {
+        if (combinedText.includes("coffee") || combinedText.includes("9ahwa") || combinedText.includes("kahwa")) {
             return { position: "9AHWA BOSS", title: "SULTAN EL 9AHWA", bio: "5 express a day and sharp focus" };
         }
         if (combinedText.includes("game") || combinedText.includes("gaming") || combinedText.includes("gamer") || combinedText.includes("fifa")) {
@@ -293,7 +300,7 @@ export function resolveDynamicPositionAndTitle(input: DynamicTitleInput): {
             return { position: "GOAT", title: "DERBY LEGEND", bio: "Championship mindset and magical touch" };
         }
         if (combinedText.includes("code") || combinedText.includes("dev") || combinedText.includes("tech")) {
-            return { position: "DEV GURU", title: "CYBER ARCHITECT", bio: "Turning coffee into production code" };
+            return { position: "DEV GURU", title: "CYBER ARCHITECT", bio: "Building the future line by line" };
         }
         if (combinedText.includes("food") || combinedText.includes("chef") || combinedText.includes("barmil")) {
             return { position: "MASTER CHEF", title: "CULINARY BOSS", bio: "King of the kitchen and hearty meals" };
@@ -332,7 +339,19 @@ export function searchStats(query: string): TunisiaStat[] {
 
 // ─── Helper: get stat by code ──────────────────────────────────────────────
 export function getStatByCode(code: string): TunisiaStat | undefined {
-    return TUNISIA_STATS.find((s) => s.code === code);
+    const builtin = TUNISIA_STATS.find((s) => s.code === code);
+    if (builtin) return builtin;
+    if (typeof window !== "undefined") {
+        try {
+            const raw = localStorage.getItem("flawless_custom_stats");
+            if (raw) {
+                const customs: TunisiaStat[] = JSON.parse(raw);
+                const found = customs.find((s) => s.code === code);
+                if (found) return found;
+            }
+        } catch {}
+    }
+    return undefined;
 }
 
 // ─── Helper: calculate overall from stat values ────────────────────────────
