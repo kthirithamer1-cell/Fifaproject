@@ -2,6 +2,7 @@
 
 import { SectionTitle } from "./SectionTitle";
 import { CreditCard, Gift, Sparkles, Ruler, Truck, ShieldCheck } from "lucide-react";
+import { trackAddToCart } from "@/lib/fbPixel";
 
 const PACKAGES_DATA = [
   {
@@ -130,6 +131,12 @@ export function Packages() {
                 {/* Choose Button */}
                 <a
                   href={`/generator?size=${isFeatured ? "mega" : "standard"}`}
+                  onClick={() => {
+                    trackAddToCart({
+                      content_name: `Flawless Card - ${pack.name}`,
+                      value: Number(pack.price) + 8,
+                    });
+                  }}
                   className={`mt-10 w-full py-4 rounded-2xl text-center text-xs font-black uppercase tracking-wider transition-all duration-300 cursor-pointer ${
                     isFeatured
                       ? "bg-gradient-to-r from-[#D4AF37] to-[#F6D365] text-black shadow-lg shadow-[#D4AF37]/30 hover:scale-[1.02]"

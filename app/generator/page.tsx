@@ -51,6 +51,7 @@ import {
     type SelectedStat,
 } from "./lib/tunisiaStats";
 import { initAffiliateTracker, getAffiliateCode, trackCardGenerated } from "@/lib/affiliateTracker";
+import { trackViewContent, trackAddToCart, trackInitiateCheckout, trackPurchase } from "@/lib/fbPixel";
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -241,6 +242,11 @@ export default function FIFAMemeTN() {
 
     useEffect(() => {
         setMounted(true);
+        // Meta Pixel: ViewContent when generator page loads
+        trackViewContent({
+            content_name: "Flawless Card Generator",
+            content_type: "product_group",
+        });
         initAffiliateTracker().then((code) => {
             if (code) setAffiliateInputCode(code);
         });
@@ -966,7 +972,16 @@ export default function FIFAMemeTN() {
         
         const isReview = currentStep === "review";
         const onClickHandler = isReview
-            ? () => setCurrentStep("checkout")
+            ? () => {
+                // Meta Pixel: AddToCart when user commits to ordering from review
+                const unitPrice = selectedSize === "mega" ? 69 : 49;
+                const totalPrice = (orderForm.quantity * unitPrice) + 8;
+                trackAddToCart({
+                    content_name: `Flawless Card - ${selectedSize === "mega" ? "Mega 60x40cm" : "Standard 45x30cm"}`,
+                    value: totalPrice,
+                });
+                setCurrentStep("checkout");
+            }
             : currentStep === "personality"
             ? handlePersonalityNext
             : goToNextStep;
@@ -2544,6 +2559,18 @@ export default function FIFAMemeTN() {
                 throw new Error(data.error || "فشل تسجيل الطلب");
             }
 
+            // Meta Pixel: Purchase — fires ONLY after server confirms order
+            trackPurchase({
+                value: totalPrice,
+                content_name: `Flawless Card - ${selectedSize === "mega" ? "Mega 60x40cm" : "Standard 45x30cm"}`,
+                content_ids: [data.orderId],
+                num_items: orderForm.quantity,
+            });
+            // Reset checkout-fired flag so a new order can fire InitiateCheckout again
+            if (typeof window !== "undefined") {
+                (window as any).__fbq_checkout_fired = false;
+            }
+
             setOrderSuccessModal({
                 visible: true,
                 orderId: data.orderId || `FLW-${Math.floor(100000 + Math.random() * 900000)}`,
@@ -2573,6 +2600,21 @@ export default function FIFAMemeTN() {
         const subtotal = unitPrice * orderForm.quantity;
         const totalPrice = subtotal + deliveryFee;
         const cardImg = generatedCardUrl || uploadPreview || editorBgUrl;
+
+        // Meta Pixel: InitiateCheckout when checkout form renders
+        // (useEffect-like via ref guard not needed here — renderCheckout only runs when currentStep === 'checkout')
+        // We use a static flag to avoid duplicate fires on re-renders
+        if (typeof window !== "undefined") {
+            const checkoutFiredKey = "__fbq_checkout_fired";
+            if (!(window as any)[checkoutFiredKey]) {
+                (window as any)[checkoutFiredKey] = true;
+                trackInitiateCheckout({
+                    content_name: `Flawless Card - ${selectedSize === "mega" ? "Mega" : "Standard"}`,
+                    value: totalPrice,
+                    num_items: orderForm.quantity,
+                });
+            }
+        }
 
         return (
             <motion.div

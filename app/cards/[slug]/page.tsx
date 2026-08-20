@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/app/_components/Header";
 import { Footer } from "@/app/_components/Footer";
+import MetaViewContent from "@/app/_components/MetaViewContent";
 import { CARD_PRODUCTS, getCardBySlug, getAllCardSlugs } from "../data";
 
 interface Props {
@@ -165,6 +166,11 @@ export default async function CardProductPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
+      <MetaViewContent
+        contentName={`${card.arabicName} — ${card.name} FIFA Card`}
+        contentIds={[card.slug]}
+        value={card.price}
+      />
 
       <main className="min-h-screen bg-[#070707] text-white pt-24 pb-20 overflow-hidden relative">
         {/* Background Ambience */}
