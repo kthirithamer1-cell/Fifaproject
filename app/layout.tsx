@@ -41,6 +41,22 @@ export default function RootLayout({
           }}
           suppressHydrationWarning
         />
+        {/* Google Analytics (gtag.js) */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-HKJ6DB91PB"
+        />
+        <script
+          id="google-analytics"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-HKJ6DB91PB');
+            `,
+          }}
+        />
         {/* Meta Pixel Code */}
         <script
           id="meta-pixel"
