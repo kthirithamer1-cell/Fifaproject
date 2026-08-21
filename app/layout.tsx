@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import "./globals.css";
+import Script from "next/script";
 import { AffiliateTrackerProvider } from "./_components/AffiliateTrackerProvider";
 
 export const metadata: Metadata = {
@@ -28,42 +29,35 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="ar"
+      dir="rtl"
       className="h-full antialiased"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
-      <head>
-        <script
-          id="bis-skin-remover"
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var r=function(){var e=document.querySelectorAll('[bis_skin_checked]');for(var i=0;i<e.length;i++)e[i].removeAttribute('bis_skin_checked')};r();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',r)}}catch(e){}})();`,
-          }}
-          suppressHydrationWarning
-        />
+      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
         {/* Google Analytics (gtag.js) */}
-        <script
-          async
+        <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-HKJ6DB91PB"
+          strategy="afterInteractive"
         />
-        <script
-          id="google-analytics"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-HKJ6DB91PB');
-            `,
-          }}
-        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-HKJ6DB91PB');
+          `}
+        </Script>
+
         {/* Meta Pixel Code */}
-        <script
-          id="meta-pixel"
-          dangerouslySetInnerHTML={{
-            __html: `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','2660680664349474');fbq('track','PageView');`,
-          }}
-        />
+        <Script id="meta-pixel" strategy="afterInteractive">
+          {`
+            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init','2660680664349474');
+            fbq('track','PageView');
+          `}
+        </Script>
         <noscript>
           <img
             height="1"
@@ -73,9 +67,7 @@ export default function RootLayout({
             alt=""
           />
         </noscript>
-        {/* End Meta Pixel Code */}
-      </head>
-      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
+
         <AffiliateTrackerProvider />
         {children}
       </body>
