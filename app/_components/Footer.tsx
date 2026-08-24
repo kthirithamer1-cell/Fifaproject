@@ -174,7 +174,7 @@ export function Footer() {
                 <ShieldCheck className="h-4 w-4 text-[#F6D365]" />
                 <span>Customer Service & Support</span>
               </div>
-              <span className="text-neutral-300 font-semibold" suppressHydrationWarning>support@flawless.tn</span>
+              <a href="mailto:support@beflawless.art" className="text-neutral-300 font-semibold hover:text-[#F6D365] transition-colors" suppressHydrationWarning>support@beflawless.art</a>
               <div className="text-[10px] text-gray-500 mt-1" suppressHydrationWarning>Cash on Delivery 🚚</div>
             </div>
           </div>

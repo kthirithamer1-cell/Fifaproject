@@ -132,7 +132,7 @@ export default function AffiliateDashboard() {
     router.push("/affiliate/login");
   };
 
-  const siteOrigin = typeof window !== "undefined" ? window.location.origin : "https://flawless.tn";
+  const siteOrigin = typeof window !== "undefined" ? window.location.origin : "https://beflawless.art";
   const refLink = affiliate ? `${siteOrigin}/generator?ref=${affiliate.code}` : "";
   const homeRefLink = affiliate ? `${siteOrigin}/?ref=${affiliate.code}` : "";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles, Trophy, ShieldCheck, HeartHandshake, Truck, Award, Zap } from "lucide-react";
+import { Sparkles, Trophy, ShieldCheck, HeartHandshake, Truck, Award, Zap, CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function AboutFlawless() {
@@ -8,172 +8,102 @@ export function AboutFlawless() {
 
   const pillars = [
     {
-      icon: Sparkles,
-      title: "هويّة تونسية 100%",
-      desc: "ستاتيكس ومواقف تونسية أصيلة توصف أصحابك والعائلة بأحلى طريقة ضاحكة.",
-      tag: "TUNISIAN MEMES",
-    },
-    {
       icon: ShieldCheck,
-      title: "طباعة فاخرة PVC Premium",
-      desc: "كارتات صلبة مقاومة للماء والخدش، بتفاصيل ذهبية وطباعة عالية الجودة تعيش العمر كامل.",
-      tag: "0.8MM PVC QUALITY",
+      title: "طباعة فاخرة Ultra-HD",
+      desc: "لوح PVC صلب 0.8mm مع طبقة حماية عازلة ضد الماء والخدوش وحواف مذهبة تدوم لسنوات.",
+      badge: "0.8MM RIGID PVC",
     },
     {
-      icon: HeartHandshake,
-      title: "أحسن هدية تخلّد الذكريات",
-      desc: "هدية أسطورية وغير تقليدية لعيد ميلاد، تخرج، ولاّ لمّة أصحاب تخليهم يضحكوا ويرميو الذكرى.",
-      tag: "ULTIMATE GIFT",
+      icon: Sparkles,
+      title: "ستاتيكس تونسية مضحكة 100%",
+      desc: "أكثر من 60 ستات وميمز تونسي لتصميم كارت يحكي شخصية صاحبك بكل عيوبه ومواقفه المضحكة.",
+      badge: "TUNISIAN MEMES",
     },
     {
       icon: Truck,
-      title: "توصيل سريع لكل تونس",
-      desc: "نوصّلو طلبك بكل عناية وحماية حتى لـ باب الدار في الـ 24 ولاية تونسية.",
-      tag: "NATIONWIDE SHIPPING",
+      title: "توصيل سريع لباب دارك",
+      desc: "توصيل لباب دارك في كامل الـ 24 ولاية خلال 24-48 ساعة، مع الدفع عند الاستلام بعد فحص الكارت.",
+      badge: "24-48H SHIPPING",
     },
   ];
 
-  const brandStats = [
-    { value: "3", label: "كارطة تونسية صمّمت" },
-    { value: "24", label: "ولاية توصيل في تونس" },
-    { value: "4.9★", label: "تقييم أصحاب الكروت" },
-    { value: "100%", label: "جودة ورضا الحرفاء" },
-  ];
-
   return (
-    <section id="about" className="relative py-24 bg-[#080808] text-white overflow-hidden">
-      {/* Background Lighting — radial gradients (no GPU blur) */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.03) 0%, transparent 70%)' }} />
-      <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(246,211,101,0.03) 0%, transparent 70%)' }} />
+    <section id="about" className="relative py-20 sm:py-28 bg-[#080808] text-white overflow-hidden" dir="rtl">
+      {/* Background Lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
 
       {/* Top Gold Border Accent */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
 
-      <div className="relative max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
-        {/* Header Badge & Title */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-4">
+      <div className="relative max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
+        {/* Header */}
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-3">
             <Trophy className="h-4 w-4 text-[#F6D365]" />
-            <span>ABOUT FLAWLESS TUNISIA</span>
+            <span>لماذا يختار الجميع FLAWLESS؟</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-black text-white leading-tight">
-            شنوّة هيّة <span className="text-gold-grad">Flawless</span>؟
+          <h2 className="text-2xl sm:text-4xl font-black text-white leading-tight">
+            أعلى جودة كروت في تونس <span className="bg-gradient-to-r from-[#D4AF37] to-[#F6D365] bg-clip-text text-transparent">بدون منافس</span>
           </h2>
-
-          <p className="mt-5 text-base sm:text-lg text-gray-300 font-medium leading-relaxed" dir="rtl">
-            مش كان للضحك فقط... <strong className="text-[#F6D365]">Flawless</strong> اتخلقت باش تصنع لأي شخص <strong className="text-white">Perfect Meme</strong> بكل عيوبه ومواصفاته الخاصة <span className="text-gray-400 font-semibold">(avec ses défauts)</span>، باش كل واحد يرا كارتته يكون <strong className="text-[#F6D365]">فخور بروحه وبشخصيته الفريدة</strong>.
+          <p className="mt-3 text-sm sm:text-base text-gray-400 font-space">
+            كل تفصيلة في الكارت مصممة ومطبوعة بحرفية عالية لتكون هدية تليق بأعز أصحابك وعائلتك.
           </p>
         </div>
 
-        {/* Brand Showcase Hero Glass Card */}
-        <div className="relative rounded-3xl border border-white/10 bg-black/70 p-8 sm:p-12 shadow-2xl mb-16 overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            {/* Text story side */}
-            <div className="lg:col-span-7 space-y-6 text-right" dir="rtl">
-              <div className="inline-flex items-center gap-2 text-xs font-bold text-[#F6D365] uppercase tracking-widest">
-                <Zap className="h-4 w-4 text-[#F6D365]" />
-                <span>فلسفة FLAWLESS</span>
-              </div>
-
-              <h3 className="text-2xl sm:text-4xl font-black text-white leading-tight">
-                ما فماش عيب يبقى عيب... <br />
-                <span className="text-gold-grad">عندنا يولّي ستاتيك أسطوري</span>
-              </h3>
-
-              <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-                في Flawless نؤمنوا بلي كل إنسان عنده تفاصيل وعيوب مضحكة تخلّيه مميّز وفريد (99 نوم، 99 كثرة كلام، ولاّ 5 تكتاك). حوّلنا التفاصيل هذي إلى كارتات كورة فاخرة باش أي واحد يشوف كارتته، يضحك، ويكون فخور بنفسه وبشخصيته الأسطورية.
-              </p>
-
-              <div className="pt-4 flex flex-wrap justify-end gap-4">
-                <button
-                  onClick={() => router.push("/generator")}
-                  className="hero-btn shadow-lg shadow-amber-500/20"
-                >
-                  <Sparkles className="h-4 w-4" /> صمّم كارتك الآن
-                </button>
-                <a
-                  href="#packages"
-                  className="hero-btn-outline text-white border-white/20 hover:bg-white/10 backdrop-blur-md"
-                >
-                  اكتشف العروض
-                </a>
-              </div>
-            </div>
-
-            {/* Visual showcase side */}
-            <div className="lg:col-span-5 flex justify-center">
-              <div className="relative group">
-                <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%)' }} />
-                <div className="relative rounded-2xl border border-[#D4AF37]/30 bg-black/90 p-6 shadow-2xl flex flex-col items-center max-w-[280px]">
-                  <Award className="h-10 w-10 text-[#F6D365] mb-3 animate-bounce" />
-                  <div className="text-xs text-gray-400 font-bold uppercase tracking-widest">FLAWLESS CARD</div>
-                  <div className="text-2xl font-black text-white mt-1">صاحبك الأسطورة</div>
-                  <div className="text-3xl font-black text-[#F6D365] mt-1">99 OVR</div>
-                  <div className="mt-4 w-full grid grid-cols-3 gap-2 text-center text-xs border-t border-white/10 pt-3">
-                    <div>
-                      <div className="text-[#F6D365] font-bold">99</div>
-                      <div className="text-gray-400 text-[10px]">DHK</div>
-                    </div>
-                    <div>
-                      <div className="text-[#F6D365] font-bold">96</div>
-                      <div className="text-gray-400 text-[10px]">9HW</div>
-                    </div>
-                    <div>
-                      <div className="text-[#F6D365] font-bold">98</div>
-                      <div className="text-gray-400 text-[10px]">S7B</div>
-                    </div>
-                  </div>
-                  <div className="mt-3 text-[10px] text-gray-400 font-medium">Made in Tunisia 🇹🇳</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 4 Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        {/* 3 Pillars Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {pillars.map((item, i) => {
             const Icon = item.icon;
             return (
               <div
                 key={i}
-                className="group relative rounded-2xl border border-white/10 bg-black/60 p-6 transition-all duration-300 hover:-translate-y-2 hover:border-[#D4AF37]/50 hover:shadow-[0_10px_30px_rgba(212,175,55,0.15)] flex flex-col justify-between"
+                className="group relative rounded-3xl border border-white/10 bg-neutral-950/80 p-6 sm:p-8 transition-all duration-300 hover:-translate-y-2 hover:border-[#D4AF37]/50 hover:shadow-[0_12px_40px_rgba(212,175,55,0.15)] flex flex-col justify-between"
               >
                 <div>
                   <div className="flex justify-between items-center mb-5">
-                    <div className="h-12 w-12 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <div className="h-12 w-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <Icon className="h-6 w-6 text-[#F6D365]" />
                     </div>
-                    <span className="text-[10px] font-bold text-gray-400 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
-                      {item.tag}
+                    <span className="text-[10px] font-bold text-[#F6D365] bg-[#D4AF37]/10 px-3 py-1 rounded-full border border-[#D4AF37]/30 font-mono">
+                      {item.badge}
                     </span>
                   </div>
 
-                  <h4 className="text-xl font-bold text-white mb-2 text-right" dir="rtl">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2.5">
                     {item.title}
-                  </h4>
+                  </h3>
 
-                  <p className="text-sm text-gray-400 leading-relaxed text-right" dir="rtl">
+                  <p className="text-xs sm:text-sm text-gray-300 leading-relaxed font-space">
                     {item.desc}
                   </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-white/5 flex items-center gap-1.5 text-xs text-emerald-400 font-bold font-space">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>مضمون 100% مع معاينة قبل الطباعة</span>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Stats Counter Bar */}
-        <div className="rounded-2xl border border-[#D4AF37]/30 bg-gradient-to-r from-black via-neutral-900 to-black p-8 shadow-xl">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {brandStats.map((st, idx) => (
-              <div key={idx} className="space-y-1">
-                <div className="text-3xl sm:text-4xl font-black text-gold-grad">{st.value}</div>
-                <div className="text-xs sm:text-sm text-gray-300 font-semibold">{st.label}</div>
-              </div>
-            ))}
+        {/* Quick CTA banner */}
+        <div className="rounded-2xl border border-[#D4AF37]/30 bg-gradient-to-r from-neutral-950 via-neutral-900 to-neutral-950 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-right shadow-xl">
+          <div>
+            <h4 className="text-base sm:text-lg font-bold text-white">
+              جاهز تصنع كارت يفاجئ صاحبك ويفرحو؟ 🎉
+            </h4>
+            <p className="text-xs sm:text-sm text-gray-400 font-space mt-1">
+              التصميم يأخذ أقل من دقيقتين • الدفع عند الاستلام لباب الدار
+            </p>
           </div>
+          <button
+            onClick={() => router.push("/generator")}
+            className="px-6 py-3 rounded-xl bg-[#D4AF37] hover:bg-[#C98600] text-black font-bold text-sm transition-all duration-300 cursor-pointer shrink-0 shadow-lg font-space"
+          >
+            صمّم كارتك الآن ←
+          </button>
         </div>
       </div>
     </section>

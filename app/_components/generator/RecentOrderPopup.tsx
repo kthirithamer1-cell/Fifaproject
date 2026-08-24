@@ -55,10 +55,11 @@ export default function RecentOrderPopup({ currentStep = "upload" }: RecentOrder
     const [isVisible, setIsVisible] = useState(false);
     const [buyerIndex, setBuyerIndex] = useState(0);
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-    const [shownSteps, setShownSteps] = useState<Set<string>>(new Set());
+    const [isDismissedByUser, setIsDismissedByUser] = useState(false);
 
     const hesitationTimerRef = useRef<NodeJS.Timeout | null>(null);
     const hideTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const rotationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
     // Pick 1 random starting buyer on mount
     useEffect(() => {
@@ -67,7 +68,6 @@ export default function RecentOrderPopup({ currentStep = "upload" }: RecentOrder
     }, []);
 
     // ─── 1. Keyboard / Form Focus Awareness ────────────────────────────────
-    // Hide popup while user is typing in inputs or textareas so inputs are never covered
     useEffect(() => {
         const handleFocusIn = (e: FocusEvent) => {
             const target = e.target as HTMLElement;
@@ -90,11 +90,10 @@ export default function RecentOrderPopup({ currentStep = "upload" }: RecentOrder
         };
     }, []);
 
-    // ─── 2. 5-Second Hesitation Trigger Function ───────────────────────────
-    const triggerPopup = useCallback((step: string) => {
-        if (shownSteps.has(step) || isKeyboardOpen) return;
+    // ─── 2. Show Popup Trigger Function ────────────────────────────────────
+    const showPopup = useCallback(() => {
+        if (isKeyboardOpen || isDismissedByUser) return;
 
-        setShownSteps((prev) => new Set([...prev, step]));
         setBuyerIndex((prev) => (prev + 1) % RECENT_BUYERS.length);
         setIsVisible(true);
 
@@ -103,25 +102,46 @@ export default function RecentOrderPopup({ currentStep = "upload" }: RecentOrder
         hideTimerRef.current = setTimeout(() => {
             setIsVisible(false);
         }, 6500);
-    }, [shownSteps, isKeyboardOpen]);
+    }, [isKeyboardOpen, isDismissedByUser]);
 
-    // ─── 3. Mobile & Desktop 5-Second Inactivity / Hesitation Watcher ──────
+    // ─── 3. Initial 5-Second Trigger on Landing & Generator ───────────────
     useEffect(() => {
+        if (isDismissedByUser) return;
+
+        // Trigger first social proof 5s after page load
+        const initialTimer = setTimeout(() => {
+            showPopup();
+        }, 5000);
+
+        // For Landing page, rotate live orders periodically every 24s
+        if (currentStep === "landing") {
+            rotationIntervalRef.current = setInterval(() => {
+                showPopup();
+            }, 24000);
+        }
+
+        return () => {
+            clearTimeout(initialTimer);
+            if (rotationIntervalRef.current) clearInterval(rotationIntervalRef.current);
+        };
+    }, [currentStep, showPopup, isDismissedByUser]);
+
+    // ─── 4. Generator Hesitation Trigger ──────────────────────────────────
+    useEffect(() => {
+        if (currentStep === "landing" || isDismissedByUser) return;
+
         const resetHesitationTimer = () => {
             if (hesitationTimerRef.current) clearTimeout(hesitationTimerRef.current);
 
-            // Trigger after 5 seconds of idle inactivity on this step
             hesitationTimerRef.current = setTimeout(() => {
-                triggerPopup(currentStep);
+                showPopup();
             }, 5000);
         };
 
-        // Reset timer on any touch, scroll, or pointer movement
         window.addEventListener("touchstart", resetHesitationTimer, { passive: true });
         window.addEventListener("scroll", resetHesitationTimer, { passive: true });
         window.addEventListener("pointerdown", resetHesitationTimer, { passive: true });
 
-        // Start initial 5-second timer for this step
         resetHesitationTimer();
 
         return () => {
@@ -130,7 +150,7 @@ export default function RecentOrderPopup({ currentStep = "upload" }: RecentOrder
             window.removeEventListener("scroll", resetHesitationTimer);
             window.removeEventListener("pointerdown", resetHesitationTimer);
         };
-    }, [currentStep, triggerPopup]);
+    }, [currentStep, showPopup, isDismissedByUser]);
 
     // If keyboard is open, don't show popup
     if (isKeyboardOpen) return null;
@@ -139,7 +159,7 @@ export default function RecentOrderPopup({ currentStep = "upload" }: RecentOrder
 
     return (
         <div
-            className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-4 z-40 max-w-[320px] sm:max-w-sm pointer-events-none select-none"
+            className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-6 left-4 z-40 max-w-[320px] sm:max-w-sm pointer-events-none select-none"
             dir="rtl"
         >
             <AnimatePresence>
@@ -156,6 +176,7 @@ export default function RecentOrderPopup({ currentStep = "upload" }: RecentOrder
                             type="button"
                             onClick={() => {
                                 setIsVisible(false);
+                                setIsDismissedByUser(true);
                                 if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
                             }}
                             className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-neutral-900 border border-white/20 text-gray-400 hover:text-white flex items-center justify-center text-[10px] cursor-pointer shadow-md transition-colors z-10"

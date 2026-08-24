@@ -1,14 +1,15 @@
-import { AboutFlawless } from "./_components/AboutFlawless";
-import { Faq } from "./_components/Faq";
-import { FeaturesBar } from "./_components/FeaturesBar";
-import { Footer } from "./_components/Footer";
-import { Gallery } from "./_components/Gallery";
 import { Header } from "./_components/Header";
 import { Hero } from "./_components/Hero";
-import { HowItWorks } from "./_components/HowItWorks";
+import { FeaturesBar } from "./_components/FeaturesBar";
+import { Gallery } from "./_components/Gallery";
 import { Packages } from "./_components/Packages";
-import { StatsChips } from "./_components/StatsChips";
+import { HowItWorks } from "./_components/HowItWorks";
+import { AboutFlawless } from "./_components/AboutFlawless";
 import { Testimonials } from "./_components/Testimonials";
+import { Faq } from "./_components/Faq";
+import { Footer } from "./_components/Footer";
+import { FloatingCtaBar } from "./_components/FloatingCtaBar";
+import RecentOrderPopup from "./_components/generator/RecentOrderPopup";
 
 export default function Home() {
   return (
@@ -16,16 +17,17 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <AboutFlawless />
         <FeaturesBar />
         <Gallery />
-        <HowItWorks />
-        <StatsChips />
         <Packages />
+        <HowItWorks />
+        <AboutFlawless />
         <Testimonials />
         <Faq />
       </main>
       <Footer />
+      <FloatingCtaBar />
+      <RecentOrderPopup currentStep="landing" />
     </>
   );
 }

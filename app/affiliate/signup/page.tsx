@@ -156,7 +156,7 @@ export default function AffiliateSignupPage() {
                 <Tag className="w-4 h-4 text-neutral-500 absolute left-3.5 top-3.5" />
               </div>
               <p className="text-[11px] text-neutral-500 mt-1 font-mono">
-                رابطك سيكون: <strong>flawless.tn?ref={form.code || "YOURCODE"}</strong>
+                رابطك سيكون: <strong>beflawless.art?ref={form.code || "YOURCODE"}</strong>
               </p>
             </div>
 

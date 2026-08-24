@@ -482,7 +482,7 @@ export default function FIFAMemeTN() {
         const playerName = profileInfo.name || editorName || "Legend";
 
         // ── Step 1: Upload card image to get a public shareable URL with OG tags ──
-        let shareUrl = typeof window !== "undefined" ? window.location.origin : "https://flawless.tn";
+        let shareUrl = typeof window !== "undefined" ? window.location.origin : "https://beflawless.art";
         try {
             const uploadRes = await fetch("/api/upload-card", {
                 method: "POST",
