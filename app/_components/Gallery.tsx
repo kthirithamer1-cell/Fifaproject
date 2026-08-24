@@ -12,26 +12,34 @@ export function Gallery() {
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const checkScroll = () => {
-    if (!carouselRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-    setCanScrollLeft(scrollLeft > 5);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+  const isCheckingScroll = useRef(false);
 
-    // Calculate active index
-    const child = carouselRef.current.firstElementChild;
-    if (child) {
-      const cardWidth = child.getBoundingClientRect().width;
-      const gap = 16; // gap-4 is 16px
-      const index = Math.round(scrollLeft / (cardWidth + gap));
-      
-      const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 10;
-      if (isAtEnd) {
-        setActiveIndex(gallery.length - 1);
-      } else {
-        setActiveIndex(Math.max(0, Math.min(gallery.length - 1, index)));
+  const checkScroll = () => {
+    if (!carouselRef.current || isCheckingScroll.current) return;
+    isCheckingScroll.current = true;
+
+    requestAnimationFrame(() => {
+      isCheckingScroll.current = false;
+      if (!carouselRef.current) return;
+      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+      setCanScrollLeft(scrollLeft > 5);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+
+      // Calculate active index
+      const child = carouselRef.current.firstElementChild as HTMLElement | null;
+      if (child) {
+        const cardWidth = child.offsetWidth || 260;
+        const gap = 20; // gap-5 is 20px
+        const index = Math.round(scrollLeft / (cardWidth + gap));
+        
+        const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 10;
+        if (isAtEnd) {
+          setActiveIndex(gallery.length - 1);
+        } else {
+          setActiveIndex(Math.max(0, Math.min(gallery.length - 1, index)));
+        }
       }
-    }
+    });
   };
 
   useEffect(() => {
@@ -41,8 +49,8 @@ export function Gallery() {
     // Run check initially
     checkScroll();
 
-    // Check scroll on window resize too
-    window.addEventListener("resize", checkScroll);
+    // Check scroll on window resize too with passive listener
+    window.addEventListener("resize", checkScroll, { passive: true });
     return () => {
       window.removeEventListener("resize", checkScroll);
     };

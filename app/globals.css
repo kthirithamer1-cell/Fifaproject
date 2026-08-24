@@ -32,9 +32,11 @@
   --color-gold-shadow: var(--gold-shadow);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Poppins', system-ui, sans-serif;
-  --font-poppins: 'Poppins', system-ui, sans-serif;
-  --font-space: 'Poppins', system-ui, sans-serif;
+  --font-sans: 'Poppins', 'Tajawal', system-ui, sans-serif;
+  --font-poppins: 'Poppins', 'Tajawal', system-ui, sans-serif;
+  --font-space: 'Poppins', 'Tajawal', system-ui, sans-serif;
+  --font-tajawal: 'Tajawal', system-ui, sans-serif;
+  --font-sora: 'Poppins', 'Tajawal', system-ui, sans-serif;
 }
 
 * {
@@ -145,12 +147,16 @@ body {
 .animate-marquee-left {
   display: flex;
   width: max-content;
+  will-change: transform;
+  transform: translateZ(0);
   animation: marquee-left 40s linear infinite;
 }
 
 .animate-marquee-right {
   display: flex;
   width: max-content;
+  will-change: transform;
+  transform: translateZ(0);
   animation: marquee-right 40s linear infinite;
 }
 
@@ -161,14 +167,55 @@ body {
 
 /* ===== iOS SAFARI & PROMOTION PERFORMANCE OPTIMIZATIONS ===== */
 
-/* Hardware-accelerate backdrop-blur compositing layers */
-.backdrop-blur-md,
-.backdrop-blur-xl,
-.backdrop-blur-2xl {
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  transform: translateZ(0);
+/* Touch & tap responsiveness */
+html, body {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prevent auto-zoom on iOS when tapping input fields */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="email"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Smooth native momentum scrolling */
+.overflow-y-auto,
+.overflow-x-auto,
+.custom-scrollbar {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Hardware accelerated compositing for smooth 120Hz ProMotion */
+.ios-gpu,
+button,
+[role="button"] {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Optimize backdrop-filter without forcing heavy multi-pass blur on WebKit */
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .backdrop-blur-md {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
 }
 
 /* Safe-area insets utilities for notch and Dynamic Island devices */
@@ -188,7 +235,7 @@ body {
   margin-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Prevent accidental layout shifts on iOS dynamic toolbar resize */
+/* Prevent layout jumps on iOS dynamic address bar hide/show */
 .min-h-dvh {
   min-height: 100dvh;
 }

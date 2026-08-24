@@ -41,6 +41,7 @@ import type { CardStat, CardBadge } from "../_components/generator/CardComposer"
 import CardEditor from "../_components/generator/CardEditor";
 import BackgroundPicker from "../_components/generator/BackgroundPicker";
 import TunisiaStatPicker from "../_components/generator/TunisiaStatPicker";
+import RecentOrderPopup from "../_components/generator/RecentOrderPopup";
 import {
     TUNISIA_STATS,
     getStatByCode,
@@ -112,6 +113,8 @@ import {
     DEFAULT_EDITOR_STATS,
     DEFAULT_EDITOR_BADGES,
     DEFAULT_EDITOR_HASHTAGS,
+    POPULAR_STAT_CODES,
+    SOCIAL_PROOF,
 } from "@/app/constant";
 
 // ─── Helper: generate random stats ──────────────────────────────────────
@@ -581,9 +584,9 @@ export default function FIFAMemeTN() {
         }
     };
 
-    // ── Direct step flow ──
+    // ── Direct step flow (3-step optimized) ──
     const getStepsForMode = (_mode: CardMode): Step[] => {
-        return ["upload", "profile", "stats-pick", "stats-values", "review", "checkout"];
+        return ["upload", "stats-pick", "checkout"];
     };
 
     const activeSteps = getStepsForMode(cardData.mode);
@@ -786,7 +789,7 @@ export default function FIFAMemeTN() {
             setShowConfetti(true);
 
             setTimeout(() => {
-                setCurrentStep("review");
+                setCurrentStep("checkout");
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }, 3000);
 
@@ -950,12 +953,85 @@ export default function FIFAMemeTN() {
 
     // ── Render Helpers ──
 
+    const renderMobileProgressBar = () => {
+        if (currentStep === "ai") return null;
+        return (
+            <div className="lg:hidden w-full bg-neutral-950/95 border-b border-white/10 px-4 py-3 sticky top-0 z-30 backdrop-blur-md">
+                <div className="max-w-md mx-auto flex items-center justify-between relative px-2">
+                    {/* Connecting Line background */}
+                    <div className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-white/15" />
+                    {/* Connecting Line active fill */}
+                    <div
+                        className="absolute left-6 top-1/2 -translate-y-1/2 h-0.5 bg-gradient-to-r from-[#D4AF37] to-[#F6D365] transition-all duration-500"
+                        style={{
+                            width:
+                                currentStepIndex === 0
+                                    ? "0%"
+                                    : currentStepIndex === 1
+                                    ? "50%"
+                                    : "calc(100% - 3rem)",
+                        }}
+                    />
+
+                    {STEPS.map((step, idx) => {
+                        const isActive = currentStep === step.id;
+                        const isCompleted = currentStepIndex > idx;
+
+                        return (
+                            <button
+                                key={step.id}
+                                type="button"
+                                disabled={!isCompleted}
+                                onClick={() => {
+                                    if (isCompleted) {
+                                        setCurrentStep(step.id);
+                                        window.scrollTo({ top: 0, behavior: "smooth" });
+                                    }
+                                }}
+                                className={`relative z-10 flex flex-col items-center gap-1 group ${
+                                    isCompleted ? "cursor-pointer" : "cursor-default"
+                                }`}
+                            >
+                                <div
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-space transition-all duration-300 ${
+                                        isActive
+                                            ? "bg-gradient-to-r from-[#D4AF37] to-[#F6D365] text-black ring-4 ring-[#D4AF37]/20 scale-110 shadow-lg"
+                                            : isCompleted
+                                            ? "bg-[#D4AF37] text-black font-bold"
+                                            : "bg-neutral-900 border border-white/20 text-gray-500"
+                                    }`}
+                                >
+                                    {isCompleted ? (
+                                        <Check className="w-4 h-4 stroke-[3]" />
+                                    ) : (
+                                        <span>{idx + 1}</span>
+                                    )}
+                                </div>
+                                <span
+                                    className={`text-[10px] font-space font-bold whitespace-nowrap transition-colors ${
+                                        isActive
+                                            ? "text-[#F6D365]"
+                                            : isCompleted
+                                            ? "text-gray-300"
+                                            : "text-gray-500"
+                                    }`}
+                                >
+                                    {step.label}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
     const renderStepIndicator = () => {
         if (currentStep === "ai") return null;
         if (currentStep === "checkout") return null;
         const label = STEPS.find((s) => s.id === currentStep)?.label || "";
         return (
-            <div className="flex items-center gap-3 text-sm text-gray-500 font-space">
+            <div className="hidden lg:flex items-center gap-3 text-sm text-gray-500 font-space">
                 <span className="text-[#C98600] font-semibold">
                     {currentStepIndex + 1}
                 </span>
@@ -1080,10 +1156,10 @@ export default function FIFAMemeTN() {
                                     updateCardData("mode", opt.id);
                                     setTimeout(goToNextStep, 300);
                                 }}
-                                className={`relative p-7 rounded-3xl border backdrop-blur-xl transition-all duration-300 text-right cursor-pointer ${
+                                className={`relative p-7 rounded-3xl border transition-all duration-200 text-right cursor-pointer ${
                                     isSelected
-                                        ? "border-[#D4AF37] bg-black/90 shadow-[0_10px_30px_rgba(212,175,55,0.2)]"
-                                        : "border-white/10 bg-black/60 hover:border-[#D4AF37]/50 hover:bg-black/80 shadow-xl"
+                                        ? "border-[#D4AF37] bg-neutral-950 shadow-[0_10px_30px_rgba(212,175,55,0.2)]"
+                                        : "border-white/10 bg-neutral-950/80 hover:border-[#D4AF37]/50 hover:bg-neutral-900 shadow-xl"
                                 }`}
                                 dir="rtl"
                             >
@@ -1252,8 +1328,10 @@ export default function FIFAMemeTN() {
     };
 
 
+
     const renderUpload = () => {
         const isUploaded = !!uploadPreview;
+        const canProceed = isUploaded && profileInfo.name.trim().length > 0;
 
         return (
             <motion.div
@@ -1261,31 +1339,40 @@ export default function FIFAMemeTN() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="space-y-8"
+                className="space-y-6"
             >
-                <div className="space-y-3" dir="rtl">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight">
-                        ارفع صورة <br />
+                {/* Social proof */}
+                <div className="flex items-center justify-center gap-2 py-1" dir="rtl">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold font-space">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        🔥 تم تسجيل 4 طلبيات (4 Commandes) جديدة مؤخراً — اطلب كارتتك توا!
+                    </span>
+                </div>
+
+                <div className="space-y-1.5" dir="rtl">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight">
+                        صمّم كارتتك{" "}
                         <span className="text-gold-grad">
-                            الأسطورة (Upload Photo)
+                            الأسطورية 🏆
                         </span>
                     </h1>
-                    <p className="text-gray-300 font-space text-base max-w-md">
-                        اختر صورة واضحة تظهر الوجه والأكتاف ليتم معالجتها وطباعتها على الكارطة.
+                    <p className="text-gray-400 font-space text-xs sm:text-sm max-w-md">
+                        ارفع صورتك ومعلوماتك — في دقيقة تولّي كارت فيفا تونسي مميّز.
                     </p>
                 </div>
 
+                {/* Photo Upload */}
                 <div
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onClick={() => !isUploaded && fileInputRef.current?.click()}
-                    className={`relative rounded-3xl border-2 transition-all duration-500 overflow-hidden backdrop-blur-xl ${
+                    className={`relative rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
                         isDragging
                             ? "border-[#D4AF37] bg-[#D4AF37]/15 shadow-[0_10px_30px_rgba(212,175,55,0.25)] border-dashed cursor-pointer"
                             : isUploaded
-                            ? "border-[#D4AF37]/60 bg-black/90 shadow-2xl"
-                            : "border-2 border-dashed border-white/20 bg-black/70 hover:border-[#D4AF37]/60 hover:bg-black/90 shadow-xl cursor-pointer"
+                            ? "border-[#D4AF37]/60 bg-neutral-950 shadow-xl"
+                            : "border-2 border-dashed border-white/20 bg-neutral-950/80 hover:border-[#D4AF37]/60 hover:bg-neutral-900 shadow-xl cursor-pointer"
                     }`}
                 >
                     <input
@@ -1299,43 +1386,39 @@ export default function FIFAMemeTN() {
                         className="hidden"
                     />
 
-                    <div className="relative min-h-[380px] sm:min-h-[460px] flex items-center justify-center p-4 sm:p-6">
+                    <div className="relative min-h-[220px] sm:min-h-[280px] flex items-center justify-center p-3 sm:p-5">
                         {isUploaded ? (
                             <motion.div
                                 initial={{ scale: 0.95, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="relative w-full h-[360px] sm:h-[430px] rounded-2xl overflow-hidden bg-[#0a0a0a] border border-[#D4AF37]/30 flex items-center justify-center"
+                                className="relative w-full h-[200px] sm:h-[260px] rounded-xl overflow-hidden bg-[#0a0a0a] border border-[#D4AF37]/30 flex items-center justify-center"
                             >
-                                {/* Holographic grid backdrop */}
                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.08)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
-
-                                {/* Full Uncropped Image with object-contain */}
                                 <div className="relative w-full h-full p-2">
                                     <Image
                                         src={uploadPreview!}
-                                        alt="Uploaded Full Photo"
+                                        alt="Uploaded Photo"
                                         fill
                                         className="object-contain"
                                         priority
                                     />
                                 </div>
 
-                                {/* Floating Overlay Actions Bar */}
-                                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20" dir="rtl">
-                                    <span className="px-3.5 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-[#D4AF37]/40 flex items-center gap-1.5 text-xs font-bold text-[#F6D365] shadow-lg">
-                                        <Check className="w-4 h-4 text-emerald-400 stroke-[3]" /> الصورة كاملة واضحة
+                                {/* Overlay actions */}
+                                <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between z-20" dir="rtl">
+                                    <span className="px-2.5 py-1 rounded-full bg-neutral-950/90 border border-[#D4AF37]/40 flex items-center gap-1 text-[10px] font-bold text-[#F6D365] shadow-lg">
+                                        <Check className="w-3 h-3 text-emerald-400 stroke-[3]" /> صورة واضحة
                                     </span>
-
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1.5">
                                         <button
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 fileInputRef.current?.click();
                                             }}
-                                            className="px-3.5 py-1.5 rounded-full bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 border border-[#D4AF37]/60 text-xs font-bold font-space text-[#F6D365] transition-all cursor-pointer shadow-md flex items-center gap-1.5"
+                                            className="px-2.5 py-1 rounded-full bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 border border-[#D4AF37]/60 text-[10px] font-bold font-space text-[#F6D365] transition-all cursor-pointer shadow-md flex items-center gap-1"
                                         >
-                                            <Camera className="w-3.5 h-3.5" /> تغيير الصورة
+                                            <Camera className="w-3 h-3" /> تغيير
                                         </button>
                                         <button
                                             type="button"
@@ -1344,36 +1427,208 @@ export default function FIFAMemeTN() {
                                                 setUploadPreview(null);
                                                 setUploadedFile(null);
                                             }}
-                                            className="px-3 py-1.5 rounded-full bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-xs font-bold font-space text-red-400 transition-all cursor-pointer shadow-md"
+                                            className="px-2 py-1 rounded-full bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-[10px] font-bold font-space text-red-400 transition-all cursor-pointer shadow-md"
                                         >
-                                            حذف
+                                            ✕
                                         </button>
                                     </div>
                                 </div>
                             </motion.div>
                         ) : (
-                            <div className="text-center space-y-4 py-8" dir="rtl">
-                                <div className="mx-auto w-16 h-16 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#F6D365] shadow-[0_0_25px_rgba(212,175,55,0.2)]">
-                                    <ImagePlus className="w-8 h-8 stroke-[1.75]" />
+                            <div className="text-center space-y-2.5 py-5" dir="rtl">
+                                <div className="mx-auto w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#F6D365] shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                                    <ImagePlus className="w-6 h-6 stroke-[1.75]" />
                                 </div>
-                                <div className="text-white font-bold text-xl sm:text-2xl">
-                                    اسحب الصّورة هنا أو اضغط للاختيار
+                                <div className="text-white font-bold text-base sm:text-lg">
+                                    📷 اضغط هنا لرفع الصورة
                                 </div>
-                                <div className="text-gray-300 font-space text-sm max-w-sm mx-auto">
-                                    صيغ مدعومة: PNG, JPG, WEBP — سيتم عرض صورتك كاملة بدون أي قص.
+                                <div className="text-gray-400 font-space text-xs max-w-xs mx-auto">
+                                    PNG, JPG, WEBP — صورة واضحة للوجه
                                 </div>
                             </div>
                         )}
                     </div>
                 </div>
 
-                {isUploaded && (
+                {/* Profile Fields in Step 1 */}
+                <div className="space-y-4" dir="rtl">
+                    {/* Name */}
+                    <div>
+                        <label className="text-xs font-space font-bold text-white mb-1.5 block">
+                            ✍️ الاسم واللقب على الكارت <span className="text-[#D4AF37]">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            value={profileInfo.name}
+                            onChange={(e) => setProfileInfo((p) => ({ ...p, name: e.target.value }))}
+                            placeholder="مثال: أحمد، مريم، كريم..."
+                            maxLength={30}
+                            className="w-full px-4 py-3 rounded-xl border border-white/15 bg-black/70 text-white text-base font-bold font-space focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-200 placeholder:text-gray-500 placeholder:font-normal placeholder:text-xs"
+                        />
+                    </div>
+
+                    {/* Age + Gender row */}
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="text-xs font-space font-bold text-gray-300 mb-1.5 block">العمر (Age)</label>
+                            <input
+                                type="number"
+                                value={profileInfo.age}
+                                onChange={(e) => setProfileInfo((p) => ({ ...p, age: e.target.value }))}
+                                placeholder="مثال: 24"
+                                min={1}
+                                max={99}
+                                className="w-full px-4 py-2.5 rounded-xl border border-white/15 bg-black/70 text-white font-space text-sm focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-200 placeholder:text-gray-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-xs font-space font-bold text-gray-300 mb-1.5 block">الجنس (Gender)</label>
+                            <div className="flex gap-2">
+                                {(["male", "female"] as const).map((g) => (
+                                    <button
+                                        key={g}
+                                        type="button"
+                                        onClick={() => setProfileInfo((p) => ({ ...p, gender: g }))}
+                                        className={`flex-1 py-2.5 rounded-xl border text-xs font-space font-bold transition-all duration-200 cursor-pointer ${
+                                            profileInfo.gender === g
+                                                ? "border-[#D4AF37] bg-[#D4AF37]/25 text-[#F6D365] shadow-md shadow-[#D4AF37]/10"
+                                                : "border-white/15 bg-black/60 text-gray-300 hover:border-white/30"
+                                        }`}
+                                    >
+                                        {g === "male" ? "♂ ذكر" : "♀ أنثى"}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Hobbies — Interactive Chips */}
+                    <div>
+                        <label className="text-xs font-space font-bold text-gray-300 mb-1.5 block">
+                            🎯 الهوايات والاهتمامات (Hobbies)
+                        </label>
+                        
+                        {/* Selected Hobbies Pills */}
+                        {Array.isArray(profileInfo.hobbies) && profileInfo.hobbies.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mb-2.5">
+                                {profileInfo.hobbies.map((hobby) => (
+                                    <span
+                                        key={hobby}
+                                        className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#D4AF37]/20 text-[#F6D365] border border-[#D4AF37]/40 text-xs font-space font-bold"
+                                    >
+                                        {hobby}
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setProfileInfo((p) => ({
+                                                    ...p,
+                                                    hobbies: (Array.isArray(p.hobbies) ? p.hobbies : []).filter((h) => h !== hobby),
+                                                }))
+                                            }
+                                            className="hover:text-red-400 font-bold ml-1 text-xs"
+                                        >
+                                            ✕
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Preset Chips */}
+                        <div className="flex flex-wrap gap-1.5 mb-2.5">
+                            {[
+                                { label: "⚽ كورة (Football)", val: "Football" },
+                                { label: "🎮 جيمنغ (Gaming)", val: "Gaming" },
+                                { label: "☕ قهوة (Kahwa)", val: "Kahwa Direct" },
+                                { label: "🚗 كراهب (Cars)", val: "Cars" },
+                                { label: "🏋️ جيم (Gym)", val: "Gym" },
+                                { label: "🎵 مزيكا (Music)", val: "Music" },
+                                { label: "✈️ سفر (Travel)", val: "Travel" },
+                                { label: "💻 كودينغ (Coding)", val: "Coding" },
+                            ].map((preset) => {
+                                const currentHobbies = Array.isArray(profileInfo.hobbies) ? profileInfo.hobbies : [];
+                                const isSelected = currentHobbies.includes(preset.val);
+                                return (
+                                    <button
+                                        key={preset.val}
+                                        type="button"
+                                        onClick={() => {
+                                            setProfileInfo((p) => {
+                                                const list = Array.isArray(p.hobbies) ? p.hobbies : [];
+                                                const next = isSelected
+                                                    ? list.filter((h) => h !== preset.val)
+                                                    : [...list, preset.val];
+                                                return { ...p, hobbies: next };
+                                            });
+                                        }}
+                                        className={`px-3 py-1.5 rounded-lg border text-xs font-space font-bold transition-all cursor-pointer ${
+                                            isSelected
+                                                ? "border-[#D4AF37] bg-[#D4AF37] text-black shadow-sm"
+                                                : "border-white/10 bg-black/50 text-gray-300 hover:border-white/25"
+                                        }`}
+                                    >
+                                        {preset.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Custom Hobby Input */}
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={customHobbyInput}
+                                onChange={(e) => setCustomHobbyInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        const trimmed = customHobbyInput.trim();
+                                        if (trimmed) {
+                                            setProfileInfo((p) => {
+                                                const list = Array.isArray(p.hobbies) ? p.hobbies : [];
+                                                if (!list.includes(trimmed)) {
+                                                    return { ...p, hobbies: [...list, trimmed] };
+                                                }
+                                                return p;
+                                            });
+                                            setCustomHobbyInput("");
+                                        }
+                                    }
+                                }}
+                                placeholder="أضف هواية أخرى (مثال: شطرنج، سينما...)..."
+                                className="flex-1 px-3.5 py-2 rounded-xl border border-white/15 bg-black/70 text-xs text-white font-space focus:outline-none focus:border-[#D4AF37] placeholder:text-gray-500"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const trimmed = customHobbyInput.trim();
+                                    if (trimmed) {
+                                        setProfileInfo((p) => {
+                                            const list = Array.isArray(p.hobbies) ? p.hobbies : [];
+                                            if (!list.includes(trimmed)) {
+                                                return { ...p, hobbies: [...list, trimmed] };
+                                            }
+                                            return p;
+                                        });
+                                        setCustomHobbyInput("");
+                                    }
+                                }}
+                                className="px-4 py-2 rounded-xl bg-[#D4AF37] text-black text-xs font-space font-bold hover:bg-[#F6D365] transition cursor-pointer"
+                            >
+                                + أضف
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Next Button */}
+                {canProceed && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex justify-end"
+                        className="flex justify-end pt-2"
                     >
-                        {renderNextButton(false, "مواصلة →")}
+                        {renderNextButton(false, "الخطوة التالية: الستاتيكس →")}
                     </motion.div>
                 )}
             </motion.div>
@@ -1679,26 +1934,61 @@ export default function FIFAMemeTN() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="space-y-8"
+                className="space-y-5"
             >
-                <div className="space-y-3" dir="rtl">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight">
-                        اختار الـ <span className="text-gold-grad">6 ستاتيكس متاعك (Pick 6 Stats)</span>
+                {/* Fast-Completion Motivation & Urgency Banner */}
+                <div className="flex items-center justify-between p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-[#D4AF37]/20 via-amber-500/10 to-transparent border border-[#D4AF37]/40 shadow-lg shadow-[#D4AF37]/5" dir="rtl">
+                    <div className="flex items-center gap-2.5">
+                        <span className="text-2xl animate-bounce">⚡</span>
+                        <div>
+                            <div className="text-xs sm:text-sm font-black text-[#F6D365] font-space">
+                                أقل من 30 ثانية وتشوف كارتتك كاملة بالـ AI والـ 3D!
+                            </div>
+                            <div className="text-[11px] text-gray-300 font-space mt-0.5">
+                                اختار 6 ستاتيكس واضغط &quot;توليد ومعاينة الكارت&quot; لمعاينة تصميمك فوراً 🚀
+                            </div>
+                        </div>
+                    </div>
+                    <span className="hidden sm:inline-flex items-center px-2.5 py-1 rounded-lg bg-[#D4AF37] text-black font-black text-[10px] font-space shrink-0 shadow-md">
+                        الخطوة 2 من 3
+                    </span>
+                </div>
+
+                <div className="space-y-1.5" dir="rtl">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight">
+                        اختار <span className="text-gold-grad">6 ستاتيكس تونسية 😂</span>
                     </h1>
-                    <p className="text-gray-300 font-space text-base max-w-md">
-                        اختار 6 ستاتيكس تونسية توصف صاحبك ولاّ توصفك أنت <span className="text-[#F6D365] font-bold">avec ses défauts</span>.
+                    <p className="text-gray-400 font-space text-xs sm:text-sm max-w-md">
+                        اضغط على 6 ستاتيكس توصف صاحبك أو توصفك أنت — القيم تتحط تلقائياً وتنجم تبدلها!
                     </p>
+                </div>
+
+                {/* Dynamic Real-time Action Cue */}
+                <div className="text-center py-1">
+                    {selectedStatCodes.length === 0 ? (
+                        <span className="text-xs font-space text-gray-300 font-bold">
+                            🎯 اضغط على 6 ستاتيكس لحساب قوة الكارت (OVR) متاعك فوراً!
+                        </span>
+                    ) : selectedStatCodes.length < 6 ? (
+                        <span className="text-xs font-space text-[#F6D365] font-bold animate-pulse">
+                            🔥 تبقّتلك {6 - selectedStatCodes.length} ستاتيكس فقط — كملهم وشوف كارتتك جاهزة!
+                        </span>
+                    ) : (
+                        <span className="text-xs font-space text-emerald-400 font-bold flex items-center justify-center gap-1">
+                            <Check className="w-4 h-4 stroke-[3]" /> كارتتك كاملة! اضغط &quot;توليد ومعاينة الكارت الآن&quot; بالأسفل 👇
+                        </span>
+                    )}
                 </div>
 
                 <TunisiaStatPicker
                     selected={selectedStatCodes}
                     onSelectionChange={(codes) => {
                         setSelectedStatCodes(codes);
-                        // Initialize values for newly selected stats
+                        // Auto-assign random values for newly selected stats (no sliders needed)
                         const newValues = { ...statValues };
                         codes.forEach((code) => {
                             if (!(code in newValues)) {
-                                newValues[code] = 75;
+                                newValues[code] = Math.floor(Math.random() * 26) + 70; // 70-95
                             }
                         });
                         // Remove deselected stats
@@ -1712,9 +2002,169 @@ export default function FIFAMemeTN() {
                     maxSelection={6}
                 />
 
-                <div className="flex items-center justify-between pt-4">
+                {/* Interactive Stat Power Customizer (1-99) */}
+                {selectedStatCodes.length > 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="space-y-3 rounded-2xl border border-white/15 bg-neutral-950/90 p-4 sm:p-5"
+                        dir="rtl"
+                    >
+                        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-white/10 pb-3">
+                            <div className="flex items-center gap-2">
+                                <span className="text-base font-bold font-space text-white">
+                                    ⚡ قوة الستاتيكس المختارة ({selectedStatCodes.length}/6)
+                                </span>
+                                <span className="text-[10px] text-gray-400 font-space">
+                                    (اسحب لتعديل القوة 1–99)
+                                </span>
+                            </div>
+                            
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const newValues = { ...statValues };
+                                        selectedStatCodes.forEach((c) => {
+                                            newValues[c] = Math.floor(Math.random() * 25) + 75; // 75-99
+                                        });
+                                        setStatValues(newValues);
+                                    }}
+                                    className="px-2.5 py-1 rounded-lg bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 text-[#F6D365] text-[11px] font-bold font-space transition-all cursor-pointer flex items-center gap-1"
+                                >
+                                    <span>🎲 عشوائي</span>
+                                </button>
+                                
+                                {isReady && (
+                                    <div className="px-3 py-1 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#F6D365] text-black font-black text-xs font-space flex items-center gap-1 shadow-md">
+                                        <span>OVR</span>
+                                        <span className="text-sm">
+                                            {calculateOverall(
+                                                selectedStatCodes.map((c) => ({
+                                                    code: c,
+                                                    value: statValues[c] || 80,
+                                                }))
+                                            )}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Sliders Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            {selectedStatCodes.map((code) => {
+                                const stat = TUNISIA_STATS.find((s) => s.code === code);
+                                const val = statValues[code] || 80;
+                                return (
+                                    <div
+                                        key={code}
+                                        className="space-y-1.5 p-3 rounded-xl bg-black/60 border border-white/10"
+                                    >
+                                        <div className="flex items-center justify-between text-xs">
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="text-base">{stat?.emoji || "⭐"}</span>
+                                                <span className="font-bold text-white font-space">{stat?.stat || code}</span>
+                                                <span className="text-[10px] text-gray-400 font-space">({stat?.meaning || code})</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newVal = Math.max(1, val - 1);
+                                                        setStatValues((prev) => ({ ...prev, [code]: newVal }));
+                                                    }}
+                                                    className="w-5 h-5 rounded bg-white/10 hover:bg-white/20 text-gray-300 text-xs flex items-center justify-center font-bold cursor-pointer"
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="font-black text-sm text-[#F6D365] font-space w-7 text-center">
+                                                    {val}
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newVal = Math.min(99, val + 1);
+                                                        setStatValues((prev) => ({ ...prev, [code]: newVal }));
+                                                    }}
+                                                    className="w-5 h-5 rounded bg-white/10 hover:bg-white/20 text-gray-300 text-xs flex items-center justify-center font-bold cursor-pointer"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <input
+                                            type="range"
+                                            min={1}
+                                            max={99}
+                                            value={val}
+                                            onChange={(e) => {
+                                                const v = parseInt(e.target.value) || 1;
+                                                setStatValues((prev) => ({ ...prev, [code]: v }));
+                                            }}
+                                            className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
+                                            style={{
+                                                background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${
+                                                    ((val - 1) / 98) * 100
+                                                }%, rgba(255,255,255,0.15) ${((val - 1) / 98) * 100}%, rgba(255,255,255,0.15) 100%)`,
+                                            }}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </motion.div>
+                )}
+
+                {/* Bio / Description & Design Notes (Rich context for AI Prompt & Card Titles) */}
+                <div className="space-y-3 pt-2" dir="rtl">
+                    <div>
+                        <label className="text-xs font-space font-bold text-gray-300 mb-1.5 block">
+                            💬 احكي عليه في جملة أو موقف مضحك (Bio / Description)
+                        </label>
+                        <textarea
+                            value={profileInfo.description}
+                            onChange={(e) => setProfileInfo((p) => ({ ...p, description: e.target.value }))}
+                            placeholder="مثال: أعز صاحب، ديما 15 دقيقة روطار، أحسن واحد يضحك في القعدة، يحب القهوة والجيمنغ..."
+                            maxLength={300}
+                            rows={2}
+                            className="w-full px-4 py-2.5 rounded-xl border border-white/15 bg-black/70 text-xs text-white font-space focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-200 placeholder:text-gray-500 resize-none"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-xs font-space font-bold text-gray-300 mb-1.5 block">
+                            🏷️ لقب أو ملاحظات خاصة على الكارت (Custom Title / Nickname)
+                        </label>
+                        <input
+                            type="text"
+                            value={profileInfo.designNotes}
+                            onChange={(e) => setProfileInfo((p) => ({ ...p, designNotes: e.target.value }))}
+                            placeholder="مثال: THE GOAT، ملك القهوة، EL MAESTRO..."
+                            maxLength={60}
+                            className="w-full px-4 py-2.5 rounded-xl border border-white/15 bg-black/70 text-xs text-white font-space focus:outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all duration-200 placeholder:text-gray-500"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-3 gap-3 flex-wrap sm:flex-nowrap">
                     {renderBackButton()}
-                    {renderNextButton(!isReady, "حدّد القيم (Stat Values) →")}
+                    <button
+                        onClick={() => {
+                            if (!isReady) return;
+                            startDescribeAIGeneration();
+                        }}
+                        disabled={!isReady}
+                        className={`group relative flex-1 sm:flex-initial px-8 py-4 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F6D365] to-[#D4AF37] text-black font-black font-space text-lg shadow-[0_4px_25px_rgba(212,175,55,0.35)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer ${
+                            !isReady ? "opacity-40 pointer-events-none" : "shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+                        }`}
+                    >
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                            <Sparkles className="w-5 h-5 fill-black" />
+                            <span>توليد ومعاينة الكارت الآن 🚀</span>
+                        </span>
+                    </button>
                 </div>
             </motion.div>
         );
@@ -1816,7 +2266,7 @@ export default function FIFAMemeTN() {
             setShowConfetti(true);
 
             setTimeout(() => {
-                setCurrentStep("review");
+                setCurrentStep("checkout");
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }, 3000);
         } catch (err: any) {
@@ -1855,7 +2305,7 @@ export default function FIFAMemeTN() {
                         key={currentOverall}
                         initial={{ scale: 0.9 }}
                         animate={{ scale: 1 }}
-                        className="flex flex-col items-center gap-1 px-10 py-6 rounded-3xl bg-black/90 border-2 border-[#D4AF37] shadow-[0_10px_35px_rgba(212,175,55,0.25)] backdrop-blur-2xl"
+                        className="flex flex-col items-center gap-1 px-10 py-6 rounded-3xl bg-neutral-950 border-2 border-[#D4AF37] shadow-[0_10px_35px_rgba(212,175,55,0.25)]"
                     >
                         <span className="text-5xl font-black text-[#F6D365] font-sora leading-none">{currentOverall}</span>
                         <span className="text-xs font-bold text-gray-300 uppercase font-space tracking-widest mt-1">OVERALL RATING</span>
@@ -1869,7 +2319,7 @@ export default function FIFAMemeTN() {
                         if (!stat) return null;
                         const val = statValues[code] || 75;
                         return (
-                            <div key={code} className="space-y-2 rounded-2xl border border-white/10 bg-black/70 p-4 backdrop-blur-xl">
+                            <div key={code} className="space-y-2 rounded-2xl border border-white/10 bg-neutral-950/90 p-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <span className="text-xl">{stat.emoji}</span>
@@ -2230,8 +2680,8 @@ export default function FIFAMemeTN() {
                 className="relative flex flex-col items-center justify-center min-h-[75vh] py-8 text-center"
             >
                 {/* Ambient Golden Background Glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-[#D4AF37]/20 via-[#F6D365]/10 to-transparent rounded-full blur-[120px] pointer-events-none" />
-                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#D4AF37]/15 rounded-full blur-[80px] pointer-events-none animate-pulse" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(212,175,55,0.18) 0%, rgba(246,211,101,0.08) 45%, transparent 70%)" }} />
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full pointer-events-none animate-pulse" style={{ background: "radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%)" }} />
 
                 {/* 3D Holographic Card Forging Container */}
                 <div className="relative mb-8">
@@ -2285,7 +2735,7 @@ export default function FIFAMemeTN() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-[#D4AF37]/10" />
                                 {/* Glowing Center Rune */}
                                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 z-10">
-                                    <div className="w-14 h-14 rounded-2xl bg-black/70 border border-[#D4AF37] flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.5)] backdrop-blur-md">
+                                    <div className="w-14 h-14 rounded-2xl bg-neutral-950 border border-[#D4AF37] flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.5)]">
                                         <StepIcon className="w-7 h-7 text-[#F6D365] animate-pulse" />
                                     </div>
                                     <span className="text-[10px] font-space font-black uppercase tracking-widest text-[#F6D365] bg-black/80 px-2.5 py-1 rounded-full border border-[#D4AF37]/40 shadow-sm">
@@ -2656,7 +3106,7 @@ export default function FIFAMemeTN() {
                 {/* Main grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Form side (7 cols) */}
-                    <div className="lg:col-span-7 bg-neutral-900/80 border border-white/10 backdrop-blur-xl p-6 sm:p-8 rounded-3xl space-y-6">
+                    <div className="lg:col-span-7 bg-neutral-950/90 border border-white/10 p-6 sm:p-8 rounded-3xl space-y-6">
                         <h3 className="text-xl font-bold text-white font-sora flex items-center gap-2">
                             <UserCircle className="w-5 h-5 text-[#E5A500]" />
                             معلومات التوصيل والطلب
@@ -2870,7 +3320,7 @@ export default function FIFAMemeTN() {
                     {/* Summary side (5 cols) */}
                     <div className="lg:col-span-5 space-y-6">
                         {/* Card preview thumbnail */}
-                        <div className="bg-neutral-900/80 border border-white/10 backdrop-blur-xl p-5 rounded-3xl space-y-4">
+                        <div className="bg-neutral-950/90 border border-white/10 p-5 rounded-3xl space-y-4">
                             <div className="text-xs font-bold text-gray-400 font-space uppercase tracking-wider">
                                 معاينة الكارت المطاطي
                             </div>
@@ -2890,7 +3340,7 @@ export default function FIFAMemeTN() {
                         </div>
 
                         {/* Order breakdown */}
-                        <div className="bg-neutral-900/80 border border-white/10 backdrop-blur-xl p-6 rounded-3xl space-y-4">
+                        <div className="bg-neutral-950/90 border border-white/10 p-6 rounded-3xl space-y-4">
                             <h4 className="font-bold text-white font-sora text-base">تفاصيل الفاتورة</h4>
                             <div className="space-y-2.5 text-xs font-space">
                                 <div className="flex justify-between text-gray-300">
@@ -2983,7 +3433,7 @@ export default function FIFAMemeTN() {
 
     const renderSidebar = () => {
         return (
-            <div className="hidden lg:flex flex-col h-full py-8 px-6 border-r border-white/10 bg-black/90 text-white shadow-2xl backdrop-blur-2xl min-w-[280px]">
+            <div className="hidden lg:flex flex-col h-full py-8 px-6 border-r border-white/10 bg-neutral-950 text-white shadow-2xl min-w-[280px]">
                 {/* Logo & Return Link */}
                 <div className="flex items-center justify-between gap-3 mb-10">
                     <a href="/" className="inline-flex items-center gap-2">
@@ -3073,39 +3523,11 @@ export default function FIFAMemeTN() {
             {/* Top Gold Border Accent */}
             <div className="fixed top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent z-50 pointer-events-none" />
 
-            {/* Background glow */}
+            {/* Background glow using lightweight radial-gradient instead of heavy 200px GPU blurs */}
             <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-[-30%] right-[-10%] w-[50%] h-[50%] bg-[#D4AF37]/[0.05] rounded-full blur-[200px]" />
-                <div className="absolute bottom-[-30%] left-[-10%] w-[50%] h-[50%] bg-[#F6D365]/[0.04] rounded-full blur-[200px]" />
+                <div className="absolute top-[-20%] right-[-10%] w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] rounded-full" style={{ background: "radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)" }} />
+                <div className="absolute bottom-[-20%] left-[-10%] w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] rounded-full" style={{ background: "radial-gradient(circle, rgba(246,211,101,0.06) 0%, transparent 70%)" }} />
             </div>
-
-            {/* Floating particles */}
-            {mounted && (
-                <div className="fixed inset-0 pointer-events-none overflow-hidden">
-                    {[...Array(12)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="absolute w-1 h-1 rounded-full bg-[#E5A500]"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                opacity: 0.1 + Math.random() * 0.2,
-                            }}
-                            animate={{
-                                y: [0, -20 - Math.random() * 40, 0],
-                                x: [0, 10 - Math.random() * 20, 0],
-                                opacity: [0.1, 0.3, 0.1],
-                            }}
-                            transition={{
-                                duration: 4 + Math.random() * 6,
-                                repeat: Infinity,
-                                delay: Math.random() * 4,
-                                ease: "easeInOut",
-                            }}
-                        />
-                    ))}
-                </div>
-            )}
 
             {/* Confetti overlay */}
             <AnimatePresence>
@@ -3114,14 +3536,14 @@ export default function FIFAMemeTN() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 pointer-events-none z-50"
+                        className="fixed inset-0 pointer-events-none z-50 overflow-hidden"
                     >
-                        {[...Array(60)].map((_, i) => (
+                        {[...Array(24)].map((_, i) => (
                             <motion.div
                                 key={i}
-                                className="absolute w-2 h-2 rounded-sm"
+                                className="absolute w-2.5 h-2.5 rounded-sm"
                                 style={{
-                                    left: `${Math.random() * 100}%`,
+                                    left: `${(i * 4.2 + 2)}%`,
                                     top: -10,
                                     background: [
                                         "#E5A500",
@@ -3130,21 +3552,16 @@ export default function FIFAMemeTN() {
                                         "#4ECDC4",
                                         "#FFE66D",
                                         "#A78BFA",
-                                    ][Math.floor(Math.random() * 6)],
-                                    rotate: Math.random() * 360,
+                                    ][i % 6],
                                 }}
                                 animate={{
-                                    y: `${100 + Math.random() * 60}vh`,
-                                    x: [
-                                        Math.random() * 40 - 20,
-                                        Math.random() * 40 - 20,
-                                    ],
-                                    rotate: Math.random() * 720 + 360,
-                                    opacity: [1, 0.8, 0],
+                                    y: "110vh",
+                                    rotate: 360,
+                                    opacity: [1, 1, 0],
                                 }}
                                 transition={{
-                                    duration: 2 + Math.random() * 2,
-                                    delay: Math.random() * 1.5,
+                                    duration: 2.2 + (i % 4) * 0.3,
+                                    delay: (i % 5) * 0.15,
                                     ease: "easeOut",
                                 }}
                             />
@@ -3160,17 +3577,20 @@ export default function FIFAMemeTN() {
 
                 {/* Main Content */}
                 <div className="flex-1 flex flex-col min-h-screen">
+                    {/* Mobile 3-Step Sticky Progress Bar */}
+                    {renderMobileProgressBar()}
+
                     {/* Content */}
-                    <div className="flex-1 px-6 py-8 lg:px-12 lg:py-12">
+                    <div className="flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-12 lg:py-12">
                         <div className="max-w-4xl mx-auto">
                             {/* Top bar */}
-                            <div className="flex items-center justify-between mb-10 lg:mb-14">
+                            <div className="flex items-center justify-between mb-6 lg:mb-14">
                                 <div className="flex items-center gap-4">
                                     {renderBackButton()}
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className={`px-3 py-1.5 rounded-full border text-xs font-bold font-mono flex items-center gap-1.5 ${remainingGenerations > 0 ? "bg-amber-50 text-amber-700 border-amber-200" : "bg-red-50 text-red-700 border-red-200"}`}>
-                                        <span>⚡ {remainingGenerations}/{totalGenerations} Generations Left</span>
+                                    <div className={`px-2.5 py-1 rounded-full border text-[11px] font-bold font-mono flex items-center gap-1.5 ${remainingGenerations > 0 ? "bg-amber-500/10 text-amber-400 border-amber-500/30" : "bg-red-500/10 text-red-400 border-red-500/30"}`}>
+                                        <span>⚡ {remainingGenerations}/{totalGenerations} متبقية</span>
                                     </div>
                                     {renderStepIndicator()}
                                 </div>
@@ -3187,7 +3607,7 @@ export default function FIFAMemeTN() {
 
             {/* Order Success Confirmation Modal */}
             {orderSuccessModal?.visible && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in" dir="rtl">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 animate-fade-in" dir="rtl">
                     <div className="relative w-full max-w-lg p-6 sm:p-8 bg-neutral-900 border border-[#E5A500]/40 rounded-3xl shadow-2xl space-y-6 text-right">
                         <div className="text-center space-y-3">
                             <div className="w-16 h-16 mx-auto rounded-full bg-[#E5A500]/20 border border-[#E5A500] flex items-center justify-center text-[#E5A500]">
@@ -3252,7 +3672,7 @@ export default function FIFAMemeTN() {
 
             {/* Cooldown Share Unlock Popup Modal */}
             {showCooldownModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-fade-in">
                     <div className="relative w-full max-w-lg p-6 sm:p-8 bg-white rounded-3xl shadow-2xl space-y-6 border border-gray-100">
                         <button
                             onClick={() => setShowCooldownModal(false)}
@@ -3295,7 +3715,7 @@ export default function FIFAMemeTN() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 40, scale: 0.95 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 z-[100] px-6 py-4 bg-black/90 backdrop-blur-xl border border-[#D4AF37]/40 text-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] max-w-sm text-center"
+                        className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 z-[100] px-6 py-4 bg-neutral-950 border border-[#D4AF37]/40 text-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.8)] max-w-sm text-center"
                         dir="rtl"
                     >
                         <p className="text-sm font-bold font-space leading-relaxed">{shareToast.message}</p>
@@ -3308,6 +3728,9 @@ export default function FIFAMemeTN() {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Live Social Proof Recent Order Activity Pill (Clever Affichage) */}
+            <RecentOrderPopup currentStep={currentStep} selectedCount={selectedStatCodes.length} />
         </div>
     );
 }

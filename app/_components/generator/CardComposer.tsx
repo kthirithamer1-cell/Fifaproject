@@ -286,7 +286,7 @@ const CardComposer = forwardRef<HTMLDivElement, CardComposerProps>(
                             }}
                         >
                             <img
-                                src="/images/favi.png"
+                                src="/images/favi.webp"
                                 alt="FLAWLESS"
                                 style={{
                                     width: "100%",

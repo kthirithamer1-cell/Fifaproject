@@ -137,14 +137,39 @@ export const TUNISIA_STATS: TunisiaStat[] = [
 
 // ─── 2. Generator Steps & Questions ────────────────────────────────────────
 
-export const ALL_STEPS: StepConfig[] = [
-    { id: "upload", label: "ارفع الصورة (Photo)", icon: Camera },
-    { id: "profile", label: "معلوماتك (Profil)", icon: UserCircle },
-    { id: "stats-pick", label: "اختار الستات (Stats)", icon: ListChecks },
-    { id: "stats-values", label: "قيم الستات (Values)", icon: SlidersHorizontal },
-    { id: "review", label: "مراجعة الديزاين (Review)", icon: Eye },
-    { id: "checkout", label: "تأكيد الطلب (Checkout)", icon: CreditCard },
+// Top 12 most engaging stats shown by default (users can expand to see all 68)
+export const POPULAR_STAT_CODES = [
+    "DHK", // Humor 😂
+    "MKH", // Intelligence 🧠
+    "TKK", // Money-making 💰
+    "RKD", // Sleeping 😴
+    "9HW", // Coffee addiction ☕
+    "HRB", // Escaping 🏃
+    "GZR", // Boldness 🔥
+    "KLM", // Talking 🗣️
+    "GLB", // Surviving 💪
+    "FRJ", // Watching others 👀
+    "3SB", // Anger 😤
+    "L3B", // Mischief 😈
 ];
+
+export const ALL_STEPS: StepConfig[] = [
+    { id: "upload", label: "📷 الصورة والبروفيل", icon: Camera },
+    { id: "stats-pick", label: "😂 الستاتيكس والوصف", icon: ListChecks },
+    { id: "checkout", label: "🎉 الكارت والتوصيل", icon: CreditCard },
+];
+
+// Social proof constants for conversion boosting
+export const SOCIAL_PROOF = {
+    recentOrdersCount: 4,
+    totalCardsDelivered: 4,
+    todayOrdersBase: 4,
+    trustBadges: [
+        { icon: "🔒", text: "الدفع عند التوصيل" },
+        { icon: "✨", text: "طباعة PVC فاخرة" },
+        { icon: "🚚", text: "توصيل 48 ساعة" },
+    ],
+};
 
 export const AI_INTERVIEW_QUESTIONS: QuestionOption[] = [
     {

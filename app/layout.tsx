@@ -1,24 +1,9 @@
 
 
 import type { Metadata, Viewport } from "next";
-import { Poppins, Tajawal } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { AffiliateTrackerProvider } from "./_components/AffiliateTrackerProvider";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "600", "700", "800", "900"],
-  display: "swap",
-  variable: "--font-poppins",
-});
-
-const tajawal = Tajawal({
-  subsets: ["arabic"],
-  weight: ["700"],
-  display: "swap",
-  variable: "--font-tajawal",
-});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -54,19 +39,27 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`h-full antialiased ${poppins.variable} ${tajawal.variable}`}
+      className="h-full antialiased"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Tajawal:wght@700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
         {/* Google Analytics (gtag.js) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-HKJ6DB91PB"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
         <Script
           id="google-analytics"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
@@ -82,7 +75,7 @@ export default function RootLayout({
         {/* Meta Pixel Code */}
         <Script
           id="meta-pixel"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `
               !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');

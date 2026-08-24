@@ -74,14 +74,21 @@ export function Hero() {
     if (!autoplayRef.current) resetAutoplay();
   };
 
-  // Scroll (wheel)
+  // Scroll (wheel) - only intercept when hero is actively focused and moving between slides
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       if (!heroRef.current?.contains(e.target as Node)) return;
       if (scrollLock.current) return;
-      const delta =
-        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      
+      const deltaY = e.deltaY;
+      const deltaX = e.deltaX;
+      const delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
       if (Math.abs(delta) < SCROLL_THRESHOLD) return;
+
+      // Allow natural page scrolling when at the boundaries
+      if (deltaY > 0 && currentSlide === TOTAL_SLIDES - 1) return; // let user scroll down to page
+      if (deltaY < 0 && currentSlide === 0) return; // let user scroll up
+
       e.preventDefault();
       scrollLock.current = true;
       delta > 0 ? nextSlide() : prevSlide();
@@ -97,7 +104,7 @@ export function Hero() {
       if (hero) hero.removeEventListener("wheel", handleWheel);
       if (scrollLockTimeout.current) clearTimeout(scrollLockTimeout.current);
     };
-  }, [nextSlide, prevSlide]);
+  }, [nextSlide, prevSlide, currentSlide]);
 
   // Keyboard
   useEffect(() => {
