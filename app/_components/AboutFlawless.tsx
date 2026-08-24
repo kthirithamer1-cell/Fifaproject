@@ -42,10 +42,10 @@ export function AboutFlawless() {
 
   return (
     <section id="about" className="relative py-24 bg-[#080808] text-white overflow-hidden">
-      {/* Background Lighting & Orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#D4AF37]/[0.04] blur-[180px] pointer-events-none" />
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-amber-500/[0.03] blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-[#F6D365]/[0.03] blur-[150px] pointer-events-none" />
+      {/* Background Lighting — radial gradients (no GPU blur) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
+      <div className="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.03) 0%, transparent 70%)' }} />
+      <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(246,211,101,0.03) 0%, transparent 70%)' }} />
 
       {/* Top Gold Border Accent */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
@@ -68,7 +68,7 @@ export function AboutFlawless() {
         </div>
 
         {/* Brand Showcase Hero Glass Card */}
-        <div className="relative rounded-3xl border border-white/10 bg-black/70 p-8 sm:p-12 backdrop-blur-2xl shadow-2xl mb-16 overflow-hidden">
+        <div className="relative rounded-3xl border border-white/10 bg-black/70 p-8 sm:p-12 shadow-2xl mb-16 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Text story side */}
             <div className="lg:col-span-7 space-y-6 text-right" dir="rtl">
@@ -105,7 +105,7 @@ export function AboutFlawless() {
             {/* Visual showcase side */}
             <div className="lg:col-span-5 flex justify-center">
               <div className="relative group">
-                <div className="absolute inset-0 rounded-3xl bg-[#D4AF37]/20 blur-[50px] group-hover:bg-[#D4AF37]/35 transition-all duration-500" />
+                <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%)' }} />
                 <div className="relative rounded-2xl border border-[#D4AF37]/30 bg-black/90 p-6 shadow-2xl flex flex-col items-center max-w-[280px]">
                   <Award className="h-10 w-10 text-[#F6D365] mb-3 animate-bounce" />
                   <div className="text-xs text-gray-400 font-bold uppercase tracking-widest">FLAWLESS CARD</div>
@@ -139,7 +139,7 @@ export function AboutFlawless() {
             return (
               <div
                 key={i}
-                className="group relative rounded-2xl border border-white/10 bg-black/60 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-[#D4AF37]/50 hover:shadow-[0_10px_30px_rgba(212,175,55,0.15)] flex flex-col justify-between"
+                className="group relative rounded-2xl border border-white/10 bg-black/60 p-6 transition-all duration-300 hover:-translate-y-2 hover:border-[#D4AF37]/50 hover:shadow-[0_10px_30px_rgba(212,175,55,0.15)] flex flex-col justify-between"
               >
                 <div>
                   <div className="flex justify-between items-center mb-5">

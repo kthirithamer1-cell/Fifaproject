@@ -29,8 +29,8 @@ export function Footer() {
 
       {/* Ambient Lighting Orbs */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute left-1/4 bottom-0 w-96 h-96 rounded-full bg-[#D4AF37]/[0.03] blur-[150px]" />
-        <div className="absolute right-1/4 top-0 w-96 h-96 rounded-full bg-[#F6D365]/[0.03] blur-[150px]" />
+        <div className="absolute left-1/4 bottom-0 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.03) 0%, transparent 70%)' }} />
+        <div className="absolute right-1/4 top-0 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(246,211,101,0.03) 0%, transparent 70%)' }} />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning>

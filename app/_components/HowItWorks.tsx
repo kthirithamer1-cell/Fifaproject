@@ -18,8 +18,8 @@ export function HowItWorks() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
       {/* Background Ambient Orbs */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#D4AF37]/[0.05] blur-[160px]" />
-        <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#F6D365]/[0.04] blur-[160px]" />
+        <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%)' }} />
+        <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(246,211,101,0.04) 0%, transparent 70%)' }} />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -48,7 +48,7 @@ export function HowItWorks() {
             return (
               <div
                 key={step.number}
-                className="group relative flex flex-col items-center text-center p-6 sm:p-8 rounded-3xl bg-neutral-900/70 border border-white/10 hover:border-[#D4AF37]/60 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2.5 hover:shadow-[0_16px_45px_rgba(212,175,55,0.18)] z-10"
+                className="group relative flex flex-col items-center text-center p-6 sm:p-8 rounded-3xl bg-neutral-900/70 border border-white/10 hover:border-[#D4AF37]/60 transition-all duration-500 hover:-translate-y-2.5 hover:shadow-[0_16px_45px_rgba(212,175,55,0.18)] z-10"
               >
                 {/* Step Number Badge */}
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-black border border-[#D4AF37]/40 text-[#F6D365] text-[11px] font-black tracking-widest uppercase shadow-md group-hover:border-[#D4AF37] group-hover:scale-110 transition-all duration-300">

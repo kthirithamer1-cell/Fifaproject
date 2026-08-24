@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, Eye, Sparkles } from "lucide-react";
 import { gallery } from "./data";
 
@@ -85,7 +86,7 @@ export function Gallery() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
 
       {/* Gold Ambient Glows */}
-      <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full bg-[#D4AF37]/[0.03] blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.03) 0%, transparent 70%)' }} />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         {/* Header */}
@@ -120,12 +121,12 @@ export function Gallery() {
         </div>
 
         {/* Gallery Carousel Container */}
-        <div className="relative group/carousel rounded-3xl border border-white/10 bg-black/70 p-6 sm:p-8 backdrop-blur-2xl shadow-2xl overflow-hidden">
+        <div className="relative group/carousel rounded-3xl border border-white/10 bg-black/70 p-6 sm:p-8 shadow-2xl overflow-hidden">
           {/* Left Arrow Button */}
           <button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
-            className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white shadow-xl backdrop-blur-md transition-all duration-300 hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer ${
+            className={`absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white shadow-xl transition-all duration-300 hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer ${
               canScrollLeft ? "opacity-100" : "opacity-0"
             }`}
             aria-label="Previous image"
@@ -137,7 +138,7 @@ export function Gallery() {
           <button
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
-            className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white shadow-xl backdrop-blur-md transition-all duration-300 hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer ${
+            className={`absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white shadow-xl transition-all duration-300 hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] active:scale-95 disabled:opacity-0 disabled:pointer-events-none cursor-pointer ${
               canScrollRight ? "opacity-100" : "opacity-0"
             }`}
             aria-label="Next image"
@@ -168,16 +169,16 @@ export function Gallery() {
                   <div className="absolute inset-0 rounded-2xl bg-[#D4AF37]/20 blur-xl opacity-0 transition duration-500 group-hover:opacity-100" />
 
                   {/* Card container */}
-                  <div className="relative rounded-2xl border border-white/10 bg-black/90 p-3 backdrop-blur-xl transition duration-500 group-hover:-translate-y-2 group-hover:border-[#D4AF37]/60 group-hover:shadow-[0_12px_35px_rgba(212,175,55,0.25)]">
+                  <div className="relative rounded-2xl border border-white/10 bg-black/90 p-3 transition duration-500 group-hover:-translate-y-2 group-hover:border-[#D4AF37]/60 group-hover:shadow-[0_12px_35px_rgba(212,175,55,0.25)]">
                     {/* Rating badge */}
-                    <div className="absolute top-4 left-4 z-10 flex items-center gap-1 rounded-lg bg-black/80 backdrop-blur-md border border-[#D4AF37]/40 px-2 py-0.5 shadow-md">
+                    <div className="absolute top-4 left-4 z-10 flex items-center gap-1 rounded-lg bg-black/80 border border-[#D4AF37]/40 px-2 py-0.5 shadow-md">
                       <span className="text-lg font-black text-[#F6D365] leading-none">
                         {card.rating}
                       </span>
                     </div>
 
                     {/* Card type badge */}
-                    <div className="absolute top-4 right-4 z-10 rounded-lg bg-[#D4AF37]/20 border border-[#D4AF37]/40 backdrop-blur-md px-2 py-0.5">
+                    <div className="absolute top-4 right-4 z-10 rounded-lg bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-2 py-0.5">
                       <span className="text-[9px] font-bold text-[#F6D365] tracking-wider uppercase">
                         {card.type}
                       </span>
@@ -185,9 +186,12 @@ export function Gallery() {
 
                     {/* Card image */}
                     {card.image ? (
-                      <img
+                      <Image
                         src={card.image}
                         alt={`كارت فيفا ${card.arabicName || card.name} تونسية مخصصة — Flawless`}
+                        width={280}
+                        height={373}
+                        loading="lazy"
                         className="w-full rounded-xl select-none drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] group-hover:scale-[1.02] transition duration-300"
                       />
                     ) : (

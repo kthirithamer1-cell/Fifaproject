@@ -122,10 +122,9 @@ export function Hero() {
   const handleTouchEnd = (e: React.TouchEvent) => {
     const diffX = touchStartX.current - e.changedTouches[0].screenX;
     const diffY = touchStartY.current - e.changedTouches[0].screenY;
+    // Only intercept horizontal swipes — allow vertical scrolling on mobile
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
       diffX > 0 ? nextSlide() : prevSlide();
-    } else if (Math.abs(diffY) > 40) {
-      diffY > 0 ? nextSlide() : prevSlide();
     }
   };
 
@@ -155,22 +154,16 @@ export function Hero() {
     <section
       ref={heroRef}
       id="top"
-      className="relative h-screen w-full overflow-hidden bg-black text-white"
+      className="relative h-[100svh] w-full overflow-hidden bg-black text-white"
       onMouseEnter={pauseAutoplay}
       onMouseLeave={resumeAutoplay}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Background */}
+      {/* Background — lightweight radial gradients instead of blur orbs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute left-1/2 top-0 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-amber-300/[.08] blur-[200px]" />
-        <div className="absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full bg-amber-200/[.06] blur-[200px]" />
-        <div className="absolute left-1/4 top-1/4 h-64 w-64 rounded-full border border-black/[.03] hero-spin" />
-        <div className="absolute right-1/3 bottom-1/3 h-80 w-80 rounded-full border border-black/[.03] hero-spin-rev" />
-        <div className="hero-orb left-0 top-24 h-28 w-28" />
-        <div className="hero-orb right-8 top-12 h-40 w-40" />
-        <div className="hero-orb left-1/4 bottom-10 h-20 w-20" />
-        <div className="hero-orb right-1/3 top-1/3 h-32 w-32" />
+        <div className="absolute left-1/2 top-0 h-[800px] w-[800px] -translate-x-1/2 rounded-full" style={{ background: 'radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%)' }} />
+        <div className="absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(251,191,36,0.06) 0%, transparent 70%)' }} />
       </div>
 
       <div className="relative w-full h-full">
@@ -619,8 +612,8 @@ function Slide2({
   return (
     <div className="w-full max-w-4xl mx-auto text-center px-4 py-8">
       {/* Dark Glass Card Container */}
-      <div className="relative rounded-3xl border border-white/10 bg-black/90 p-8 sm:p-12 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-[#D4AF37]/[0.06] blur-[140px] pointer-events-none" />
+      <div className="relative rounded-3xl border border-white/10 bg-black/90 p-8 sm:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 70%)' }} />
 
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-6">
@@ -684,7 +677,7 @@ function Slide7({
   const router = useRouter();
   return (
     <div className="w-full max-w-4xl mx-auto text-center px-4 py-8">
-      <div className="relative rounded-3xl border border-white/10 bg-black/90 p-8 sm:p-12 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+      <div className="relative rounded-3xl border border-white/10 bg-black/90 p-8 sm:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#F6D365] text-xs font-bold uppercase tracking-widest mb-6">
           <Trophy className="h-4 w-4 text-[#F6D365]" />
           <span>THE FINAL LEGEND</span>

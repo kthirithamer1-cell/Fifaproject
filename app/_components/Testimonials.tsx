@@ -26,7 +26,7 @@ export function Testimonials() {
 
       {/* Background subtle ambient element */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute right-10 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-[#D4AF37]/[0.04] blur-[150px]" />
+        <div className="absolute right-10 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning>
@@ -46,7 +46,7 @@ export function Testimonials() {
           </div>
 
           {/* Overall Rating Badge */}
-          <div className="flex items-center gap-3 bg-black/80 border border-[#D4AF37]/30 px-5 py-3 rounded-2xl shadow-xl backdrop-blur-xl self-start md:self-end">
+          <div className="flex items-center gap-3 bg-black/80 border border-[#D4AF37]/30 px-5 py-3 rounded-2xl shadow-xl self-start md:self-end">
             <div className="flex text-[#F6D365]">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="h-4 w-4 fill-[#F6D365] stroke-[#F6D365]" />
@@ -63,7 +63,7 @@ export function Testimonials() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.name}
-              className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-black/70 p-6 backdrop-blur-xl shadow-2xl transition-all duration-500 hover:border-[#D4AF37]/50 hover:-translate-y-2 hover:shadow-[0_15px_35px_rgba(212,175,55,0.15)]"
+              className="group relative flex flex-col justify-between rounded-3xl border border-white/10 bg-black/70 p-6 shadow-2xl transition-all duration-500 hover:border-[#D4AF37]/50 hover:-translate-y-2 hover:shadow-[0_15px_35px_rgba(212,175,55,0.15)]"
             >
               {/* Decorative Quote Mark */}
               <Quote className="absolute top-5 right-5 h-8 w-8 text-[#D4AF37]/20 group-hover:text-[#D4AF37]/40 transition-colors duration-300 pointer-events-none" />

@@ -41,8 +41,8 @@ export function Packages() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
       {/* Ambient Lighting Orbs */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#D4AF37]/[0.05] blur-[160px]" />
-        <div className="absolute right-1/3 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#F6D365]/[0.04] blur-[160px]" />
+        <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%)' }} />
+        <div className="absolute right-1/3 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(246,211,101,0.04) 0%, transparent 70%)' }} />
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -67,7 +67,7 @@ export function Packages() {
             return (
               <div
                 key={pack.name}
-                className={`relative flex flex-col justify-between rounded-3xl border p-8 sm:p-10 transition-all duration-500 backdrop-blur-xl group hover:-translate-y-2.5 ${
+                className={`relative flex flex-col justify-between rounded-3xl border p-8 sm:p-10 transition-all duration-500 group hover:-translate-y-2.5 ${
                   isFeatured
                     ? "border-[#D4AF37] bg-gradient-to-b from-neutral-900/90 via-neutral-900/80 to-[#D4AF37]/10 shadow-[0_20px_50px_rgba(212,175,55,0.2)] scale-[1.02]"
                     : "border-white/10 bg-neutral-900/60 hover:border-[#D4AF37]/50 hover:shadow-[0_12px_40px_rgba(212,175,55,0.12)]"

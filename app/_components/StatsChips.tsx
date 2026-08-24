@@ -49,8 +49,8 @@ export function StatsChips() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" />
       {/* Glow Orbs */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-[#D4AF37]/[0.05] blur-[150px]" />
-        <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-[#F6D365]/[0.04] blur-[150px]" />
+        <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%)' }} />
+        <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(246,211,101,0.04) 0%, transparent 70%)' }} />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -79,7 +79,7 @@ export function StatsChips() {
             {[...row1, ...row1, ...row1].map((stat, index) => (
               <div
                 key={`${stat.code}-${index}`}
-                className={`group flex items-center gap-3 rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 hover:scale-110 hover:shadow-[0_0_25px_rgba(212,175,55,0.25)] backdrop-blur-md cursor-default flex-shrink-0 ${
+                className={`group flex items-center gap-3 rounded-full border px-4 py-2.5 text-sm font-semibold transition-[transform,box-shadow,border-color] duration-300 hover:scale-110 hover:shadow-[0_0_25px_rgba(212,175,55,0.25)] cursor-default flex-shrink-0 ${
                   CHIP_COLORS[index % CHIP_COLORS.length]
                 }`}
               >
@@ -107,7 +107,7 @@ export function StatsChips() {
             {[...row2, ...row2, ...row2].map((stat, index) => (
               <div
                 key={`${stat.code}-${index}`}
-                className={`group flex items-center gap-3 rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 hover:scale-110 hover:shadow-[0_0_25px_rgba(212,175,55,0.25)] backdrop-blur-md cursor-default flex-shrink-0 ${
+                className={`group flex items-center gap-3 rounded-full border px-4 py-2.5 text-sm font-semibold transition-[transform,box-shadow,border-color] duration-300 hover:scale-110 hover:shadow-[0_0_25px_rgba(212,175,55,0.25)] cursor-default flex-shrink-0 ${
                   CHIP_COLORS[(index + 3) % CHIP_COLORS.length]
                 }`}
               >

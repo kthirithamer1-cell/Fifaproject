@@ -30,7 +30,7 @@ export function Faq() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" suppressHydrationWarning />
 
       {/* Gold Glow */}
-      <div className="absolute top-1/2 right-1/4 w-96 h-96 rounded-full bg-[#D4AF37]/[0.03] blur-[160px] pointer-events-none" suppressHydrationWarning />
+      <div className="absolute top-1/2 right-1/4 w-96 h-96 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.03) 0%, transparent 70%)' }} suppressHydrationWarning />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8" suppressHydrationWarning>
         {/* Header */}
@@ -53,7 +53,7 @@ export function Faq() {
             return (
               <div
                 key={faq.question}
-                className={`rounded-2xl border bg-black/70 backdrop-blur-xl px-6 transition-all duration-300 ${
+                className={`rounded-2xl border bg-black/70 px-6 transition-all duration-300 ${
                   isOpen
                     ? "border-[#D4AF37]/60 shadow-[0_8px_30px_rgba(212,175,55,0.15)] bg-black/90"
                     : "border-white/10 hover:border-white/25 hover:bg-black/80"
