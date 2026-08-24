@@ -1,6 +1,6 @@
 
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins, Tajawal } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
@@ -8,7 +8,7 @@ import { AffiliateTrackerProvider } from "./_components/AffiliateTrackerProvider
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "600", "700", "800", "900"],
   display: "swap",
   variable: "--font-poppins",
 });
@@ -19,6 +19,14 @@ const tajawal = Tajawal({
   display: "swap",
   variable: "--font-tajawal",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#000000",
+};
 
 export const metadata: Metadata = {
   title: "Flawless 🇹🇳 — كل تونسي أسطورة! كروت تونسية مخصصة 100%",

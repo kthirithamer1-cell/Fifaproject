@@ -160,7 +160,7 @@ export default function CardEditor({
     };
 
     return (
-        <div className="space-y-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm overflow-y-auto max-h-[calc(100vh-140px)]">
+        <div className="space-y-6 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm overflow-y-auto max-h-[calc(100dvh-140px)]">
             {/* Header */}
             <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
                 <svg

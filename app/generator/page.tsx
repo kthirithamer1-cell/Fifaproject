@@ -454,6 +454,10 @@ export default function FIFAMemeTN() {
                 pngBlob = await new Promise<Blob>((resolve) =>
                     canvas.toBlob((b) => resolve(b!), "image/png")
                 );
+                // Immediately release WebKit GPU texture and ImageBitmap memory
+                bitmap.close();
+                canvas.width = 0;
+                canvas.height = 0;
             }
             await navigator.clipboard.write([
                 new ClipboardItem({ "image/png": pngBlob }),
@@ -884,12 +888,23 @@ export default function FIFAMemeTN() {
                     ctx.fillStyle = "#FFFFFF";
                     ctx.fillRect(0, 0, width, height);
                     ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL("image/jpeg", 0.82));
+                    const result = canvas.toDataURL("image/jpeg", 0.82);
+                    // Explicitly clean up canvas GPU buffer to prevent tab crashes
+                    canvas.width = 0;
+                    canvas.height = 0;
+                    img.src = "";
+                    resolve(result);
                 } else {
+                    canvas.width = 0;
+                    canvas.height = 0;
+                    img.src = "";
                     resolve(dataUrl);
                 }
             };
-            img.onerror = () => resolve(dataUrl);
+            img.onerror = () => {
+                img.src = "";
+                resolve(dataUrl);
+            };
             img.src = dataUrl;
         });
     };
@@ -3280,7 +3295,7 @@ export default function FIFAMemeTN() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 40, scale: 0.95 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] px-6 py-4 bg-black/90 backdrop-blur-xl border border-[#D4AF37]/40 text-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] max-w-sm text-center"
+                        className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 z-[100] px-6 py-4 bg-black/90 backdrop-blur-xl border border-[#D4AF37]/40 text-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] max-w-sm text-center"
                         dir="rtl"
                     >
                         <p className="text-sm font-bold font-space leading-relaxed">{shareToast.message}</p>
