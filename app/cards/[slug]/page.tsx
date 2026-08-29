@@ -105,11 +105,48 @@ export default async function CardProductPage({ params }: Props) {
           "@type": "Offer",
           priceCurrency: "TND",
           price: card.price,
+          priceValidUntil: "2026-12-31",
+          itemCondition: "https://schema.org/NewCondition",
           availability: "https://schema.org/InStock",
           url: `${baseUrl}/cards/${card.slug}`,
           seller: {
             "@type": "Organization",
             name: "Flawless Tunisia",
+          },
+          shippingDetails: {
+            "@type": "OfferShippingDetails",
+            shippingRate: {
+              "@type": "MonetaryAmount",
+              value: "7",
+              currency: "TND",
+            },
+            shippingDestination: {
+              "@type": "DefinedRegion",
+              addressCountry: "TN",
+            },
+            deliveryTime: {
+              "@type": "ShippingDeliveryTime",
+              handlingTime: {
+                "@type": "QuantitativeValue",
+                minValue: 1,
+                maxValue: 2,
+                unitCode: "DAY",
+              },
+              transitTime: {
+                "@type": "QuantitativeValue",
+                minValue: 1,
+                maxValue: 3,
+                unitCode: "DAY",
+              },
+            },
+          },
+          hasMerchantReturnPolicy: {
+            "@type": "MerchantReturnPolicy",
+            applicableCountry: "TN",
+            returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+            merchantReturnDays: 14,
+            returnMethod: "https://schema.org/ReturnByMail",
+            returnFees: "https://schema.org/FreeReturn",
           },
         },
         aggregateRating: {
